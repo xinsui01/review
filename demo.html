@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      .tit {
+        width: 100px;
+        height: 100px;
+        background: red;
+      }
+
+      .tit {
+        width: 100px;
+        height: 50px;
+        background: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box" class="tit"></div>
+    <p class="tit">p</p>
+    <a class="tit1" href="www.baidu.com" alt="www.baidu.com">a</a>
+    <script>
+      function mouseOverShowBorder(container) {
+        const children = container.childNodes
+        for (let i = 0; i < children.length; i++) {
+          const child = children[i]
+
+          if (child.nodeType === 1) {
+            child.onmouseover = function() {
+              this.style.border = '1px solid #ccc'
+            }
+
+            child.onmouseout = function() {
+              this.style.border = ''
+            }
+
+            mouseOverShowBorder(child)
+          }
+        }
+      }
+
+      mouseOverShowBorder(document.body)
+    </script>
+  </body>
+</html>

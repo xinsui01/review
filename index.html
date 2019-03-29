@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      .container {
+        width: 300px;
+        height: 200px;
+        background: pink;
+        position: relative;
+        text-align: center;
+      }
+      .inner {
+        width: 100px;
+        height: 50px;
+        background: #0f0;
+        /* margin: 0 auto; */
+        /* position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -50px;
+        margin-top: -25px; */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .inner1 {
+        display: inline-block;
+        position: absolute;
+        top: 50%;
+        transform: translateX(-50%);
+      }
+      .content {
+        height: 500px;
+        background: #ccc;
+      }
+      .mid {
+        position: relative;
+        float: left;
+        width: 100%;
+        height: 100%;
+        padding-left: 100px;
+        padding-right: 150px;
+        background: rgb(6, 240, 76);
+        text-align: center;
+      }
+      .left {
+        position: relative;
+        float: left;
+        width: 100px;
+        height: 100%;
+        background: #f00;
+        margin-left: -100%;
+      }
+      .right {
+        position: relative;
+        float: right;
+        width: 150px;
+        height: 100%;
+        background: #00f;
+        margin-left: -150px;
+      }
+
+      #head {
+        height: 200px;
+        background-color: yellow;
+      }
+      #body {
+        width: 100%;
+        float: left;
+      }
+      #main {
+        background-color: green;
+        height: 200px;
+        margin: 0 210px;
+      }
+      #left {
+        float: left;
+        background-color: red;
+        width: 200px;
+        height: 200px;
+        margin-left: -100%;
+      }
+      #right {
+        float: right;
+        background-color: blue;
+        width: 200px;
+        height: 200px;
+        margin-left: -200px;
+      }
+      #footer {
+        clear: both;
+        height: 200px;
+        background-color: orange;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container"><div class="inner">123123</div></div>
+    <div class="container"><div class="inner1">123123</div></div>
+    <div class="content">
+      <div class="mid">
+        hahahahahhhahahh哈哈哈哈哈哈哈哈哈哈哈哈哈hi围殴软实力的风景哦微乳覅违反考试的缴费后卫hi荣威若回复王二红微弱is贷款和第三方公会搜房网而
+        <h1>圣杯布局</h1>
+      </div>
+      <div class="left"></div>
+      <div class="right"></div>
+    </div>
+    <div id="head">
+      即左右固定，中间自适应，它可以利用margin-left为负数来实现，它的实现原理就是margin为负值可以改变float元素的排列位置
+    </div>
+    <div id="body">
+      <div id="main">
+        当多个元素同时从标准流中脱离开来时，如果前一个元素的宽度为100%宽度，后面的元素通过负边距可以实现上移。当负的边距超过自身的宽度将上移，只要没有超过自身宽度就不会上移
+      </div>
+    </div>
+    <div id="left"></div>
+    <div id="right"></div>
+    <div id="footer"></div>
+    <script>
+      let a = 123
+      var abs = 232414124
+    </script>
+  </body>
+</html>
