@@ -1678,6 +1678,83 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 # React
 
+- React 基础模块
+  
+  ```js
+    const React = {
+      Children: {...},
+
+      createRef,
+      Component,
+      PureComponent,
+
+      createContext,
+      forwardRef,
+
+      Fragment: REACT_FRAGMENT_TYPE,
+      StrictMode: REACT_STRICT_MODE_TYPE,
+      unstable_AsyncMode: REACT_ASYNC_MODE_TYPE,
+      unstable_Profiler: REACT_PROFILER_TYPE,
+
+      createElement,
+      cloneElement,
+      createFactory,
+      isValidElement,
+
+      version: ReactVersion,
+
+      __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED: ReactSharedInternals,
+    }
+  ```
+
+  ```js
+    function Component(props, context, updater) {
+      this.props = props;
+      this.context = context;
+      // If a component has string refs, we will assign a different object later.
+      this.refs = emptyObject;
+      // We initialize the default updater but the real one gets injected by the
+      // renderer.
+      this.updater = updater || ReactNoopUpdateQueue;
+    }
+
+    Component.prototype.isReactComponent = {}
+    Component.prototype.setState = function(partialState, callback) {
+      this.updater.enqueueSetState(this, partialState, callback, 'setState')
+    }
+    Component.prototype.forceUpdate = function(callback) {
+      this.updater.enqueueForceUpdate(this, callback, 'forceUpdate')
+    }
+  ```
+
+- React 渲染模块
+
+  ```js
+    const ReactDOM: Object = {
+      createPortal,
+      findDOMNode(
+        componentOrElement: Element | ?React$Component<any, any>,
+      ): null | Element | Text {
+        ...
+      },
+      hydrate(element: React$Node, container: DOMContainer, callback: ?Function) {
+        return legacyRenderSubtreeIntoContainer(null, element, container, true, callback,);
+      },
+
+      render(element: React$Element<any>, container: DOMContainer, callback: ?Function,) {
+        return legacyRenderSubtreeIntoContainer(null, element, container, false, callback,);
+      },
+      ...
+    };
+  ```
+
+- Reconciliation 模块（协调模块）：主要负责任务协调，生命周期管理
+  - stack Reconciler
+    > 通过递归的形式遍历 Virtual DOM，存在难以中断和恢复的问题，如果 react 更新任务运行时间过长，就会阻塞布局、动画等的运行，可能导致掉帧。
+
+    
+  - Fiber Reconciler
+
 ## Fiber
 
 - [React16源码之React Fiber架构](https://juejin.im/post/5b7016606fb9a0099406f8de)
