@@ -468,7 +468,7 @@ function type(obj) {
 
 ## [正则](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions)
 
-  ![正则表达式中特殊字符的含义](./RegExp.png)
+  ![正则表达式中特殊字符的含义](./imgs/RegExp.png)
 
   - 标识符：
     - g: 全局
@@ -1673,18 +1673,38 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 - [TCP 协议详解(慢启动,流量控制,阻塞控制之类)](https://blog.csdn.net/rock_joker/article/details/76769404)
 - [TCP 协议与 UDP 协议的区别](https://zhuanlan.zhihu.com/p/47064829)
 
-# React/redux
+# React
 
-## 受控组件和非受控组件
+## Fiber
 
-- [React中受控与非受控组件](https://segmentfault.com/a/1190000012404114)
-- [React 中组件间通信的几种方式](https://www.jianshu.com/p/fb915d9c99c4)
+- [React16源码之React Fiber架构](https://juejin.im/post/5b7016606fb9a0099406f8de)
+- [React 16 带来了什么以及对 Fiber 的解释](https://juejin.im/post/59de1b2a51882578c70c0833)
 
-## vDom react 原理
+## 生命周期
 
-## diff 的原理
+[react-lifecycle-methods](http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)
+![react life cycle](./imgs/react-life-cycle.png)
 
-- [react diff](https://zhuanlan.zhihu.com/p/20346379)
+[React v16.4 生命周期的理解](https://juejin.im/post/5b6f1800f265da282d45a79a)
+
+* 挂载阶段
+  * constructor
+  * static getDerivedStateFromProps(nextProps, prevState) //一个静态方法，所以不能在这个函数里面使用this，这个函数有两个参数props和state，分别指接收到的新参数和当前的state对象，这个函数会返回一个对象用来更新当前的state对象，如果不需要更新可以返回null
+  * <s>componentWillMount/UNSAFE_componentWillMount</s>  // 或者 `<span style="text-decoration: line-through"></span>`
+  * render() 纯函数
+  * componentDidMount()
+
+* 更新阶段
+  * <s>componentWillReceiveProps/UNSAFE_componentWillReceiveProps</s>
+  * static getDerivedStateFromProps(nextProps, prevState)
+  * shouldComponentUpdate(nextProps, nextState)
+  * <s>componentWillUpdate(nextProps, nextState)/UNSAFE_componentWillUpdate(nextProps, nextState)</s>
+  * render()
+  * getSnapshotBeforeUpdate(prevProps, prevState) //函数有一个返回值，会作为第三个参数传给componentDidUpdate，如果你不想要返回值，请返回null，不写的话控制台会有警告
+  * componentDidUpdate(prevProps, prevState, snapshot)
+
+* 卸载阶段
+  * componentWillUnmount // 组件卸载前的清理工作
 
 ## **setState**
 
@@ -1693,6 +1713,12 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
   - Calling setState directly in render always causes an update. This was not previously the case. Regardless, you should not be calling setState from render.
   - setState callback (second argument) now fires immediately after `componentDidMount / componentDidUpdate` instead of after all components have `rendered`.
 - [setState](https://imweb.io/topic/5b189d04d4c96b9b1b4c4ed6)
+- [React16——看看setState过程中fiber干了什么事情](https://juejin.im/post/5afe491e6fb9a07aca7a66a7)
+
+## virturl Dom\diff 的原理
+
+- [Virtual DOM 的实现和 React Fiber 简介](https://www.jianshu.com/p/b189b2949b33)
+- [react diff](https://zhuanlan.zhihu.com/p/20346379)
 
 ## [合成事件（SyntheticEvent）](https://reactjs.org/docs/events.html)
 
@@ -1725,6 +1751,11 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
   事件处理程序由冒泡阶段的事件触发。要为捕获阶段注册事件处理程序，请将Capture附加到事件名称；例如，您可以使用 onClickCapture 来处理捕获阶段中的 click 事件，而不是使用 onClick。
 
 - [React合成事件和DOM原生事件混用须知](https://juejin.im/post/59db6e7af265da431f4a02ef)
+
+## 受控组件和非受控组件
+
+- [React中受控与非受控组件](https://segmentfault.com/a/1190000012404114)
+- [React 中组件间通信的几种方式](https://www.jianshu.com/p/fb915d9c99c4)
 
 ## React 性能优化
 
