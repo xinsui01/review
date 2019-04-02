@@ -1480,6 +1480,58 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
   ```
 ## [跨页面通信的各种姿势](https://zhuanlan.zhihu.com/p/29368435)
 
+- 获取句柄，postMessage
+  ```js
+    const childPage = window.open(strUrl, strWindowName, [strWindowFeatures]);
+
+    childPage.onload = () => {
+      childPage.postMessage(message, targetOrigin, [transfer]);
+    };
+
+    window.onmessage = e => {
+      console.log(e.data)
+      console.log(e.origin)
+      console.log(e.source)
+    }
+
+  ```
+- localStorage,设置共享区域的storage，storage会触发storage事件
+
+  ```js
+    localStorage.setItem('message', 'hello');
+
+    window.onStorage = (evt) => {
+      // evt.key evt.oldValue evt.newValue
+    }
+  ```
+
+    - 触发写入操作的页面下的 **storage listener** 不会被触发
+    - storage 事件只有在发生改变的时候才会触发，即重复设置相同值不会触发 listener
+    - safari 隐身模式下无法设置localStorage值
+
+- BroadcastChannel
+
+  ```js
+    // a.html
+    const channel = new BroadcastChannel('tabs')
+    channel.onmessage = evt => {
+      // evt.data
+    }
+
+    // b.html
+    const channel = new BroadcastChannel('tabs')
+    channel.postMessage('hello')
+  ```
+
+- SharedWorker
+
+- cookie
+
+  一个古老的方案，有点`localStorage`的降级兼容版，我也是整理本文的时候才发现的，思路就是往`document.cookie`写入值，由于cookie的改变没有事件通知，所以只能采取轮询脏检查来实现业务逻辑。
+
+- Server
+  
+
 ## [深入浅出浏览器渲染原理](https://juejin.im/post/5c24d736f265da614b120d4a)
 
 ## CSS 和 JS 解析、渲染
@@ -1496,7 +1548,9 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 - [浏览器事件循环机制（event loop）](https://juejin.im/post/5afbc62151882542af04112d)
 - [JavaScript 运行机制详解：再谈Event Loop](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)
 
-## [Linux IO模式及 select、poll、epoll详解](https://segmentfault.com/a/1190000003063859?utm_source=Weibo&utm_medium=shareLink&utm_campaign=socialShare#articleHeader0)
+## IO 模式
+- [Linux IO模式及 select、poll、epoll详解](https://segmentfault.com/a/1190000003063859?utm_source=Weibo&utm_medium=shareLink&utm_campaign=socialShare#articleHeader0)
+- [大话 Select、Poll、Epoll](https://cloud.tencent.com/developer/article/1005481)
 
 ## V8引擎中的垃圾回收机制
 
