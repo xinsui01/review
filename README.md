@@ -1459,6 +1459,13 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 # 浏览器
 
+## Cookie
+  - [SameSite cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#SameSite_cookies)
+    - Strict: same origin
+    - Lax: 在跨站点子请求中不携带 same-site cookies，例如加载图像或帧的调用。但是当用户从外部站点导航到URL时将发送 same-site cookies
+  - Secure
+  - HttpOnly
+
 ## [chrome显示12px以下字体的解决方法](https://blog.csdn.net/u012011360/article/details/41846905)
 
 ```html
@@ -1478,6 +1485,17 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
     Access-Control-Allow-Credentials: true
     Access-Control-Max-Age: 1728000
   ```
+  - 跨域携带 cookie
+    ```js
+      // 服务端
+      Access-Control-Allow-Credentials: true
+
+      // 客户端
+      XMLHttpRequest.withCredentials = true
+    ```
+    [XMLHttpRequest.withCredentials](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/withCredentials)
+    [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials)
+
 ## [跨页面通信的各种姿势](https://zhuanlan.zhihu.com/p/29368435)
 
 - 获取句柄，postMessage
@@ -1578,7 +1596,62 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
     为了和 CSS 区分，这里把攻击的第一个字母改成了 X，于是叫做 XSS。
         - html 转义为实体
         - 在标签的 href、src 等属性中，包含 javascript: 等可执行代码。
-- [浅谈CSRF攻击方式](https://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html)
+    XSS 分类
+
+    - 存储型 XSS：
+      存储型 XSS 的攻击步骤：
+
+      1. 攻击者将恶意代码提交到目标网站的数据库中。
+      2. 用户打开目标网站时，网站服务端将恶意代码从数据库取出，拼接在 HTML 中返回给浏览器。
+      3. 用户浏览器接收到响应后解析执行，混在其中的恶意代码也被执行。
+      4. 恶意代码窃取用户数据并发送到攻击者的网站，或者冒充用户的行为，调用目标网站接口执行攻击者指定的操作。
+
+      这种攻击常见于带有用户保存数据的网站功能，如论坛发帖、商品评论、用户私信等。
+    
+    - 反射型 XSS:
+      反射型 XSS 的攻击步骤：
+
+      1. 攻击者构造出特殊的 URL，其中包含恶意代码。
+      2. 用户打开带有恶意代码的 URL 时，网站服务端将恶意代码从 URL 中取出，拼接在 HTML 中返回给浏览器。
+      3. 用户浏览器接收到响应后解析执行，混在其中的恶意代码也被执行。
+      4. 恶意代码窃取用户数据并发送到攻击者的网站，或者冒充用户的行为，调用目标网站接口执行攻击者指定的操作。
+
+      > 反射型 XSS 跟存储型 XSS 的区别是：存储型 XSS 的恶意代码存在数据库里，反射型 XSS 的恶意代码存在 URL 里。
+
+      反射型 XSS 漏洞常见于通过 URL 传递参数的功能，如网站搜索、跳转等。
+
+      由于需要用户主动打开恶意的 URL 才能生效，攻击者往往会结合多种手段诱导用户点击。
+
+      POST 的内容也可以触发反射型 XSS，只不过其触发条件比较苛刻（需要构造表单提交页面，并引导用户点击），所以非常少见。
+
+    - DOM 型 XSS:
+      DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行恶意代码由浏览器端完成，属于前端 JavaScript 自身的安全漏洞，而其他两种 XSS 都属于服务端的安全漏洞。
+      ```html
+        <script>
+          eval(location.hash.substr(1));
+          // 而这个时候，如果用户在网址后面加上恶意代码
+          "http://www.xss.com#alert(document.cookie)"
+        </script>
+      ```
+    
+    XSS 预防：
+      1. 输入过滤，转义输出、存储
+      2. 避免使用eval，new Function等执行字符串的方法，除非确定字符串和用户输入无关。
+        `new Function ([arg1[, arg2[, ...argN]],] functionBody)`
+      3. 使用innerHTML，document.write的时候，如果数据是用户输入的，那么需要对关键字符都进行过滤与转义。
+      4. 对于非客户端cookie，比如保存用户凭证的session，务必标识为http only，这样js就获取不到这个cookie值了，安全性得到提高。
+      5. X-XSS-Protection
+      6. cookie secure\httpOnly
+
+  - CSRF
+    - [浅谈CSRF攻击方式](https://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html)
+    - [跨站请求伪造与 Same-Site Cookie](https://www.jianshu.com/p/66f77b8f1759)
+    - 预防
+      - 检测http referer是否是同域名，通常来讲，用户提交的请求，referer应该是来来自站内地址，所以如果发现referer中地址异常，那么很可能是遭到了CSRF攻击。
+      - 避免登录的session长时间存储在客户端中。
+      - 关键请求使用验证码或者token机制。在一些十分关键的操作，比如交易付款环节。这种请求中，加入验证码，可以防止被恶意用户攻击。token机制也有一定的防御作用。具体来说就是服务器每次返回客户端页面的时候，在页面中埋上一个token字段，例如 `<input type=“hidden” name=“csrftoken” value=“abcd">`。 之后，客户端请求的时候带上这个token，使用这个机制后，攻击者也就很难发起CSRF攻击了。
+      - sameSite cookie
+      - 浏览器跨域携带 cookie 时 `credentials: 'same-origin'`
 
 ## [前端性能优化最佳实践](https://csspod.com/frontend-performance-best-practices/)
 
@@ -1673,6 +1746,12 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 # 网络层
 
 ## http
+
+- HTTP响应头
+  - X-Frame-Options 禁止页面被加载进 iframe 中
+  - X-XSS-Protection 对于反射型XSS进行一些防御
+  - [Content-Security-Policy(内容安全策略( CSP ))](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP)
+    ```Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com```
 
 - [HTTP 报文](https://www.cnblogs.com/klguang/p/4618526.html)
 - [HTTP 协议](https://zhuanlan.zhihu.com/p/24913080)
