@@ -2056,14 +2056,17 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
   Access-Control-Max-Age: <span class="hljs-number">1728000</span>
 </div></code></pre>
 <ul>
-<li>跨域携带 cookie<pre class="hljs"><code><div>  <span class="hljs-comment">// 服务端</span>
+<li>
+<p>跨域携带 cookie</p>
+<pre class="hljs"><code><div>  <span class="hljs-comment">// 服务端</span>
   Access-Control-Allow-Credentials: <span class="hljs-literal">true</span>
 
   <span class="hljs-comment">// 客户端</span>
   XMLHttpRequest.withCredentials = <span class="hljs-literal">true</span>
 </div></code></pre>
-<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/withCredentials">XMLHttpRequest.withCredentials</a>
-<a href="https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials">Request.credentials</a></li>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/withCredentials">XMLHttpRequest.withCredentials</a></p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials">Request.credentials</a></p>
+</li>
 </ul>
 </li>
 </ul>

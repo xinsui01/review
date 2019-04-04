@@ -1494,6 +1494,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       XMLHttpRequest.withCredentials = true
     ```
     [XMLHttpRequest.withCredentials](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/withCredentials)
+    
     [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials)
 
 ## [跨页面通信的各种姿势](https://zhuanlan.zhihu.com/p/29368435)
