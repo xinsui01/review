@@ -2343,9 +2343,6 @@ function respond(ctx) {
 }
 ```
 
-# 算法
-
-
 ## others
 
 - 有没有使用过 css3 动画，介绍一下,怎么做，关键是怎么做的 CSS

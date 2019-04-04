@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>learn.md</title>
+<title>README.md</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 
 <style>
@@ -386,6 +386,7 @@ blockquote {
 </head>
 <body>
 <p><a href="https://juejin.im/post/5c64d15d6fb9a049d37f9c20">中高级前端大厂面试秘籍，为你保驾护航金三银四，直通大厂(上)</a></p>
+<p><a href="https://juejin.im/post/5c92f499f265da612647b754">中高级前端大厂面试秘籍，寒冬中为您保驾护航，直通大厂(中)</a></p>
 <h1 id="javascript">JavaScript</h1>
 <h2 id="var-let-%E5%8C%BA%E5%88%AB">var, let 区别</h2>
 <ul>
@@ -615,8 +616,8 @@ inst2.sayAge()
 <li>
 <p>组合继承无论什么情况下，都会<code>调用两次超类构造函数</code>：</p>
 <ul>
-<li><code>一次是在创建子类原型的时候</code></li>
-<li><code>另一次是在子类构造函数内部调用超类构造函数。</code></li>
+<li><code>一次是在创建子类原型的时候</code></li>
+<li><code>另一次是在子类构造函数内部调用超类构造函数。</code></li>
 </ul>
 </li>
 </ol>
@@ -714,8 +715,8 @@ anotherPerson.sayHi()
 <p>组合继承无论什么情况下，都会<code>调用两次超类构造函数</code>：</p>
 </blockquote>
 <blockquote>
-<p><code>一次是在创建子类原型的时候</code><br>
-<code>另一次是在子类构造函数内部调用超类构造函数。</code></p>
+<p><code>一次是在创建子类原型的时候</code><br>
+<code>另一次是在子类构造函数内部调用超类构造函数。</code></p>
 </blockquote>
 <pre class="hljs"><code><div><span class="hljs-comment">// 组合继承🌰</span>
 
@@ -741,8 +742,8 @@ SubType.prototype.sayAge = funciton() {
 }
 </div></code></pre>
 <blockquote>
-<p>第一次调用在原型上有两个属性 <code>name</code> 和 <code>colors</code><br>
-调用子类构造函数的时候，又会调用  超类构造函数， 又会在新对象上创建实例属性 <code>name</code> 和 <code>colors</code>，于是原型链上的两个同名属性就被屏蔽了</p>
+<p>第一次调用在原型上有两个属性 <code>name</code> 和 <code>colors</code><br>
+调用子类构造函数的时候，又会调用超类构造函数，又会在新对象上创建实例属性 <code>name</code> 和 <code>colors</code>，于是原型链上的两个同名属性就被屏蔽了</p>
 </blockquote>
 <ul>
 <li>
@@ -967,7 +968,7 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 </li>
 </ul>
 <h2 id="%E6%AD%A3%E5%88%99"><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions">正则</a></h2>
-<p><img src="./RegExp.png" alt="正则表达式中特殊字符的含义"></p>
+<p><img src="./imgs/RegExp.png" alt="正则表达式中特殊字符的含义"></p>
 <ul>
 <li>
 <p>标识符：</p>
@@ -1022,7 +1023,7 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 </ul>
 </li>
 <li>
-<p>ES5 明确规定， 使用正则表达式字面量必须像直接调用 <code>RegExp</code> 构造函数一样，每次都创建新的 <code>RegExp</code> 实例。</p>
+<p>ES5 明确规定，使用正则表达式字面量必须像直接调用 <code>RegExp</code> 构造函数一样，每次都创建新的 <code>RegExp</code> 实例。</p>
 </li>
 <li>
 <p>实例属性</p>
@@ -1037,7 +1038,7 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <li>
 <p>实例方法</p>
 <ul>
-<li>exec(): 专门为捕获组而设计，返回包含第一个匹配项信息的数组， 没有匹配项返回 null
+<li>exec(): 专门为捕获组而设计，返回包含第一个匹配项信息的数组，没有匹配项返回 null
 <ul>
 <li>返回数组属性
 <ul>
@@ -1073,7 +1074,7 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <tr>
 <td style="text-align:left">input</td>
 <td style="text-align:left">$_</td>
-<td style="text-align:left">最近一次要匹配的字符串</td>
+<td style="text-align:left">最近一次要匹配的字符串</td>
 </tr>
 <tr>
 <td style="text-align:left">lastMatch</td>
@@ -2027,6 +2028,17 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <p>“每一个defer属性的脚本都是在页面解析完毕之后，按照原本的顺序执行，同时会在document的DOMContentLoaded之前执行。”--------------HTML5规范要求脚本执行应该按照脚本出现的先后顺序执行，但实际情况下，延迟脚本不一定按照先后顺序执行！！！</p>
 <p><img src="https://segmentfault.com/img/bVWhRl?w=801&amp;h=814" alt=""></p>
 <h1 id="%E6%B5%8F%E8%A7%88%E5%99%A8">浏览器</h1>
+<h2 id="cookie">Cookie</h2>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#SameSite_cookies">SameSite cookies</a>
+<ul>
+<li>Strict: same origin</li>
+<li>Lax: 在跨站点子请求中不携带 same-site cookies，例如加载图像或帧的调用。但是当用户从外部站点导航到URL时将发送 same-site cookies</li>
+</ul>
+</li>
+<li>Secure</li>
+<li>HttpOnly</li>
+</ul>
 <h2 id="chrome%E6%98%BE%E7%A4%BA12px%E4%BB%A5%E4%B8%8B%E5%AD%97%E4%BD%93%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><a href="https://blog.csdn.net/u012011360/article/details/41846905">chrome显示12px以下字体的解决方法</a></h2>
 <pre class="hljs"><code><div>  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"display: 'block'; font-size='16px'; transform: scale(0.5);"</span>&gt;</span>8px 字体<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
 </div></code></pre>
@@ -2043,9 +2055,74 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
   Access-Control-Allow-Credentials: <span class="hljs-literal">true</span>
   Access-Control-Max-Age: <span class="hljs-number">1728000</span>
 </div></code></pre>
+<ul>
+<li>跨域携带 cookie<pre class="hljs"><code><div>  <span class="hljs-comment">// 服务端</span>
+  Access-Control-Allow-Credentials: <span class="hljs-literal">true</span>
+
+  <span class="hljs-comment">// 客户端</span>
+  XMLHttpRequest.withCredentials = <span class="hljs-literal">true</span>
+</div></code></pre>
+<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/withCredentials">XMLHttpRequest.withCredentials</a>
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials">Request.credentials</a></li>
+</ul>
 </li>
 </ul>
 <h2 id="%E8%B7%A8%E9%A1%B5%E9%9D%A2%E9%80%9A%E4%BF%A1%E7%9A%84%E5%90%84%E7%A7%8D%E5%A7%BF%E5%8A%BF"><a href="https://zhuanlan.zhihu.com/p/29368435">跨页面通信的各种姿势</a></h2>
+<ul>
+<li>
+<p>获取句柄，postMessage</p>
+<pre class="hljs"><code><div>  <span class="hljs-keyword">const</span> childPage = <span class="hljs-built_in">window</span>.open(strUrl, strWindowName, [strWindowFeatures]);
+
+  childPage.onload = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    childPage.postMessage(message, targetOrigin, [transfer]);
+  };
+
+  <span class="hljs-built_in">window</span>.onmessage = <span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(e.data)
+    <span class="hljs-built_in">console</span>.log(e.origin)
+    <span class="hljs-built_in">console</span>.log(e.source)
+  }
+
+</div></code></pre>
+</li>
+<li>
+<p>localStorage,设置共享区域的storage，storage会触发storage事件</p>
+<pre class="hljs"><code><div>  localStorage.setItem(<span class="hljs-string">'message'</span>, <span class="hljs-string">'hello'</span>);
+
+  <span class="hljs-built_in">window</span>.onStorage = <span class="hljs-function">(<span class="hljs-params">evt</span>) =&gt;</span> {
+    <span class="hljs-comment">// evt.key evt.oldValue evt.newValue</span>
+  }
+</div></code></pre>
+<ul>
+<li>触发写入操作的页面下的 <strong>storage listener</strong> 不会被触发</li>
+<li>storage 事件只有在发生改变的时候才会触发，即重复设置相同值不会触发 listener</li>
+<li>safari 隐身模式下无法设置localStorage值</li>
+</ul>
+</li>
+<li>
+<p>BroadcastChannel</p>
+<pre class="hljs"><code><div>  <span class="hljs-comment">// a.html</span>
+  <span class="hljs-keyword">const</span> channel = <span class="hljs-keyword">new</span> BroadcastChannel(<span class="hljs-string">'tabs'</span>)
+  channel.onmessage = <span class="hljs-function"><span class="hljs-params">evt</span> =&gt;</span> {
+    <span class="hljs-comment">// evt.data</span>
+  }
+
+  <span class="hljs-comment">// b.html</span>
+  <span class="hljs-keyword">const</span> channel = <span class="hljs-keyword">new</span> BroadcastChannel(<span class="hljs-string">'tabs'</span>)
+  channel.postMessage(<span class="hljs-string">'hello'</span>)
+</div></code></pre>
+</li>
+<li>
+<p>SharedWorker</p>
+</li>
+<li>
+<p>cookie</p>
+<p>一个古老的方案，有点<code>localStorage</code>的降级兼容版，我也是整理本文的时候才发现的，思路就是往<code>document.cookie</code>写入值，由于cookie的改变没有事件通知，所以只能采取轮询脏检查来实现业务逻辑。</p>
+</li>
+<li>
+<p>Server</p>
+</li>
+</ul>
 <h2 id="%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86"><a href="https://juejin.im/post/5c24d736f265da614b120d4a">深入浅出浏览器渲染原理</a></h2>
 <h2 id="css-%E5%92%8C-js-%E8%A7%A3%E6%9E%90%E3%80%81%E6%B8%B2%E6%9F%93">CSS 和 JS 解析、渲染</h2>
 <ul>
@@ -2065,7 +2142,11 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <li><a href="https://juejin.im/post/5afbc62151882542af04112d">浏览器事件循环机制（event loop）</a></li>
 <li><a href="http://www.ruanyifeng.com/blog/2014/10/event-loop.html">JavaScript 运行机制详解：再谈Event Loop</a></li>
 </ul>
-<h2 id="linux-io%E6%A8%A1%E5%BC%8F%E5%8F%8A-select%E3%80%81poll%E3%80%81epoll%E8%AF%A6%E8%A7%A3"><a href="https://segmentfault.com/a/1190000003063859?utm_source=Weibo&amp;utm_medium=shareLink&amp;utm_campaign=socialShare#articleHeader0">Linux IO模式及 select、poll、epoll详解</a></h2>
+<h2 id="io-%E6%A8%A1%E5%BC%8F">IO 模式</h2>
+<ul>
+<li><a href="https://segmentfault.com/a/1190000003063859?utm_source=Weibo&amp;utm_medium=shareLink&amp;utm_campaign=socialShare#articleHeader0">Linux IO模式及 select、poll、epoll详解</a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1005481">大话 Select、Poll、Epoll</a></li>
+</ul>
 <h2 id="v8%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6">V8引擎中的垃圾回收机制</h2>
 <ul>
 <li><a href="https://segmentfault.com/a/1190000000440270">浅谈V8引擎中的垃圾回收机制</a></li>
@@ -2097,11 +2178,76 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 </blockquote>
 <p>为了和 CSS 区分，这里把攻击的第一个字母改成了 X，于是叫做 XSS。
 - html 转义为实体
-- 在标签的 href、src 等属性中，包含 javascript: 等可执行代码。</p>
+- 在标签的 href、src 等属性中，包含 javascript: 等可执行代码。
+XSS 分类</p>
+<ul>
+<li>
+<p>存储型 XSS：
+存储型 XSS 的攻击步骤：</p>
+<ol>
+<li>攻击者将恶意代码提交到目标网站的数据库中。</li>
+<li>用户打开目标网站时，网站服务端将恶意代码从数据库取出，拼接在 HTML 中返回给浏览器。</li>
+<li>用户浏览器接收到响应后解析执行，混在其中的恶意代码也被执行。</li>
+<li>恶意代码窃取用户数据并发送到攻击者的网站，或者冒充用户的行为，调用目标网站接口执行攻击者指定的操作。</li>
+</ol>
+<p>这种攻击常见于带有用户保存数据的网站功能，如论坛发帖、商品评论、用户私信等。</p>
+</li>
+<li>
+<p>反射型 XSS:
+反射型 XSS 的攻击步骤：</p>
+<ol>
+<li>攻击者构造出特殊的 URL，其中包含恶意代码。</li>
+<li>用户打开带有恶意代码的 URL 时，网站服务端将恶意代码从 URL 中取出，拼接在 HTML 中返回给浏览器。</li>
+<li>用户浏览器接收到响应后解析执行，混在其中的恶意代码也被执行。</li>
+<li>恶意代码窃取用户数据并发送到攻击者的网站，或者冒充用户的行为，调用目标网站接口执行攻击者指定的操作。</li>
+</ol>
+<blockquote>
+<p>反射型 XSS 跟存储型 XSS 的区别是：存储型 XSS 的恶意代码存在数据库里，反射型 XSS 的恶意代码存在 URL 里。</p>
+</blockquote>
+<p>反射型 XSS 漏洞常见于通过 URL 传递参数的功能，如网站搜索、跳转等。</p>
+<p>由于需要用户主动打开恶意的 URL 才能生效，攻击者往往会结合多种手段诱导用户点击。</p>
+<p>POST 的内容也可以触发反射型 XSS，只不过其触发条件比较苛刻（需要构造表单提交页面，并引导用户点击），所以非常少见。</p>
+</li>
+<li>
+<p>DOM 型 XSS:
+DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行恶意代码由浏览器端完成，属于前端 JavaScript 自身的安全漏洞，而其他两种 XSS 都属于服务端的安全漏洞。</p>
+<pre class="hljs"><code><div>  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-built_in">eval</span>(location.hash.substr(<span class="hljs-number">1</span>));
+    <span class="hljs-comment">// 而这个时候，如果用户在网址后面加上恶意代码</span>
+    <span class="hljs-string">"http://www.xss.com#alert(document.cookie)"</span>
+  </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+</li>
+</ul>
+<p>XSS 预防：</p>
+<ol>
+<li>输入过滤，转义输出、存储</li>
+<li>避免使用eval，new Function等执行字符串的方法，除非确定字符串和用户输入无关。
+<code>new Function ([arg1[, arg2[, ...argN]],] functionBody)</code></li>
+<li>使用innerHTML，document.write的时候，如果数据是用户输入的，那么需要对关键字符都进行过滤与转义。</li>
+<li>对于非客户端cookie，比如保存用户凭证的session，务必标识为http only，这样js就获取不到这个cookie值了，安全性得到提高。</li>
+<li>X-XSS-Protection</li>
+<li>cookie secure\httpOnly</li>
+</ol>
+</li>
+<li>
+<p>CSRF</p>
+<ul>
+<li><a href="https://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html">浅谈CSRF攻击方式</a></li>
+<li><a href="https://www.jianshu.com/p/66f77b8f1759">跨站请求伪造与 Same-Site Cookie</a></li>
+<li>预防
+<ul>
+<li>检测http referer是否是同域名，通常来讲，用户提交的请求，referer应该是来来自站内地址，所以如果发现referer中地址异常，那么很可能是遭到了CSRF攻击。</li>
+<li>避免登录的session长时间存储在客户端中。</li>
+<li>关键请求使用验证码或者token机制。在一些十分关键的操作，比如交易付款环节。这种请求中，加入验证码，可以防止被恶意用户攻击。token机制也有一定的防御作用。具体来说就是服务器每次返回客户端页面的时候，在页面中埋上一个token字段，例如 <code>&lt;input type=“hidden” name=“csrftoken” value=“abcd&quot;&gt;</code>。 之后，客户端请求的时候带上这个token，使用这个机制后，攻击者也就很难发起CSRF攻击了。</li>
+<li>sameSite cookie</li>
+<li>浏览器跨域携带 cookie 时 <code>credentials: 'same-origin'</code></li>
+</ul>
 </li>
 </ul>
 </li>
-<li><a href="https://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html">浅谈CSRF攻击方式</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><a href="https://csspod.com/frontend-performance-best-practices/">前端性能优化最佳实践</a></h2>
 <h2 id="%E7%AE%97%E6%B3%95">算法</h2>
@@ -2208,6 +2354,15 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <h2 id="http">http</h2>
 <ul>
 <li>
+<p>HTTP响应头</p>
+<ul>
+<li>X-Frame-Options 禁止页面被加载进 iframe 中</li>
+<li>X-XSS-Protection 对于反射型XSS进行一些防御</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP">Content-Security-Policy(内容安全策略( CSP ))</a>
+<code>Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com</code></li>
+</ul>
+</li>
+<li>
 <p><a href="https://www.cnblogs.com/klguang/p/4618526.html">HTTP 报文</a></p>
 </li>
 <li>
@@ -2299,16 +2454,127 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <p><a href="https://zhuanlan.zhihu.com/p/47064829">TCP 协议与 UDP 协议的区别</a></p>
 </li>
 </ul>
-<h1 id="reactredux">React/redux</h1>
-<h2 id="%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6%E5%92%8C%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6">受控组件和非受控组件</h2>
+<h1 id="react">React</h1>
 <ul>
-<li><a href="https://segmentfault.com/a/1190000012404114">React中受控与非受控组件</a></li>
-<li><a href="https://www.jianshu.com/p/fb915d9c99c4">React 中组件间通信的几种方式</a></li>
+<li>
+<p>React 基础模块</p>
+<pre class="hljs"><code><div>  <span class="hljs-keyword">const</span> React = {
+    <span class="hljs-attr">Children</span>: {...},
+
+    createRef,
+    Component,
+    PureComponent,
+
+    createContext,
+    forwardRef,
+
+    <span class="hljs-attr">Fragment</span>: REACT_FRAGMENT_TYPE,
+    <span class="hljs-attr">StrictMode</span>: REACT_STRICT_MODE_TYPE,
+    <span class="hljs-attr">unstable_AsyncMode</span>: REACT_ASYNC_MODE_TYPE,
+    <span class="hljs-attr">unstable_Profiler</span>: REACT_PROFILER_TYPE,
+
+    createElement,
+    cloneElement,
+    createFactory,
+    isValidElement,
+
+    <span class="hljs-attr">version</span>: ReactVersion,
+
+    <span class="hljs-attr">__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED</span>: ReactSharedInternals,
+  }
+</div></code></pre>
+<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Component</span>(<span class="hljs-params">props, context, updater</span>) </span>{
+    <span class="hljs-keyword">this</span>.props = props;
+    <span class="hljs-keyword">this</span>.context = context;
+    <span class="hljs-comment">// If a component has string refs, we will assign a different object later.</span>
+    <span class="hljs-keyword">this</span>.refs = emptyObject;
+    <span class="hljs-comment">// We initialize the default updater but the real one gets injected by the</span>
+    <span class="hljs-comment">// renderer.</span>
+    <span class="hljs-keyword">this</span>.updater = updater || ReactNoopUpdateQueue;
+  }
+
+  Component.prototype.isReactComponent = {}
+  Component.prototype.setState = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">partialState, callback</span>) </span>{
+    <span class="hljs-keyword">this</span>.updater.enqueueSetState(<span class="hljs-keyword">this</span>, partialState, callback, <span class="hljs-string">'setState'</span>)
+  }
+  Component.prototype.forceUpdate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">callback</span>) </span>{
+    <span class="hljs-keyword">this</span>.updater.enqueueForceUpdate(<span class="hljs-keyword">this</span>, callback, <span class="hljs-string">'forceUpdate'</span>)
+  }
+</div></code></pre>
+</li>
+<li>
+<p>React 渲染模块</p>
+<pre class="hljs"><code><div>  <span class="hljs-keyword">const</span> ReactDOM: <span class="hljs-built_in">Object</span> = {
+    createPortal,
+    findDOMNode(
+      componentOrElement: Element | ?React$Component&lt;any, any&gt;,
+    ): <span class="hljs-literal">null</span> | Element | Text {
+      ...
+    },
+    hydrate(element: React$Node, <span class="hljs-attr">container</span>: DOMContainer, <span class="hljs-attr">callback</span>: ?<span class="hljs-built_in">Function</span>) {
+      <span class="hljs-keyword">return</span> legacyRenderSubtreeIntoContainer(<span class="hljs-literal">null</span>, element, container, <span class="hljs-literal">true</span>, callback,);
+    },
+
+    render(element: React$Element&lt;any&gt;, <span class="hljs-attr">container</span>: DOMContainer, <span class="hljs-attr">callback</span>: ?<span class="hljs-built_in">Function</span>,) {
+      <span class="hljs-keyword">return</span> legacyRenderSubtreeIntoContainer(<span class="hljs-literal">null</span>, element, container, <span class="hljs-literal">false</span>, callback,);
+    },
+    ...
+  };
+</div></code></pre>
+</li>
+<li>
+<p>Reconciliation 模块（协调模块）：主要负责任务协调，生命周期管理</p>
+<ul>
+<li>
+<p>stack Reconciler</p>
+<blockquote>
+<p>通过递归的形式遍历 Virtual DOM，存在难以中断和恢复的问题，如果 react 更新任务运行时间过长，就会阻塞布局、动画等的运行，可能导致掉帧。</p>
+</blockquote>
+</li>
+<li>
+<p>Fiber Reconciler</p>
+</li>
 </ul>
-<h2 id="vdom-react-%E5%8E%9F%E7%90%86">vDom react 原理</h2>
-<h2 id="diff-%E7%9A%84%E5%8E%9F%E7%90%86">diff 的原理</h2>
+</li>
+</ul>
+<h2 id="fiber">Fiber</h2>
 <ul>
-<li><a href="https://zhuanlan.zhihu.com/p/20346379">react diff</a></li>
+<li><a href="https://juejin.im/post/5b7016606fb9a0099406f8de">React16源码之React Fiber架构</a></li>
+<li><a href="https://juejin.im/post/59de1b2a51882578c70c0833">React 16 带来了什么以及对 Fiber 的解释</a></li>
+</ul>
+<h2 id="%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">生命周期</h2>
+<p><a href="http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/">react-lifecycle-methods</a>
+<img src="./imgs/react-life-cycle.png" alt="react life cycle"></p>
+<p><a href="https://juejin.im/post/5b6f1800f265da282d45a79a">React v16.4 生命周期的理解</a></p>
+<ul>
+<li>
+<p>挂载阶段</p>
+<ul>
+<li>constructor</li>
+<li>static getDerivedStateFromProps(nextProps, prevState) //一个静态方法，所以不能在这个函数里面使用this，这个函数有两个参数props和state，分别指接收到的新参数和当前的state对象，这个函数会返回一个对象用来更新当前的state对象，如果不需要更新可以返回null</li>
+<li><s>componentWillMount/UNSAFE_componentWillMount</s>  // 或者 <code>&lt;span style=&quot;text-decoration: line-through&quot;&gt;&lt;/span&gt;</code></li>
+<li>render() 纯函数</li>
+<li>componentDidMount()</li>
+</ul>
+</li>
+<li>
+<p>更新阶段</p>
+<ul>
+<li><s>componentWillReceiveProps/UNSAFE_componentWillReceiveProps</s></li>
+<li>static getDerivedStateFromProps(nextProps, prevState)</li>
+<li>shouldComponentUpdate(nextProps, nextState)</li>
+<li><s>componentWillUpdate(nextProps, nextState)/UNSAFE_componentWillUpdate(nextProps, nextState)</s></li>
+<li>render()</li>
+<li>getSnapshotBeforeUpdate(prevProps, prevState) //函数有一个返回值，会作为第三个参数传给componentDidUpdate，如果你不想要返回值，请返回null，不写的话控制台会有警告</li>
+<li>componentDidUpdate(prevProps, prevState, snapshot)</li>
+</ul>
+</li>
+<li>
+<p>卸载阶段</p>
+<ul>
+<li>componentWillUnmount // 组件卸载前的清理工作</li>
+</ul>
+</li>
 </ul>
 <h2 id="setstate"><strong>setState</strong></h2>
 <ul>
@@ -2320,6 +2586,12 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 </ul>
 </li>
 <li><a href="https://imweb.io/topic/5b189d04d4c96b9b1b4c4ed6">setState</a></li>
+<li><a href="https://juejin.im/post/5afe491e6fb9a07aca7a66a7">React16——看看setState过程中fiber干了什么事情</a></li>
+</ul>
+<h2 id="virturl-domdiff-%E7%9A%84%E5%8E%9F%E7%90%86">virturl Dom\diff 的原理</h2>
+<ul>
+<li><a href="https://www.jianshu.com/p/b189b2949b33">Virtual DOM 的实现和 React Fiber 简介</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/20346379">react diff</a></li>
 </ul>
 <h2 id="%E5%90%88%E6%88%90%E4%BA%8B%E4%BB%B6%EF%BC%88syntheticevent%EF%BC%89"><a href="https://reactjs.org/docs/events.html">合成事件（SyntheticEvent）</a></h2>
 <ul>
@@ -2355,6 +2627,11 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <li>
 <p><a href="https://juejin.im/post/59db6e7af265da431f4a02ef">React合成事件和DOM原生事件混用须知</a></p>
 </li>
+</ul>
+<h2 id="%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6%E5%92%8C%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6">受控组件和非受控组件</h2>
+<ul>
+<li><a href="https://segmentfault.com/a/1190000012404114">React中受控与非受控组件</a></li>
+<li><a href="https://www.jianshu.com/p/fb915d9c99c4">React 中组件间通信的几种方式</a></li>
 </ul>
 <h2 id="react-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">React 性能优化</h2>
 <h2 id="react-router%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6">react-router内部实现机制</h2>
@@ -2717,7 +2994,6 @@ scope.$digest();
   res.end(body)
 }
 </div></code></pre>
-<h1 id="%E7%AE%97%E6%B3%95">算法</h1>
 <h2 id="others">others</h2>
 <ul>
 <li>有没有使用过 css3 动画，介绍一下,怎么做，关键是怎么做的 CSS</li>
