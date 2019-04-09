@@ -394,11 +394,11 @@ blockquote {
 <p>顶级作用域 var 声明变量是 window 的属性，let\const 声明变量不是 window 的属性，变量都可以在控制台访问。</p>
 </li>
 <li>
-<p>let声明的变量拥有块级作用域，不存在变量提升</p>
+<p>let 声明的变量拥有块级作用域，不存在变量提升</p>
 </li>
 <li>
 <p>暂时性死区</p>
-<p>只要块级作用域内存在let命令，它所声明的变量就“绑定”（binding）这个区域，不再受外部的影响。</p>
+<p>只要块级作用域内存在 let 命令，它所声明的变量就“绑定”（binding）这个区域，不再受外部的影响。</p>
 <pre class="hljs"><code><div>  var tmp = 123;
 
   if (true) {
@@ -446,16 +446,16 @@ blockquote {
 <ul>
 <li>
 <p>Symbol()</p>
-<p>Symbol函数可以接受一个字符串作为参数，表示对 Symbol 实例的描述，主要是为了在控制台显示，或者转为字符串时，比较容易区分。</p>
+<p>Symbol 函数可以接受一个字符串作为参数，表示对 Symbol 实例的描述，主要是为了在控制台显示，或者转为字符串时，比较容易区分。</p>
 </li>
 <li>
 <p>Symbol.for()</p>
 <p>接受一个字符串作为参数，然后搜索有没有以该参数作为名称的 Symbol 值。如果有，就返回这个 Symbol 值，否则就新建并返回一个以该字符串为名称的 Symbol 值。</p>
-<p>Symbol.for()与Symbol()这两种写法，都会生成新的 Symbol。它们的区别是，前者会被登记在全局环境中供搜索，后者不会。</p>
+<p>Symbol.for()与 Symbol()这两种写法，都会生成新的 Symbol。它们的区别是，前者会被登记在全局环境中供搜索，后者不会。</p>
 </li>
 <li>
 <p>Symbol.keyFor()</p>
-<p>Symbol.keyFor方法返回一个已登记的 Symbol 类型值的key。</p>
+<p>Symbol.keyFor 方法返回一个已登记的 Symbol 类型值的 key。</p>
 <iframe src="http://es6.ruanyifeng.com/#docs/symbol" width="100%" frameborder="0" height="500px" ></iframe>
 </li>
 </ul>
@@ -840,16 +840,18 @@ SubType.prototype.sayAge = <span class="hljs-function"><span class="hljs-keyword
 <span class="hljs-built_in">Object</span>.prototype.toString.call(<span class="hljs-literal">undefined</span>) <span class="hljs-comment">// "[object Undefined]"</span>
 <span class="hljs-built_in">Object</span>.prototype.toString.call(<span class="hljs-built_in">Symbol</span>(<span class="hljs-number">1</span>)) <span class="hljs-comment">// "[object Symbol]"</span>
 </div></code></pre>
-<pre class="hljs"><code><div>
-<span class="hljs-keyword">let</span> class2Type = {}
-[<span class="hljs-string">'Array'</span>, <span class="hljs-string">'Date'</span>,<span class="hljs-string">'RegExp'</span>, <span class="hljs-string">'Error'</span>, <span class="hljs-string">'Object'</span>].forEach(<span class="hljs-function"><span class="hljs-params">type</span> =&gt;</span> class2Type[<span class="hljs-string">`[object <span class="hljs-subst">${type}</span>]`</span>] = type.toLowerCase())
+<pre class="hljs"><code><div><span class="hljs-keyword">let</span> class2Type = {}[(<span class="hljs-string">'Array'</span>, <span class="hljs-string">'Date'</span>, <span class="hljs-string">'RegExp'</span>, <span class="hljs-string">'Error'</span>, <span class="hljs-string">'Object'</span>)].forEach(
+  <span class="hljs-function"><span class="hljs-params">type</span> =&gt;</span> (class2Type[<span class="hljs-string">`[object <span class="hljs-subst">${type}</span>]`</span>] = type.toLowerCase())
+)
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">type</span>(<span class="hljs-params">obj</span>) </span>{
-  <span class="hljs-keyword">if</span>(obj === <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> <span class="hljs-built_in">String</span>(<span class="hljs-literal">null</span>)
-  <span class="hljs-keyword">return</span> <span class="hljs-keyword">typeof</span> obj === <span class="hljs-string">'object'</span> ? class2Type[<span class="hljs-built_in">Object</span>.prototype.toString.call(obj)] || <span class="hljs-string">'object'</span> : <span class="hljs-keyword">typeof</span> obj
+  <span class="hljs-keyword">if</span> (obj === <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> <span class="hljs-built_in">String</span>(<span class="hljs-literal">null</span>)
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">typeof</span> obj === <span class="hljs-string">'object'</span>
+    ? class2Type[<span class="hljs-built_in">Object</span>.prototype.toString.call(obj)] || <span class="hljs-string">'object'</span>
+    : <span class="hljs-keyword">typeof</span> obj
 }
 </div></code></pre>
-<h2 id="typeof-%E5%92%8C-instanceof%E7%9A%84%E5%8C%BA%E5%88%AB"><a href="https://segmentfault.com/a/1190000000730982">typeof 和 instanceOf的区别</a></h2>
+<h2 id="typeof-%E5%92%8C-instanceof-%E7%9A%84%E5%8C%BA%E5%88%AB"><a href="https://segmentfault.com/a/1190000000730982">typeof 和 instanceOf 的区别</a></h2>
 <blockquote>
 <p>只有字面量形式的 <code>string</code>、 <code>number</code>、 <code>boolean</code>、 <code>undefined</code>、<code>function</code> 才能分辨出来，其他都为 <code>object</code></p>
 </blockquote>
@@ -1094,7 +1096,7 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <tr>
 <td style="text-align:left">rightContext</td>
 <td style="text-align:left">$'</td>
-<td style="text-align:left">input字符串中lastMatch之后的文本</td>
+<td style="text-align:left">input 字符串中 lastMatch 之后的文本</td>
 </tr>
 <tr>
 <td style="text-align:left">multiline</td>
@@ -1118,10 +1120,10 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions">正则 test, match, exec</a></p>
 <ul>
 <li>test\exec 是正则的实例方法， match 是字符串的方法</li>
-<li>test 匹配与否，返回Boolean</li>
-<li>match\exec 捕获组， 如果匹配，返回数组，未匹配返回null
+<li>test 匹配与否，返回 Boolean</li>
+<li>match\exec 捕获组， 如果匹配，返回数组，未匹配返回 null
 <ul>
-<li>返回数组第一项为正则匹配的整个字符串，后面为括号对应的捕获组，index是整个匹配从零开始的索引，Input 为被解析的原始字符串</li>
+<li>返回数组第一项为正则匹配的整个字符串，后面为括号对应的捕获组，index 是整个匹配从零开始的索引，Input 为被解析的原始字符串</li>
 </ul>
 </li>
 </ul>
@@ -1176,174 +1178,178 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 </div></code></pre>
 <h2 id="%E7%BC%96%E7%A8%8B">编程</h2>
 <ul>
-<li>实现一个flatten方法。</li>
+<li>实现一个 flatten 方法。</li>
 </ul>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">flatten</span>(<span class="hljs-params">input</span>) </span>{
-    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Array</span>.isArray(input)){
-      <span class="hljs-keyword">var</span> output = []
-      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_flatten</span> (<span class="hljs-params">input</span>) </span>{
-        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; input.length; i++){
-          <span class="hljs-keyword">var</span> value = input[i]
-          <span class="hljs-keyword">if</span>(<span class="hljs-built_in">Array</span>.isArray(value)) {
-            _flatten(value)
-          }
-          <span class="hljs-keyword">else</span>{
-            output.push(value)
-          }
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">flatten</span>(<span class="hljs-params">input</span>) </span>{
+  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Array</span>.isArray(input)) {
+    <span class="hljs-keyword">var</span> output = []
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_flatten</span>(<span class="hljs-params">input</span>) </span>{
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; input.length; i++) {
+        <span class="hljs-keyword">var</span> value = input[i]
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Array</span>.isArray(value)) {
+          _flatten(value)
+        } <span class="hljs-keyword">else</span> {
+          output.push(value)
         }
       }
-      _flatten(input)
-      <span class="hljs-keyword">return</span> output
-    }<span class="hljs-keyword">else</span> {
-      <span class="hljs-keyword">return</span> input;
     }
+    _flatten(input)
+    <span class="hljs-keyword">return</span> output
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">return</span> input
   }
+}
 </div></code></pre>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">flatten</span>(<span class="hljs-params">input</span>) </span>{
-    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Array</span>.isArray(input) ? input.toString().split(<span class="hljs-string">','</span>) : input
-  }
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">flatten</span>(<span class="hljs-params">input</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Array</span>.isArray(input) ? input.toString().split(<span class="hljs-string">','</span>) : input
+}
 </div></code></pre>
 <ul>
-<li>将一个json数据的所有key从下划线改为驼峰</li>
+<li>将一个 json 数据的所有 key 从下划线改为驼峰</li>
 </ul>
 <pre class="hljs"><code><div><span class="hljs-keyword">const</span> testData = {
-    <span class="hljs-attr">a_bbb</span>: <span class="hljs-number">123</span>,
-    <span class="hljs-attr">a_g</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>],
-    <span class="hljs-attr">a_d</span>: {
-        <span class="hljs-attr">s</span>: <span class="hljs-number">2</span>,
-        <span class="hljs-attr">s_d</span>: <span class="hljs-number">3</span>
-    },
-    <span class="hljs-attr">a_f</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, {
-        <span class="hljs-attr">a_g</span>: <span class="hljs-number">5</span>
-    }],
-    <span class="hljs-attr">a_d_s</span>: <span class="hljs-number">1</span>
+  <span class="hljs-attr">a_bbb</span>: <span class="hljs-number">123</span>,
+  <span class="hljs-attr">a_g</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>],
+  <span class="hljs-attr">a_d</span>: {
+    <span class="hljs-attr">s</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-attr">s_d</span>: <span class="hljs-number">3</span>
+  },
+  <span class="hljs-attr">a_f</span>: [
+    <span class="hljs-number">1</span>,
+    <span class="hljs-number">2</span>,
+    <span class="hljs-number">3</span>,
+    {
+      <span class="hljs-attr">a_g</span>: <span class="hljs-number">5</span>
+    }
+  ],
+  <span class="hljs-attr">a_d_s</span>: <span class="hljs-number">1</span>
 }
 
 <span class="hljs-comment">/**
  * 将一个json数据的所有key从下划线改为驼峰
- * 
+ *
  * @param {object | array} value 待处理对象或数组
  * @returns {object | array} 处理后的对象或数组
  */</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mapKeysToCamelCase</span>(<span class="hljs-params">data</span>) </span>{
-    
-    <span class="hljs-comment">/**
-     * 如果是基本常量return
-     */</span>
-    <span class="hljs-keyword">if</span>(isBaseType(data)) {
-        <span class="hljs-keyword">return</span> data
-    }
+  <span class="hljs-comment">/**
+   * 如果是基本常量return
+   */</span>
+  <span class="hljs-keyword">if</span> (isBaseType(data)) {
+    <span class="hljs-keyword">return</span> data
+  }
 
-    <span class="hljs-keyword">if</span>(<span class="hljs-built_in">Array</span>.isArray(data)) {
-        <span class="hljs-keyword">return</span> data.map(<span class="hljs-function"><span class="hljs-params">key</span> =&gt;</span> {
-            <span class="hljs-keyword">return</span> isBaseType(key)? key: mapKeysToCamelCase(key)
-        })
-    }
-    
-    <span class="hljs-keyword">let</span> obj={};
-
-    <span class="hljs-built_in">Object</span>.keys(data).forEach(<span class="hljs-function"><span class="hljs-params">key</span> =&gt;</span> {
-        <span class="hljs-keyword">const</span> _key = strToCamelCase(key);
-        obj[_key] = mapKeysToCamelCase(data[key])
+  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Array</span>.isArray(data)) {
+    <span class="hljs-keyword">return</span> data.map(<span class="hljs-function"><span class="hljs-params">key</span> =&gt;</span> {
+      <span class="hljs-keyword">return</span> isBaseType(key) ? key : mapKeysToCamelCase(key)
     })
-    <span class="hljs-keyword">return</span> obj;
+  }
+
+  <span class="hljs-keyword">let</span> obj = {}
+
+  <span class="hljs-built_in">Object</span>.keys(data).forEach(<span class="hljs-function"><span class="hljs-params">key</span> =&gt;</span> {
+    <span class="hljs-keyword">const</span> _key = strToCamelCase(key)
+    obj[_key] = mapKeysToCamelCase(data[key])
+  })
+  <span class="hljs-keyword">return</span> obj
 }
 
-<span class="hljs-keyword">const</span> isBaseType= (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-    <span class="hljs-keyword">const</span> baseTypes = [<span class="hljs-string">"Number"</span>, <span class="hljs-string">"String"</span>,<span class="hljs-string">"Boolean"</span>,<span class="hljs-string">"Null"</span>,<span class="hljs-string">"Undefined"</span>].map(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> <span class="hljs-string">`[object <span class="hljs-subst">${item}</span>]`</span>);
-    <span class="hljs-keyword">return</span> <span class="hljs-function">(<span class="hljs-params">val</span>) =&gt;</span> {
-      <span class="hljs-keyword">const</span> tp = <span class="hljs-built_in">Object</span>.prototype.toString.call(val)
-      <span class="hljs-keyword">return</span> baseTypes.includes(tp);
-    }
+<span class="hljs-keyword">const</span> isBaseType = (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">const</span> baseTypes = [<span class="hljs-string">'Number'</span>, <span class="hljs-string">'String'</span>, <span class="hljs-string">'Boolean'</span>, <span class="hljs-string">'Null'</span>, <span class="hljs-string">'Undefined'</span>].map(
+    <span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> <span class="hljs-string">`[object <span class="hljs-subst">${item}</span>]`</span>
+  )
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">val</span> =&gt;</span> {
+    <span class="hljs-keyword">const</span> tp = <span class="hljs-built_in">Object</span>.prototype.toString.call(val)
+    <span class="hljs-keyword">return</span> baseTypes.includes(tp)
+  }
 })()
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">strToCamelCase</span>(<span class="hljs-params">key</span>) </span>{
-    <span class="hljs-keyword">return</span> <span class="hljs-function">(<span class="hljs-params"><span class="hljs-string">''</span>+key</span>).<span class="hljs-params">replace</span>(<span class="hljs-params"><span class="hljs-regexp">/(_.{1})/g</span>, (val</span>) =&gt;</span> val.slice(<span class="hljs-number">1</span>).toUpperCase());
+  <span class="hljs-keyword">return</span> (<span class="hljs-string">''</span> + key).replace(<span class="hljs-regexp">/(_.{1})/g</span>, val =&gt; val.slice(<span class="hljs-number">1</span>).toUpperCase())
 }
 
 <span class="hljs-built_in">console</span>.log(mapKeysToCamelCase(testData))
 </div></code></pre>
 <ul>
-<li>JS中判断字符串中出现次数最多的字符及出现的次数</li>
+<li>JS 中判断字符串中出现次数最多的字符及出现的次数</li>
 </ul>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">maxN</span>(<span class="hljs-params">str</span>) </span>{
-    <span class="hljs-comment">// const obj = (''+str).split('').reduce((accu, cur, index) =&gt; {</span>
-    <span class="hljs-comment">// accu[cur] = (accu[cur] || 0) + 1;</span>
-    <span class="hljs-comment">// return accu</span>
-    <span class="hljs-comment">// }, </span>
-    <span class="hljs-comment">// {}</span>
-    <span class="hljs-comment">// );</span>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">maxN</span>(<span class="hljs-params">str</span>) </span>{
+  <span class="hljs-comment">// const obj = (''+str).split('').reduce((accu, cur, index) =&gt; {</span>
+  <span class="hljs-comment">// accu[cur] = (accu[cur] || 0) + 1;</span>
+  <span class="hljs-comment">// return accu</span>
+  <span class="hljs-comment">// },</span>
+  <span class="hljs-comment">// {}</span>
+  <span class="hljs-comment">// );</span>
 
+  <span class="hljs-keyword">let</span> obj = {}
+  ;(<span class="hljs-string">''</span> + str).replace(<span class="hljs-regexp">/(\w{1})/g</span>, letter =&gt; {
+    obj[letter] ? (obj[letter] += <span class="hljs-number">1</span>) : (obj[letter] = <span class="hljs-number">1</span>)
+    <span class="hljs-keyword">return</span> letter
+  })
 
-    <span class="hljs-keyword">let</span> obj = {};
-    (<span class="hljs-string">''</span>+str).replace(<span class="hljs-regexp">/(\w{1})/g</span>, letter =&gt; {
-      obj[letter]?obj[letter] += <span class="hljs-number">1</span>: obj[letter] = <span class="hljs-number">1</span>;
-      <span class="hljs-keyword">return</span> letter;
+  <span class="hljs-keyword">let</span> letter = <span class="hljs-string">''</span>,
+    max = <span class="hljs-number">0</span>
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> _letter <span class="hljs-keyword">in</span> obj) {
+    <span class="hljs-keyword">if</span> (obj[_letter] &gt; max) {
+      max = obj[_letter]
+      letter = _letter
+    }
+  }
+
+  <span class="hljs-keyword">return</span> { letter, max }
+}
+
+<span class="hljs-keyword">const</span> str = <span class="hljs-string">'qweqrtyuiqqqwrtyudfgerqtywer'</span>
+<span class="hljs-built_in">console</span>.log(maxN(str))
+</div></code></pre>
+<ul>
+<li>请编写一个 JavaScript 函数 parseQueryString ，他的用途是把 URL 参数解析为一个对象</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">parseQueryString</span>(<span class="hljs-params">url</span>) </span>{
+  <span class="hljs-keyword">let</span> result = {}
+  <span class="hljs-keyword">let</span> arr = url.split(<span class="hljs-string">'?'</span>)
+  <span class="hljs-keyword">if</span> (arr.length &lt;= <span class="hljs-number">1</span>) {
+    <span class="hljs-keyword">return</span> result
+  } <span class="hljs-keyword">else</span> {
+    arr = arr[<span class="hljs-number">1</span>].split(<span class="hljs-string">'#'</span>)
+    arr = arr[<span class="hljs-number">0</span>].split(<span class="hljs-string">'&amp;'</span>)
+    arr.forEach(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
+      <span class="hljs-keyword">const</span> [key, value] = item.split(<span class="hljs-string">'='</span>)
+      result[key] = value
     })
+  }
 
-    <span class="hljs-keyword">let</span> letter = <span class="hljs-string">''</span>,
-        max = <span class="hljs-number">0</span>;
-    
-    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> _letter <span class="hljs-keyword">in</span> obj) {
-      <span class="hljs-keyword">if</span>(obj[_letter] &gt; max) {
-        max = obj[_letter];
-        letter = _letter
+  <span class="hljs-keyword">return</span> result
+}
+
+<span class="hljs-keyword">var</span> url = <span class="hljs-string">'http://witmax.cn/index.php?key0=0&amp;key1=1&amp;key2=2#location'</span>
+
+<span class="hljs-built_in">console</span>.log(parseQueryString(url))
+</div></code></pre>
+<ul>
+<li>在 IE6.0 下面是不支持 <code>position：fixed</code> 的，请写一个 JS 使用固定在页面的右下角。</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"en"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"UTF-8"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"viewport"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"width=device-width, initial-scale=1.0"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">"X-UA-Compatible"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"ie=edge"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Document<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="css">
+      <span class="hljs-selector-class">.tit</span> {
+        <span class="hljs-attribute">position</span>: absolute;
+        <span class="hljs-attribute">width</span>: <span class="hljs-number">100px</span>;
+        <span class="hljs-attribute">height</span>: <span class="hljs-number">100px</span>;
+        <span class="hljs-attribute">background</span>: red;
+        <span class="hljs-attribute">right</span>: <span class="hljs-number">0</span>;
+        <span class="hljs-attribute">bottom</span>: <span class="hljs-number">0</span>;
       }
-    }
-
-    <span class="hljs-keyword">return</span> {letter, max}
-  }
-
-  <span class="hljs-keyword">const</span> str = <span class="hljs-string">'qweqrtyuiqqqwrtyudfgerqtywer'</span>;
-  <span class="hljs-built_in">console</span>.log(maxN(str))
-</div></code></pre>
-<ul>
-<li>请编写一个 JavaScript 函数 parseQueryString ，他的用途是把URL参数解析为一个对象</li>
-</ul>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">parseQueryString</span>(<span class="hljs-params">url</span>) </span>{
-    <span class="hljs-keyword">let</span> result = {};
-    <span class="hljs-keyword">let</span> arr = url.split(<span class="hljs-string">'?'</span>);
-    <span class="hljs-keyword">if</span>(arr.length &lt;= <span class="hljs-number">1</span>) {
-      <span class="hljs-keyword">return</span> result;
-    } <span class="hljs-keyword">else</span> {
-      arr = arr[<span class="hljs-number">1</span>].split(<span class="hljs-string">'#'</span>);
-      arr = arr[<span class="hljs-number">0</span>].split(<span class="hljs-string">'&amp;'</span>);
-      arr.forEach(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
-        <span class="hljs-keyword">const</span> [key, value] = item.split(<span class="hljs-string">'='</span>);
-        result[key] = value;
-      })
-    }
-
-    <span class="hljs-keyword">return</span> result;
-  }
-
-  <span class="hljs-keyword">var</span> url = <span class="hljs-string">"http://witmax.cn/index.php?key0=0&amp;key1=1&amp;key2=2#location"</span>;
-
-  <span class="hljs-built_in">console</span>.log(parseQueryString(url))
-</div></code></pre>
-<ul>
-<li>在IE6.0下面是不支持 <code>position：fixed</code> 的，请写一个JS使用固定在页面的右下角。</li>
-</ul>
-<pre class="hljs"><code><div>  <span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"en"</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"UTF-8"</span> /&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"viewport"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"width=device-width, initial-scale=1.0"</span> /&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">"X-UA-Compatible"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"ie=edge"</span> /&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Document<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="css">
-        <span class="hljs-selector-class">.tit</span> {
-          <span class="hljs-attribute">position</span>: absolute;
-          <span class="hljs-attribute">width</span>: <span class="hljs-number">100px</span>;
-          <span class="hljs-attribute">height</span>: <span class="hljs-number">100px</span>;
-          <span class="hljs-attribute">background</span>: red;
-          <span class="hljs-attribute">right</span>: <span class="hljs-number">0</span>;
-          <span class="hljs-attribute">bottom</span>: <span class="hljs-number">0</span>;
-        }
-      </span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"box"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"tit"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-      <span class="hljs-comment">&lt;!-- &lt;script&gt;
+    </span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"box"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"tit"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- &lt;script&gt;
         window.onscroll = window.onresize = window.onload = function() {
           const box = document.getElementById('box')
           const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
@@ -1351,32 +1357,32 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
           box.style.top = document.documentElement.clientHeight + scrollTop - box.offsetHeight + 'px'
         }
       &lt;/script&gt; --&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
-  <span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
 </div></code></pre>
 <ul>
 <li>请实现，鼠标移到页面中的任意标签，显示出这个标签的基本矩形轮廓。</li>
 </ul>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mouseOverShowBorder</span>(<span class="hljs-params">container</span>) </span>{
-    <span class="hljs-keyword">const</span> children = container.childNodes
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; children.length; i++) {
-      <span class="hljs-keyword">const</span> child = children[i]
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mouseOverShowBorder</span>(<span class="hljs-params">container</span>) </span>{
+  <span class="hljs-keyword">const</span> children = container.childNodes
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; children.length; i++) {
+    <span class="hljs-keyword">const</span> child = children[i]
 
-      <span class="hljs-keyword">if</span> (child.nodeType === <span class="hljs-number">1</span>) {
-        child.onmouseover = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-          <span class="hljs-keyword">this</span>.style.border = <span class="hljs-string">'1px solid #ccc'</span>
-        }
-
-        child.onmouseout = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-          <span class="hljs-keyword">this</span>.style.border = <span class="hljs-string">''</span>
-        }
-
-        mouseOverShowBorder(child)
+    <span class="hljs-keyword">if</span> (child.nodeType === <span class="hljs-number">1</span>) {
+      child.onmouseover = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.style.border = <span class="hljs-string">'1px solid #ccc'</span>
       }
+
+      child.onmouseout = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.style.border = <span class="hljs-string">''</span>
+      }
+
+      mouseOverShowBorder(child)
     }
   }
+}
 
-  mouseOverShowBorder(<span class="hljs-built_in">document</span>.body)
+mouseOverShowBorder(<span class="hljs-built_in">document</span>.body)
 </div></code></pre>
 <ul>
 <li>
@@ -1384,255 +1390,253 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <ul>
 <li>
 <p>冒泡排序</p>
-<pre class="hljs"><code><div>  <span class="hljs-comment">/**
-    * 从后往前比较
-    */</span>
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bubbleSort</span>(<span class="hljs-params">arr</span>) </span>{
-    <span class="hljs-keyword">if</span>(arr === <span class="hljs-literal">null</span> || arr.length === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> ;
+<pre class="hljs"><code><div><span class="hljs-comment">/**
+ * 从后往前比较
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bubbleSort</span>(<span class="hljs-params">arr</span>) </span>{
+  <span class="hljs-keyword">if</span> (arr === <span class="hljs-literal">null</span> || arr.length === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>
 
-    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>, len = arr.length - <span class="hljs-number">1</span>; i &lt; len; i++) {
-      <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> j = arr.length - <span class="hljs-number">1</span>; j &gt; i; j--) {
-        <span class="hljs-keyword">if</span>(arr[j] &lt; arr[j<span class="hljs-number">-1</span>]) {
-          swap(arr, j, j<span class="hljs-number">-1</span>);
-        }
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>, len = arr.length - <span class="hljs-number">1</span>; i &lt; len; i++) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = arr.length - <span class="hljs-number">1</span>; j &gt; i; j--) {
+      <span class="hljs-keyword">if</span> (arr[j] &lt; arr[j - <span class="hljs-number">1</span>]) {
+        swap(arr, j, j - <span class="hljs-number">1</span>)
       }
     }
-
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">swap</span>(<span class="hljs-params">arr, i, j</span>) </span>{
-      <span class="hljs-comment">// let temp = arr[i];</span>
-      <span class="hljs-comment">// arr[i] = arr[j];</span>
-      <span class="hljs-comment">// arr[j] = temp;</span>
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-
-    <span class="hljs-keyword">return</span> arr;
   }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">swap</span>(<span class="hljs-params">arr, i, j</span>) </span>{
+    <span class="hljs-comment">// let temp = arr[i];</span>
+    <span class="hljs-comment">// arr[i] = arr[j];</span>
+    <span class="hljs-comment">// arr[j] = temp;</span>
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+
+  <span class="hljs-keyword">return</span> arr
+}
 </div></code></pre>
 </li>
 <li>
 <p>选择排序</p>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">selectSort</span>(<span class="hljs-params">arr</span>) </span>{
-    <span class="hljs-keyword">if</span> (arr === <span class="hljs-literal">null</span> || arr.length === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">selectSort</span>(<span class="hljs-params">arr</span>) </span>{
+  <span class="hljs-keyword">if</span> (arr === <span class="hljs-literal">null</span> || arr.length === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>
 
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>, len = arr.length - <span class="hljs-number">1</span>; i &lt; len; i++) {
-      <span class="hljs-keyword">let</span> minIndex = i
-      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = i + <span class="hljs-number">1</span>, len = arr.length; j &lt; len; j++) {
-        <span class="hljs-keyword">if</span> (arr[minIndex] &gt; arr[j]) {
-          minIndex = j
-        }
-      }
-
-      <span class="hljs-keyword">if</span> (minIndex !== i) {
-        swap(arr, i, minIndex)
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>, len = arr.length - <span class="hljs-number">1</span>; i &lt; len; i++) {
+    <span class="hljs-keyword">let</span> minIndex = i
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = i + <span class="hljs-number">1</span>, len = arr.length; j &lt; len; j++) {
+      <span class="hljs-keyword">if</span> (arr[minIndex] &gt; arr[j]) {
+        minIndex = j
       }
     }
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">swap</span>(<span class="hljs-params">arr, i, j</span>) </span>{
-      ;[arr[i], arr[j]] = [arr[j], arr[i]]
+    <span class="hljs-keyword">if</span> (minIndex !== i) {
+      swap(arr, i, minIndex)
     }
-    <span class="hljs-keyword">return</span> arr
   }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">swap</span>(<span class="hljs-params">arr, i, j</span>) </span>{
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  <span class="hljs-keyword">return</span> arr
+}
 </div></code></pre>
 </li>
 <li>
 <p>插入排序</p>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertSort</span>(<span class="hljs-params">arr</span>) </span>{
-    <span class="hljs-keyword">if</span> (arr === <span class="hljs-literal">null</span> || arr.length === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insertSort</span>(<span class="hljs-params">arr</span>) </span>{
+  <span class="hljs-keyword">if</span> (arr === <span class="hljs-literal">null</span> || arr.length === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>
 
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>, len = arr.length; i &lt; len; i++) {
-      <span class="hljs-comment">// 假设第一个数是正确的</span>
-      <span class="hljs-keyword">let</span> j = i,
-        target = arr[i] <span class="hljs-comment">//待插入的</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>, len = arr.length; i &lt; len; i++) {
+    <span class="hljs-comment">// 假设第一个数是正确的</span>
+    <span class="hljs-keyword">let</span> j = i,
+      target = arr[i] <span class="hljs-comment">//待插入的</span>
 
-      <span class="hljs-comment">//后移</span>
-      <span class="hljs-keyword">while</span> (j &gt; <span class="hljs-number">0</span> &amp;&amp; target &lt; arr[j - <span class="hljs-number">1</span>]) {
-        arr[j] = arr[j - <span class="hljs-number">1</span>]
-        j--
-      }
-
-      <span class="hljs-comment">//插入</span>
-      arr[j] = target
+    <span class="hljs-comment">//后移</span>
+    <span class="hljs-keyword">while</span> (j &gt; <span class="hljs-number">0</span> &amp;&amp; target &lt; arr[j - <span class="hljs-number">1</span>]) {
+      arr[j] = arr[j - <span class="hljs-number">1</span>]
+      j--
     }
 
-    <span class="hljs-keyword">return</span> arr
+    <span class="hljs-comment">//插入</span>
+    arr[j] = target
   }
+
+  <span class="hljs-keyword">return</span> arr
+}
 </div></code></pre>
 </li>
 <li>
 <p>数组去重</p>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">unique</span>(<span class="hljs-params">arr</span>) </span>{
-    <span class="hljs-keyword">return</span> arr.filter(<span class="hljs-function">(<span class="hljs-params">item, index</span>) =&gt;</span> arr.indexOf(item) === index);
-  }
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">unique</span>(<span class="hljs-params">arr</span>) </span>{
+  <span class="hljs-keyword">return</span> arr.filter(<span class="hljs-function">(<span class="hljs-params">item, index</span>) =&gt;</span> arr.indexOf(item) === index)
+}
 </div></code></pre>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">unique</span>(<span class="hljs-params">arr</span>) </span>{
-    <span class="hljs-keyword">let</span> obj = {};
-    <span class="hljs-keyword">return</span> arr.filter(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
-      <span class="hljs-keyword">if</span>(obj[item]) {
-        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-      }
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">unique</span>(<span class="hljs-params">arr</span>) </span>{
+  <span class="hljs-keyword">let</span> obj = {}
+  <span class="hljs-keyword">return</span> arr.filter(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span> (obj[item]) {
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    }
 
-      obj[item] = <span class="hljs-literal">true</span>;
-      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
-    })
-  }
+    obj[item] = <span class="hljs-literal">true</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+  })
+}
 </div></code></pre>
 </li>
 <li>
 <p>字符串去重</p>
-</li>
-</ul>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">unique</span>(<span class="hljs-params">str</span>) </span>{
-    <span class="hljs-keyword">return</span> [...new <span class="hljs-built_in">Set</span>(str)].join(<span class="hljs-string">''</span>)
-  }
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">unique</span>(<span class="hljs-params">str</span>) </span>{
+  <span class="hljs-keyword">return</span> [...new <span class="hljs-built_in">Set</span>(str)].join(<span class="hljs-string">''</span>)
+}
 </div></code></pre>
-<ul>
+</li>
 <li>
 <p>输入 <code>携程C2t0r1i8p2020校招</code>, 输出 <code>2018Ctrip</code></p>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleStr</span>(<span class="hljs-params">str</span>) </span>{
-    <span class="hljs-keyword">let</span> nums = str.match(<span class="hljs-regexp">/\d/g</span>).join(<span class="hljs-string">''</span>);
-    <span class="hljs-keyword">let</span> words = str.match(<span class="hljs-regexp">/[a-zA-Z]/g</span>).join(<span class="hljs-string">''</span>);
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleStr</span>(<span class="hljs-params">str</span>) </span>{
+  <span class="hljs-keyword">let</span> nums = str.match(<span class="hljs-regexp">/\d/g</span>).join(<span class="hljs-string">''</span>)
+  <span class="hljs-keyword">let</span> words = str.match(<span class="hljs-regexp">/[a-zA-Z]/g</span>).join(<span class="hljs-string">''</span>)
 
-    <span class="hljs-keyword">return</span> uniqueStr(nums) + words;
-  }
+  <span class="hljs-keyword">return</span> uniqueStr(nums) + words
+}
 
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">uniqueStr</span>(<span class="hljs-params">str</span>) </span>{
-    <span class="hljs-keyword">const</span> arr = str.split(<span class="hljs-string">''</span>);
-    <span class="hljs-keyword">return</span> arr.filter(<span class="hljs-function">(<span class="hljs-params">item, index</span>) =&gt;</span> arr.indexOf(item) === index).join(<span class="hljs-string">''</span>);
-  }
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">uniqueStr</span>(<span class="hljs-params">str</span>) </span>{
+  <span class="hljs-keyword">const</span> arr = str.split(<span class="hljs-string">''</span>)
+  <span class="hljs-keyword">return</span> arr.filter(<span class="hljs-function">(<span class="hljs-params">item, index</span>) =&gt;</span> arr.indexOf(item) === index).join(<span class="hljs-string">''</span>)
+}
 </div></code></pre>
 </li>
 <li>
 <p>对一维数组，根据 type 类型分组成二维数组</p>
-<pre class="hljs"><code><div>  <span class="hljs-comment">// var input = [null, 2, "test", undefined, {</span>
-  <span class="hljs-comment">//        "type": "product",</span>
-  <span class="hljs-comment">//        "content": "product1"</span>
-  <span class="hljs-comment">//      }, {</span>
-  <span class="hljs-comment">//        "type": "product",</span>
-  <span class="hljs-comment">//        "content": "product2"</span>
-  <span class="hljs-comment">//      }, {</span>
-  <span class="hljs-comment">//        "type": "tag",</span>
-  <span class="hljs-comment">//        "content": "tag1"</span>
-  <span class="hljs-comment">//      }, {</span>
-  <span class="hljs-comment">//        "type": "product",</span>
-  <span class="hljs-comment">//        "content": "product3"</span>
-  <span class="hljs-comment">//      }, {</span>
-  <span class="hljs-comment">//        "type": "tag",</span>
-  <span class="hljs-comment">//        "content": "tag2"</span>
-  <span class="hljs-comment">//      }];</span>
+<pre class="hljs"><code><div><span class="hljs-comment">// var input = [null, 2, "test", undefined, {</span>
+<span class="hljs-comment">//        "type": "product",</span>
+<span class="hljs-comment">//        "content": "product1"</span>
+<span class="hljs-comment">//      }, {</span>
+<span class="hljs-comment">//        "type": "product",</span>
+<span class="hljs-comment">//        "content": "product2"</span>
+<span class="hljs-comment">//      }, {</span>
+<span class="hljs-comment">//        "type": "tag",</span>
+<span class="hljs-comment">//        "content": "tag1"</span>
+<span class="hljs-comment">//      }, {</span>
+<span class="hljs-comment">//        "type": "product",</span>
+<span class="hljs-comment">//        "content": "product3"</span>
+<span class="hljs-comment">//      }, {</span>
+<span class="hljs-comment">//        "type": "tag",</span>
+<span class="hljs-comment">//        "content": "tag2"</span>
+<span class="hljs-comment">//      }];</span>
 
-  <span class="hljs-comment">// output = [{"type":"product","contents":["product1","product2","product3"]},{"type":"tag","contents":["tag1","tag2"]}]</span>
+<span class="hljs-comment">// output = [{"type":"product","contents":["product1","product2","product3"]},{"type":"tag","contents":["tag1","tag2"]}]</span>
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">groupList</span>(<span class="hljs-params">arr</span>) </span>{
-      <span class="hljs-keyword">if</span>(!<span class="hljs-built_in">Array</span>.isArray(arr) || arr.length === <span class="hljs-number">0</span>) {
-        <span class="hljs-keyword">return</span> []
-      }
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">groupList</span>(<span class="hljs-params">arr</span>) </span>{
+  <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">Array</span>.isArray(arr) || arr.length === <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">return</span> []
+  }
 
-      <span class="hljs-keyword">const</span> validItems = getValidItems(arr);
-      <span class="hljs-keyword">const</span> result = {}
+  <span class="hljs-keyword">const</span> validItems = getValidItems(arr)
+  <span class="hljs-keyword">const</span> result = {}
 
-      validItems.forEach(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
-        result[item.type] ? result[item.type].push(item) : result[item.type] = [item]
-        <span class="hljs-comment">// if(result.hasOwnProperty(item.type)) {</span>
-        <span class="hljs-comment">//  result[item.type].push(item)</span>
-        <span class="hljs-comment">// } else {</span>
-        <span class="hljs-comment">//  result[item.type] = [];</span>
-        <span class="hljs-comment">//  result[item.type].push(item)</span>
-        <span class="hljs-comment">// }</span>
-      })
+  validItems.forEach(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
+    result[item.type] ? result[item.type].push(item) : (result[item.type] = [item])
+    <span class="hljs-comment">// if(result.hasOwnProperty(item.type)) {</span>
+    <span class="hljs-comment">//  result[item.type].push(item)</span>
+    <span class="hljs-comment">// } else {</span>
+    <span class="hljs-comment">//  result[item.type] = [];</span>
+    <span class="hljs-comment">//  result[item.type].push(item)</span>
+    <span class="hljs-comment">// }</span>
+  })
 
-      <span class="hljs-keyword">return</span> resultFormat(result);
-    }
+  <span class="hljs-keyword">return</span> resultFormat(result)
+}
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getValidItems</span>(<span class="hljs-params">arr</span>) </span>{
-      <span class="hljs-keyword">return</span> arr.filter(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> isPureObject(item) &amp;&amp; item.type &amp;&amp; item.content)
-    }
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getValidItems</span>(<span class="hljs-params">arr</span>) </span>{
+  <span class="hljs-keyword">return</span> arr.filter(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> isPureObject(item) &amp;&amp; item.type &amp;&amp; item.content)
+}
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isPureObject</span>(<span class="hljs-params">obj</span>) </span>{
-      <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.prototype.toString.call(obj).slice(<span class="hljs-number">8</span>, <span class="hljs-number">-1</span>) === <span class="hljs-string">'Object'</span>
-    }
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isPureObject</span>(<span class="hljs-params">obj</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.prototype.toString.call(obj).slice(<span class="hljs-number">8</span>, <span class="hljs-number">-1</span>) === <span class="hljs-string">'Object'</span>
+}
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">resultFormat</span>(<span class="hljs-params">obj</span>) </span>{
-      <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.keys(obj).map(<span class="hljs-function"><span class="hljs-params">type</span> =&gt;</span> {
-        <span class="hljs-keyword">return</span> {type, <span class="hljs-attr">contents</span>: obj[type]}
-      })
-    }
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">resultFormat</span>(<span class="hljs-params">obj</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.keys(obj).map(<span class="hljs-function"><span class="hljs-params">type</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> { type, <span class="hljs-attr">contents</span>: obj[type] }
+  })
+}
 </div></code></pre>
 </li>
 <li>
 <p>计算目录 <code>/a/b/c/d/e.js</code> 和 <code>/a/b/f/g.js</code> 的相对目录</p>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">caculateRoute</span>(<span class="hljs-params">path1, path2</span>) </span>{
-    <span class="hljs-keyword">let</span> pathArr1 = path1.split(<span class="hljs-string">'/'</span>),
-        pathArr2 = path2.split(<span class="hljs-string">'/'</span>),
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">caculateRoute</span>(<span class="hljs-params">path1, path2</span>) </span>{
+  <span class="hljs-keyword">let</span> pathArr1 = path1.split(<span class="hljs-string">'/'</span>),
+    pathArr2 = path2.split(<span class="hljs-string">'/'</span>),
+    routeArr = [],
+    fileArr = [],
+    diff = <span class="hljs-literal">false</span>
 
-        routeArr = [],
-        fileArr = [],
-        diff = <span class="hljs-literal">false</span>;
-
-    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> i=<span class="hljs-number">1</span>, len = pathArr1.length; i&lt;len; i++) {
-      <span class="hljs-keyword">if</span>(pathArr1[i] !== pathArr2[i] ||  diff) {
-        <span class="hljs-keyword">if</span>(pathArr1[i]){
-          routeArr.push(<span class="hljs-string">'..'</span>);
-        }
-        <span class="hljs-keyword">if</span>(pathArr2[i]) {
-          fileArr.push(pathArr2[i]);
-        }
-        diff = <span class="hljs-literal">true</span>
-      } <span class="hljs-keyword">else</span> {
-        diff = <span class="hljs-literal">false</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>, len = pathArr1.length; i &lt; len; i++) {
+    <span class="hljs-keyword">if</span> (pathArr1[i] !== pathArr2[i] || diff) {
+      <span class="hljs-keyword">if</span> (pathArr1[i]) {
+        routeArr.push(<span class="hljs-string">'..'</span>)
       }
+      <span class="hljs-keyword">if</span> (pathArr2[i]) {
+        fileArr.push(pathArr2[i])
+      }
+      diff = <span class="hljs-literal">true</span>
+    } <span class="hljs-keyword">else</span> {
+      diff = <span class="hljs-literal">false</span>
     }
-
-    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${routeArr.join(<span class="hljs-string">'/'</span>)}</span>/<span class="hljs-subst">${fileArr.join(<span class="hljs-string">'/'</span>)}</span>`</span>
   }
 
-  <span class="hljs-keyword">let</span> path = caculateRoute(<span class="hljs-string">'/a/b/c/d/e.js'</span>, <span class="hljs-string">'/a/b/f/g.js'</span>);
+  <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${routeArr.join(<span class="hljs-string">'/'</span>)}</span>/<span class="hljs-subst">${fileArr.join(<span class="hljs-string">'/'</span>)}</span>`</span>
+}
+
+<span class="hljs-keyword">let</span> path = caculateRoute(<span class="hljs-string">'/a/b/c/d/e.js'</span>, <span class="hljs-string">'/a/b/f/g.js'</span>)
 </div></code></pre>
 </li>
 <li>
-<p>使用promise 4秒后打印’A’，然后经过3秒打印’B’，再经过2秒打印’C’，再经过一秒打印’D’。</p>
-<pre class="hljs"><code><div>  <span class="hljs-keyword">let</span> promise = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve</span>) =&gt;</span> {
-    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{
-      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'A'</span>);
-      resolve();
-    }, <span class="hljs-number">4000</span>);
-  })
+<p>使用 promise 4 秒后打印’A’，然后经过 3 秒打印’B’，再经过 2 秒打印’C’，再经过一秒打印’D’。</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">let</span> promise = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> {
+  setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'A'</span>)
+    resolve()
+  }, <span class="hljs-number">4000</span>)
+})
 
-  promise.then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve</span>)=&gt;</span> {
+promise
+  .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> {
       setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'B'</span>);
-        resolve();
-      }, <span class="hljs-number">3000</span>);
-    })
-  })
-  .then(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve</span>) =&gt;</span> {
-      setTimeout(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span> {
-        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'C'</span>);
-        resolve();
-      }, <span class="hljs-number">2000</span>);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'B'</span>)
+        resolve()
+      }, <span class="hljs-number">3000</span>)
     })
   })
   .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> {
       setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'D'</span>);
-        resolve();
-      }, <span class="hljs-number">1000</span>);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'C'</span>)
+        resolve()
+      }, <span class="hljs-number">2000</span>)
+    })
+  })
+  .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> {
+      setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'D'</span>)
+        resolve()
+      }, <span class="hljs-number">1000</span>)
     })
   })
 </div></code></pre>
 </li>
 <li>
-<p>实现一个数组中删除一个子数组的函数，要求函数中不return返回新的数组。</p>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">removeSubArray</span>(<span class="hljs-params">main, sub</span>) </span>{
-    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>; i&lt;main.length; i++) {
-      <span class="hljs-keyword">if</span>(sub.includes(main[i])) {
-        main.splice(i, <span class="hljs-number">1</span>);
-        i--;
-      }
+<p>实现一个数组中删除一个子数组的函数，要求函数中不 return 返回新的数组。</p>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">removeSubArray</span>(<span class="hljs-params">main, sub</span>) </span>{
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; main.length; i++) {
+    <span class="hljs-keyword">if</span> (sub.includes(main[i])) {
+      main.splice(i, <span class="hljs-number">1</span>)
+      i--
     }
   }
+}
 </div></code></pre>
 </li>
 </ul>
@@ -1671,7 +1675,7 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 
   }
 </div></code></pre>
-<h2 id="forin%E8%BF%AD%E4%BB%A3%E5%92%8Cforof%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB">for...in迭代和for...of有什么区别</h2>
+<h2 id="forin-%E8%BF%AD%E4%BB%A3%E5%92%8C-forof-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB">for...in 迭代和 for...of 有什么区别</h2>
 <ul>
 <li>
 <p>for...in</p>
@@ -1688,7 +1692,7 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 </ul>
 <ul>
 <li><a href="https://blog.csdn.net/wangjun5159/article/details/51479569">for...in 和 for...of 区别</a></li>
-<li><a href="https://www.jianshu.com/p/c43f418d6bf0">for in 和for of的区别</a></li>
+<li><a href="https://www.jianshu.com/p/c43f418d6bf0">for in 和 for of 的区别</a></li>
 </ul>
 <h2 id="%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-babel-%E5%8E%9F%E7%90%86%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8"><a href="https://www.jianshu.com/p/e9b94b2d52e2">深入理解 Babel 原理及其使用</a></h2>
 <h2 id="%E5%89%8D%E7%AB%AF%E5%9F%BA%E7%A1%80%E8%BF%9B%E9%98%B6%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87%E8%AF%A6%E7%BB%86%E5%9B%BE%E8%A7%A3"><a href="https://www.jianshu.com/p/a6d37c77e8db">前端基础进阶（二）：执行上下文详细图解</a></h2>
@@ -1885,30 +1889,38 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <h3 id="asyncawait">async/await</h3>
 <pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">spawn</span>(<span class="hljs-params">genF</span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>) </span>{
-    <span class="hljs-keyword">const</span> gen = genF();
+    <span class="hljs-keyword">const</span> gen = genF()
 
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">step</span>(<span class="hljs-params">nextF</span>) </span>{
-      <span class="hljs-keyword">let</span> next;
-      <span class="hljs-keyword">try</span>{
-        next = nextF();
-      }<span class="hljs-keyword">catch</span>(err) {
-        <span class="hljs-keyword">return</span> reject(err);
+      <span class="hljs-keyword">let</span> next
+      <span class="hljs-keyword">try</span> {
+        next = nextF()
+      } <span class="hljs-keyword">catch</span> (err) {
+        <span class="hljs-keyword">return</span> reject(err)
       }
-      <span class="hljs-keyword">if</span>(next.done) {
-        <span class="hljs-keyword">return</span> resolve(next.value);
+      <span class="hljs-keyword">if</span> (next.done) {
+        <span class="hljs-keyword">return</span> resolve(next.value)
       }
 
-      <span class="hljs-built_in">Promise</span>.resolve(next.value).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">v</span>) </span>{
-        step(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> gen.next(v); });
-      }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
-        step(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> gen.throw(err); });
-      });
+      <span class="hljs-built_in">Promise</span>.resolve(next.value).then(
+        <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">v</span>) </span>{
+          step(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">return</span> gen.next(v)
+          })
+        },
+        <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+          step(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">return</span> gen.throw(err)
+          })
+        }
+      )
     }
 
-    step(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> gen.next(<span class="hljs-literal">undefined</span>); });
+    step(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> gen.next(<span class="hljs-literal">undefined</span>)
+    })
   })
 }
-
 </div></code></pre>
 <iframe src="http://es6.ruanyifeng.com/#docs/async#async-%E5%87%BD%E6%95%B0%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86" width="100%" frameborder="0" height="500px" ></iframe>
 <h3 id="promise-%E5%92%8C-async-%E5%8C%BA%E5%88%AB">promise 和 async 区别</h3>
@@ -1921,42 +1933,42 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <p>防抖</p>
 <p>将多次高频操作优化为只在最后一次执行，通常使用的场景是：用户输入，只需再输入完成后做一次输入校验即可。</p>
 <p><a href="https://github.com/lodash/lodash/blob/master/debounce.js">lodash debounce</a></p>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">debounce</span>(<span class="hljs-params">fn, interval</span>) </span>{
-    <span class="hljs-keyword">let</span> timeout = <span class="hljs-literal">null</span>;
-    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-      clearTimeout(timeout);
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">debounce</span>(<span class="hljs-params">fn, interval</span>) </span>{
+  <span class="hljs-keyword">let</span> timeout = <span class="hljs-literal">null</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    clearTimeout(timeout)
 
-      timeout = setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-        fn.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
-      }, interval);
-    }
+    timeout = setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      fn.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>)
+    }, interval)
   }
+}
 </div></code></pre>
 </li>
 <li>
 <p>节流</p>
-<p>每隔一段时间后执行一次，也就是降低频率，将高频操作优化成低频操作，通常使用场景: 滚动条事件 或者 resize 事件，通常每隔 100~500 ms执行一次即可。</p>
+<p>每隔一段时间后执行一次，也就是降低频率，将高频操作优化成低频操作，通常使用场景: 滚动条事件 或者 resize 事件，通常每隔 100~500 ms 执行一次即可。</p>
 <p><a href="https://github.com/lodash/lodash/blob/master/throttle.js">lodash throttle</a></p>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">throttle</span>(<span class="hljs-params">fn, interval</span>) </span>{
-    <span class="hljs-keyword">let</span> canRun = <span class="hljs-literal">true</span>;
-    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-      <span class="hljs-keyword">if</span>(!canRun) <span class="hljs-keyword">return</span> 
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">throttle</span>(<span class="hljs-params">fn, interval</span>) </span>{
+  <span class="hljs-keyword">let</span> canRun = <span class="hljs-literal">true</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">if</span> (!canRun) <span class="hljs-keyword">return</span>
 
-      canRun = <span class="hljs-literal">false</span>;
+    canRun = <span class="hljs-literal">false</span>
 
-      setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-        fn.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
-        canRun = <span class="hljs-literal">true</span>;
-      }, interval);
-    }
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      fn.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>)
+      canRun = <span class="hljs-literal">true</span>
+    }, interval)
   }
+}
 </div></code></pre>
 </li>
 </ul>
 <h2 id="this-%E6%8C%87%E5%90%91">this 指向</h2>
 <ul>
-<li><a href="https://www.cnblogs.com/pssp/p/5216085.html">彻底理解js中this的指向，不必硬背。</a></li>
-<li><a href="https://juejin.im/post/5c049e6de51d45471745eb98">彻底理解JavaScript中的this</a></li>
+<li><a href="https://www.cnblogs.com/pssp/p/5216085.html">彻底理解 js 中 this 的指向，不必硬背。</a></li>
+<li><a href="https://juejin.im/post/5c049e6de51d45471745eb98">彻底理解 JavaScript 中的 this</a></li>
 </ul>
 <h2 id="import-%E5%92%8C-require-%E7%9A%84%E5%8C%BA%E5%88%AB">import 和 require 的区别</h2>
 <ul>
@@ -2025,7 +2037,7 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <iframe src="http://es6.ruanyifeng.com/#docs/module-loader#ES6-%E6%A8%A1%E5%9D%97%E4%B8%8E-CommonJS-%E6%A8%A1%E5%9D%97%E7%9A%84%E5%B7%AE%E5%BC%82" width="100%" frameborder="0" height="500px" ></iframe>
 <h2 id="script%08-%E5%B1%9E%E6%80%A7-defer-%E5%92%8C-async-%E5%8C%BA%E5%88%AB">script 属性 defer 和 async 区别</h2>
 <p>defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生成，以及其他脚本执行完成），才会执行；async 一旦下载完，渲染引擎就会中断渲染，执行这个脚本以后，再继续渲染。一句话，defer 是“渲染完再执行”，async 是“下载完就执行”。另外，如果有多个 defer 脚本，会按照它们在页面出现的顺序加载，而多个 async 脚本是不能保证加载顺序的。</p>
-<p>“每一个defer属性的脚本都是在页面解析完毕之后，按照原本的顺序执行，同时会在document的DOMContentLoaded之前执行。”--------------HTML5规范要求脚本执行应该按照脚本出现的先后顺序执行，但实际情况下，延迟脚本不一定按照先后顺序执行！！！</p>
+<p>“每一个 defer 属性的脚本都是在页面解析完毕之后，按照原本的顺序执行，同时会在 document 的 DOMContentLoaded 之前执行。”--------------HTML5 规范要求脚本执行应该按照脚本出现的先后顺序执行，但实际情况下，延迟脚本不一定按照先后顺序执行！！！</p>
 <p><img src="https://segmentfault.com/img/bVWhRl?w=801&amp;h=814" alt=""></p>
 <h1 id="%E6%B5%8F%E8%A7%88%E5%99%A8">浏览器</h1>
 <h2 id="cookie">Cookie</h2>
@@ -2033,14 +2045,16 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#SameSite_cookies">SameSite cookies</a>
 <ul>
 <li>Strict: same origin</li>
-<li>Lax: 在跨站点子请求中不携带 same-site cookies，例如加载图像或帧的调用。但是当用户从外部站点导航到URL时将发送 same-site cookies</li>
+<li>Lax: 在跨站点子请求中不携带 same-site cookies，例如加载图像或帧的调用。但是当用户从外部站点导航到 URL 时将发送 same-site cookies</li>
 </ul>
+<pre class="hljs"><code><div>  <span class="hljs-built_in">Set</span>-Cookie: key=value; SameSite=Strict
+</div></code></pre>
 </li>
 <li>Secure</li>
 <li>HttpOnly</li>
 </ul>
-<h2 id="chrome%E6%98%BE%E7%A4%BA12px%E4%BB%A5%E4%B8%8B%E5%AD%97%E4%BD%93%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><a href="https://blog.csdn.net/u012011360/article/details/41846905">chrome显示12px以下字体的解决方法</a></h2>
-<pre class="hljs"><code><div>  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"display: 'block'; font-size='16px'; transform: scale(0.5);"</span>&gt;</span>8px 字体<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+<h2 id="chrome-%E6%98%BE%E7%A4%BA-12px-%E4%BB%A5%E4%B8%8B%E5%AD%97%E4%BD%93%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><a href="https://blog.csdn.net/u012011360/article/details/41846905">chrome 显示 12px 以下字体的解决方法</a></h2>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"display: 'block'; font-size='16px'; transform: scale(0.5);"</span>&gt;</span>8px 字体<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
 </div></code></pre>
 <h2 id="%E8%B7%A8%E5%9F%9F">跨域</h2>
 <ul>
@@ -2050,14 +2064,22 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 </li>
 <li>
 <p><a href="http://www.ruanyifeng.com/blog/2016/04/cors.html">CORS</a></p>
-<pre class="hljs"><code><div>  Access-Control-Allow-Methods: GET, POST, PUT
-  Access-Control-Allow-Headers: X-Custom-Header
+<pre class="hljs"><code><div>  Access-Control-Allow-Origin: *                      <span class="hljs-comment">// 对于不需要携带身份凭证的请求，服务器可以指定该字段的值为通配符，表示允许来自所有域的请求。</span>
+  Access-Control-Allow-Methods: GET, POST, PUT
+  Access-Control-Allow-Headers: X-Custom-Header       <span class="hljs-comment">// 允许客户端在请求中携带头部</span>
   Access-Control-Allow-Credentials: <span class="hljs-literal">true</span>
-  Access-Control-Max-Age: <span class="hljs-number">1728000</span>
+  Access-Control-Max-Age: <span class="hljs-number">1728000</span>                     <span class="hljs-comment">// 指定了preflight请求的结果能够被缓存多久</span>
+  <span class="hljs-comment">/**
+    * 在跨域访问时，XMLHttpRequest对象的getResponseHeader()方法只能拿到一些最基本的响应头，Cache-Control、Content-Language、Content-Type、Expires、Last-Modified、Pragma，如果要访问其他头，则需要服务器设置本响应头。
+    */</span>
+  Access-Control-Expose-Headers: X-My-Custom-Header, X-Custom-Header
 </div></code></pre>
 <ul>
 <li>
 <p>跨域携带 cookie</p>
+<blockquote>
+<p>对于附带身份凭证的请求，服务器不得设置 Access-Control-Allow-Origin 的值为“*”。</p>
+</blockquote>
 <pre class="hljs"><code><div>  <span class="hljs-comment">// 服务端</span>
   Access-Control-Allow-Credentials: <span class="hljs-literal">true</span>
 
@@ -2074,45 +2096,44 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <ul>
 <li>
 <p>获取句柄，postMessage</p>
-<pre class="hljs"><code><div>  <span class="hljs-keyword">const</span> childPage = <span class="hljs-built_in">window</span>.open(strUrl, strWindowName, [strWindowFeatures]);
+<pre class="hljs"><code><div><span class="hljs-keyword">const</span> childPage = <span class="hljs-built_in">window</span>.open(strUrl, strWindowName, [strWindowFeatures])
 
-  childPage.onload = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    childPage.postMessage(message, targetOrigin, [transfer]);
-  };
+childPage.onload = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  childPage.postMessage(message, targetOrigin, [transfer])
+}
 
-  <span class="hljs-built_in">window</span>.onmessage = <span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> {
-    <span class="hljs-built_in">console</span>.log(e.data)
-    <span class="hljs-built_in">console</span>.log(e.origin)
-    <span class="hljs-built_in">console</span>.log(e.source)
-  }
-
+<span class="hljs-built_in">window</span>.onmessage = <span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> {
+  <span class="hljs-built_in">console</span>.log(e.data)
+  <span class="hljs-built_in">console</span>.log(e.origin)
+  <span class="hljs-built_in">console</span>.log(e.source)
+}
 </div></code></pre>
 </li>
 <li>
-<p>localStorage,设置共享区域的storage，storage会触发storage事件</p>
-<pre class="hljs"><code><div>  localStorage.setItem(<span class="hljs-string">'message'</span>, <span class="hljs-string">'hello'</span>);
+<p>localStorage,设置共享区域的 storage，storage 会触发 storage 事件</p>
+<pre class="hljs"><code><div>localStorage.setItem(<span class="hljs-string">'message'</span>, <span class="hljs-string">'hello'</span>)
 
-  <span class="hljs-built_in">window</span>.onStorage = <span class="hljs-function">(<span class="hljs-params">evt</span>) =&gt;</span> {
-    <span class="hljs-comment">// evt.key evt.oldValue evt.newValue</span>
-  }
+<span class="hljs-built_in">window</span>.onStorage = <span class="hljs-function"><span class="hljs-params">evt</span> =&gt;</span> {
+  <span class="hljs-comment">// evt.key evt.oldValue evt.newValue</span>
+}
 </div></code></pre>
 <ul>
 <li>触发写入操作的页面下的 <strong>storage listener</strong> 不会被触发</li>
 <li>storage 事件只有在发生改变的时候才会触发，即重复设置相同值不会触发 listener</li>
-<li>safari 隐身模式下无法设置localStorage值</li>
+<li>safari 隐身模式下无法设置 localStorage 值</li>
 </ul>
 </li>
 <li>
 <p>BroadcastChannel</p>
-<pre class="hljs"><code><div>  <span class="hljs-comment">// a.html</span>
-  <span class="hljs-keyword">const</span> channel = <span class="hljs-keyword">new</span> BroadcastChannel(<span class="hljs-string">'tabs'</span>)
-  channel.onmessage = <span class="hljs-function"><span class="hljs-params">evt</span> =&gt;</span> {
-    <span class="hljs-comment">// evt.data</span>
-  }
+<pre class="hljs"><code><div><span class="hljs-comment">// a.html</span>
+<span class="hljs-keyword">const</span> channel = <span class="hljs-keyword">new</span> BroadcastChannel(<span class="hljs-string">'tabs'</span>)
+channel.onmessage = <span class="hljs-function"><span class="hljs-params">evt</span> =&gt;</span> {
+  <span class="hljs-comment">// evt.data</span>
+}
 
-  <span class="hljs-comment">// b.html</span>
-  <span class="hljs-keyword">const</span> channel = <span class="hljs-keyword">new</span> BroadcastChannel(<span class="hljs-string">'tabs'</span>)
-  channel.postMessage(<span class="hljs-string">'hello'</span>)
+<span class="hljs-comment">// b.html</span>
+<span class="hljs-keyword">const</span> channel = <span class="hljs-keyword">new</span> BroadcastChannel(<span class="hljs-string">'tabs'</span>)
+channel.postMessage(<span class="hljs-string">'hello'</span>)
 </div></code></pre>
 </li>
 <li>
@@ -2120,7 +2141,7 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 </li>
 <li>
 <p>cookie</p>
-<p>一个古老的方案，有点<code>localStorage</code>的降级兼容版，我也是整理本文的时候才发现的，思路就是往<code>document.cookie</code>写入值，由于cookie的改变没有事件通知，所以只能采取轮询脏检查来实现业务逻辑。</p>
+<p>一个古老的方案，有点<code>localStorage</code>的降级兼容版，我也是整理本文的时候才发现的，思路就是往<code>document.cookie</code>写入值，由于 cookie 的改变没有事件通知，所以只能采取轮询脏检查来实现业务逻辑。</p>
 </li>
 <li>
 <p>Server</p>
@@ -2130,7 +2151,7 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <h2 id="css-%E5%92%8C-js-%E8%A7%A3%E6%9E%90%E3%80%81%E6%B8%B2%E6%9F%93">CSS 和 JS 解析、渲染</h2>
 <ul>
 <li><a href="https://juejin.im/post/59c60691518825396f4f71a1">原来 CSS 与 JS 是这样阻塞 DOM 解析和渲染的</a></li>
-<li><a href="https://juejin.im/post/5b88ddca6fb9a019c7717096">css加载会造成阻塞吗？</a>
+<li><a href="https://juejin.im/post/5b88ddca6fb9a019c7717096">css 加载会造成阻塞吗？</a>
 <ul>
 <li>DOM 解析和 CSSOM 解析是两个并行的线程，CSS 的加载不会阻塞 DOM 的解析</li>
 <li>CSS 加载会阻塞 DOM 树的渲染的</li>
@@ -2141,18 +2162,18 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 </ul>
 <h2 id="event-loop">Event loop</h2>
 <ul>
-<li><a href="https://juejin.im/post/5b8f76675188255c7c653811">带你彻底弄懂Event Loop</a></li>
+<li><a href="https://juejin.im/post/5b8f76675188255c7c653811">带你彻底弄懂 Event Loop</a></li>
 <li><a href="https://juejin.im/post/5afbc62151882542af04112d">浏览器事件循环机制（event loop）</a></li>
-<li><a href="http://www.ruanyifeng.com/blog/2014/10/event-loop.html">JavaScript 运行机制详解：再谈Event Loop</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2014/10/event-loop.html">JavaScript 运行机制详解：再谈 Event Loop</a></li>
 </ul>
 <h2 id="io-%E6%A8%A1%E5%BC%8F">IO 模式</h2>
 <ul>
-<li><a href="https://segmentfault.com/a/1190000003063859?utm_source=Weibo&amp;utm_medium=shareLink&amp;utm_campaign=socialShare#articleHeader0">Linux IO模式及 select、poll、epoll详解</a></li>
+<li><a href="https://segmentfault.com/a/1190000003063859?utm_source=Weibo&amp;utm_medium=shareLink&amp;utm_campaign=socialShare#articleHeader0">Linux IO 模式及 select、poll、epoll 详解</a></li>
 <li><a href="https://cloud.tencent.com/developer/article/1005481">大话 Select、Poll、Epoll</a></li>
 </ul>
-<h2 id="v8%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6">V8引擎中的垃圾回收机制</h2>
+<h2 id="v8-%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6">V8 引擎中的垃圾回收机制</h2>
 <ul>
-<li><a href="https://segmentfault.com/a/1190000000440270">浅谈V8引擎中的垃圾回收机制</a></li>
+<li><a href="https://segmentfault.com/a/1190000000440270">浅谈 V8 引擎中的垃圾回收机制</a></li>
 </ul>
 <h2 id="%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98">浏览器缓存</h2>
 <ul>
@@ -2165,11 +2186,14 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 </ul>
 </li>
 </ul>
-<h2 id="dns%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B%E5%8F%8Adns%E4%BC%98%E5%8C%96"><a href="https://blog.csdn.net/cat_foursi/article/details/71194397">DNS解析过程及DNS优化</a></h2>
+<h2 id="dns-%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B%E5%8F%8A-dns-%E4%BC%98%E5%8C%96"><a href="https://blog.csdn.net/cat_foursi/article/details/71194397">DNS 解析过程及 DNS 优化</a></h2>
 <h2 id="%E5%89%8D%E7%AB%AF%E5%AE%89%E5%85%A8">前端安全</h2>
 <ul>
-<li><a href="https://juejin.im/entry/598d6eb46fb9a03c3a25d2c1">前端安全知多少</a></li>
-<li><a href="https://tech.meituan.com/2018/09/27/fe-security.html">如何防止XSS攻击？</a>
+<li>
+<p><a href="https://juejin.im/entry/598d6eb46fb9a03c3a25d2c1">前端安全知多少</a></p>
+</li>
+<li>
+<p><a href="https://tech.meituan.com/2018/09/27/fe-security.html">如何防止 XSS 攻击？</a></p>
 <ul>
 <li>
 <p>xss</p>
@@ -2179,9 +2203,7 @@ num.toString().replace(<span class="hljs-regexp">/^\d+/g</span>, m =&gt; m.repla
 <blockquote>
 <p>XSS 的本质是：恶意代码未经过滤，与网站正常的代码混在一起；浏览器无法分辨哪些脚本是可信的，导致恶意脚本被执行。</p>
 </blockquote>
-<p>为了和 CSS 区分，这里把攻击的第一个字母改成了 X，于是叫做 XSS。
-- html 转义为实体
-- 在标签的 href、src 等属性中，包含 javascript: 等可执行代码。
+<p>为了和 CSS 区分，这里把攻击的第一个字母改成了 X，于是叫做 XSS。 - html 转义为实体 - 在标签的 href、src 等属性中，包含 <code>javascript:</code> 等可执行代码。
 XSS 分类</p>
 <ul>
 <li>
@@ -2214,21 +2236,21 @@ XSS 分类</p>
 <li>
 <p>DOM 型 XSS:
 DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行恶意代码由浏览器端完成，属于前端 JavaScript 自身的安全漏洞，而其他两种 XSS 都属于服务端的安全漏洞。</p>
-<pre class="hljs"><code><div>  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
-    <span class="hljs-built_in">eval</span>(location.hash.substr(<span class="hljs-number">1</span>));
-    <span class="hljs-comment">// 而这个时候，如果用户在网址后面加上恶意代码</span>
-    <span class="hljs-string">"http://www.xss.com#alert(document.cookie)"</span>
-  </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+  <span class="hljs-built_in">eval</span>(location.hash.substr(<span class="hljs-number">1</span>))
+  <span class="hljs-comment">// 而这个时候，如果用户在网址后面加上恶意代码</span>
+  ;(<span class="hljs-string">'http://www.xss.com#alert(document.cookie)'</span>)
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </div></code></pre>
 </li>
 </ul>
 <p>XSS 预防：</p>
 <ol>
 <li>输入过滤，转义输出、存储</li>
-<li>避免使用eval，new Function等执行字符串的方法，除非确定字符串和用户输入无关。
+<li>避免使用 eval，new Function 等执行字符串的方法，除非确定字符串和用户输入无关。
 <code>new Function ([arg1[, arg2[, ...argN]],] functionBody)</code></li>
-<li>使用innerHTML，document.write的时候，如果数据是用户输入的，那么需要对关键字符都进行过滤与转义。</li>
-<li>对于非客户端cookie，比如保存用户凭证的session，务必标识为http only，这样js就获取不到这个cookie值了，安全性得到提高。</li>
+<li>使用 innerHTML，document.write 的时候，如果数据是用户输入的，那么需要对关键字符都进行过滤与转义。</li>
+<li>对于非客户端 cookie，比如保存用户凭证的 session，务必标识为 http only，这样 js 就获取不到这个 cookie 值了，安全性得到提高。</li>
 <li>X-XSS-Protection</li>
 <li>cookie secure\httpOnly</li>
 </ol>
@@ -2236,13 +2258,13 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 <li>
 <p>CSRF</p>
 <ul>
-<li><a href="https://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html">浅谈CSRF攻击方式</a></li>
+<li><a href="https://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html">浅谈 CSRF 攻击方式</a></li>
 <li><a href="https://www.jianshu.com/p/66f77b8f1759">跨站请求伪造与 Same-Site Cookie</a></li>
 <li>预防
 <ul>
-<li>检测http referer是否是同域名，通常来讲，用户提交的请求，referer应该是来来自站内地址，所以如果发现referer中地址异常，那么很可能是遭到了CSRF攻击。</li>
-<li>避免登录的session长时间存储在客户端中。</li>
-<li>关键请求使用验证码或者token机制。在一些十分关键的操作，比如交易付款环节。这种请求中，加入验证码，可以防止被恶意用户攻击。token机制也有一定的防御作用。具体来说就是服务器每次返回客户端页面的时候，在页面中埋上一个token字段，例如 <code>&lt;input type=“hidden” name=“csrftoken” value=“abcd&quot;&gt;</code>。 之后，客户端请求的时候带上这个token，使用这个机制后，攻击者也就很难发起CSRF攻击了。</li>
+<li>检测 http referer 是否是同域名，通常来讲，用户提交的请求，referer 应该是来来自站内地址，所以如果发现 referer 中地址异常，那么很可能是遭到了 CSRF 攻击。</li>
+<li>避免登录的 session 长时间存储在客户端中。</li>
+<li>关键请求使用验证码或者 token 机制。在一些十分关键的操作，比如交易付款环节。这种请求中，加入验证码，可以防止被恶意用户攻击。token 机制也有一定的防御作用。具体来说就是服务器每次返回客户端页面的时候，在页面中埋上一个 token 字段，例如 <code>&lt;input type=“hidden” name=“csrftoken” value=“abcd&quot;&gt;</code>。 之后，客户端请求的时候带上这个 token，使用这个机制后，攻击者也就很难发起 CSRF 攻击了。</li>
 <li>sameSite cookie</li>
 <li>浏览器跨域携带 cookie 时 <code>credentials: 'same-origin'</code></li>
 </ul>
@@ -2262,6 +2284,32 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 <ul>
 <li>
 <p><a href="https://segmentfault.com/a/1190000013647777">BFC(块格式化上下文)</a></p>
+<ul>
+<li>创建 BFC
+<ul>
+<li>根元素或包含根元素的元素</li>
+<li>浮动元素 float: left/right/inherit(!= none);</li>
+<li>定位元素 position: absolute/fixed;</li>
+<li>display:inline-block/flex/inline-flex/table-cell/table-caption</li>
+<li>overflow: hidden/auto/scroll</li>
+</ul>
+</li>
+<li>BFC 特性
+<ul>
+<li>一个独立的布局环境，内部的元素不会影响外部的元素，反之亦如此；</li>
+<li>内部子元素从顶端开始垂直的一个接一个的排列，子元素之间垂直的间距是由 margin 决定的；</li>
+<li>同一个 BFC 中，相邻的块级盒子的垂直外边距会发生重叠；</li>
+<li>BFC 区块不会和 float 区块发生重叠；</li>
+<li>BFC 能够识别并包含浮动元素，当计算其区域的高度时，浮动元素也参与计算；</li>
+</ul>
+</li>
+<li>BFC 作用
+<ul>
+<li>清除浮动，解决浮动后高度塌陷问题</li>
+<li>避免外边距折叠（外边距折叠（Margin collapsing）只会发生在属于同一 BFC 的块级元素之间。如果它们属于不同的 BFC，它们之间的外边距则不会折叠。所以通过创建一个不同的 BFC ，就可以避免外边距折叠。）</li>
+</ul>
+</li>
+</ul>
 </li>
 <li>
 <p><a href="https://juejin.im/post/5909db2fda2f60005d2093db">关于 CSS-BFC 深入理解</a></p>
@@ -2277,24 +2325,72 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 </li>
 <li>
 <p><a href="https://segmentfault.com/a/1190000013664630">clearfix（清除浮动）</a></p>
+<ul>
+<li>
+<p>使用 clear 属性</p>
+<pre class="hljs"><code><div><span class="hljs-selector-class">.container</span><span class="hljs-selector-pseudo">::after</span> {
+  <span class="hljs-attribute">content</span>: <span class="hljs-string">' '</span>;
+  <span class="hljs-attribute">display</span>: block;
+  <span class="hljs-attribute">clear</span>: both;
+}
+</div></code></pre>
+<p>// 可能有些代码有添加::before,且 display：table</p>
+<pre class="hljs"><code><div><span class="hljs-selector-class">.container</span><span class="hljs-selector-pseudo">::before</span>,
+<span class="hljs-selector-class">.container</span><span class="hljs-selector-pseudo">::after</span> {
+  <span class="hljs-attribute">content</span>: <span class="hljs-string">' '</span>;
+  <span class="hljs-attribute">display</span>: table;
+}
+
+<span class="hljs-selector-class">.container</span><span class="hljs-selector-pseudo">::after</span> {
+  <span class="hljs-attribute">clear</span>: both;
+}
+</div></code></pre>
+<p>// 实际上添加的部分跟浮动并没有关系，他们的作用是防止子元素的 margin-top 发生重叠。但添加::before 就必须将 display 设置为 table。主要原理：display 设置为 table 时会出现一个匿名表格单元格（anonymous table-cell），从而创建一个新的 BFC（下文会提及），根据 BFC 的布局规则，会使 margin-top 不重叠。这里只是解释说明有些代码出现这种写法的原因，如果没有防止重叠的需求，完全可以精简代码，使用上一种写法。</p>
+<pre class="hljs"><code><div><span class="hljs-selector-class">.clearfix</span><span class="hljs-selector-pseudo">::after</span> {
+  <span class="hljs-attribute">content</span>: <span class="hljs-string">''</span>;
+  <span class="hljs-attribute">display</span>: block;
+  <span class="hljs-attribute">clear</span>: both;
+  <span class="hljs-attribute">visibility</span>: hidden;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-selector-class">.clearfix</span> {
+  <span class="hljs-attribute">zoom</span>: <span class="hljs-number">1</span>; <span class="hljs-comment">/* For IE 6/7 (trigger hasLayout) */</span>
+}
+</div></code></pre>
+</li>
+<li>
+<p>添加标签</p>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">br</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"clear:both"</span> /&gt;</span>
+</div></code></pre>
+</li>
+<li>
+<p>触发浮动元素父元素的 BFC</p>
+</li>
+</ul>
 </li>
 </ul>
 <h2 id="%E5%B1%82%E5%8F%A0%E4%B8%8A%E4%B8%8B%E6%96%87">层叠上下文</h2>
 <ul>
-<li><a href="https://www.zhangxinxu.com/wordpress/2016/01/understand-css-stacking-context-order-z-index/">深入理解 CSS 中的层叠上下文和层叠顺序</a></li>
-</ul>
+<li>
+<p><a href="https://www.zhangxinxu.com/wordpress/2016/01/understand-css-stacking-context-order-z-index/">深入理解 CSS 中的层叠上下文和层叠顺序</a></p>
+<p>层叠顺序：background/border -&gt; 负 z-index -&gt; block 块状水平盒子 -&gt; float 浮动盒子 -&gt; inline/inline-block 水平盒子 -&gt; z-index:auto/z-index:0/不依赖 z-index -&gt; 正 z-index</p>
 <p><img src="https://image.zhangxinxu.com/image/blog/201601/2016-01-09_211116.png" alt=""></p>
+</li>
+</ul>
 <h2 id="flex-%E5%B8%83%E5%B1%80">Flex 布局</h2>
 <ul>
-<li><a href="http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html">Flex 布局教程：语法篇</a>
+<li>
+<p><a href="http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html">Flex 布局教程：语法篇</a></p>
 <ul>
 <li>
 <p>container 属性</p>
 <ul>
-<li>flex-direction:</li>
+<li>display: inline-flex/flex</li>
+<li>flex-direction: <code>row</code>、<code>row-reverse</code>、<code>column</code>、<code>column-reverse</code></li>
 <li>flex-wrap: <code>nowrap</code>、<code>wrap</code>、<code>wrap-reverse</code>;</li>
 <li>flex-flow: flex-direction 属性和 flex-wrap 属性的简写形式，默认值为 <code>row nowrap</code>;</li>
-<li>justify-content: flex-start | flex-end | center | space-between | space-around;</li>
+<li>justify-content: flex-start | flex-end | center | space-between | space-around | space-evenly;</li>
 <li>align-items: flex-start | flex-end | center | baseline | stretch;</li>
 <li>align-content: 多根轴线的对齐方式。flex-start | flex-end | center | space-between | space-around | stretch</li>
 </ul>
@@ -2303,51 +2399,184 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 <p>子项的属性</p>
 <ul>
 <li>order</li>
-<li>flex-grow: 定义项目的放大比例，默认为0</li>
-<li>flex-shrink: 定义了项目的缩小比例，默认为1，即如果空间不足，该项目将缩小。</li>
-<li>flex-basis: <code>&lt;length&gt; | auto</code>。 // 在分配多余空间之前，项目占据的主轴空间（main size）。默认值为auto，即项目的本来大小。</li>
-<li>flex: flex-grow, flex-shrink 和 flex-basis的简写，默认值为0 1 auto。后两个属性可选。该属性有两个快捷值：auto (1 1 auto) 和 none (0 0 auto)。</li>
-<li>align-self: <code>auto | flex-start | flex-end | center | baseline | stretch</code>; 允许单个项目有与其他项目不一样的对齐方式，可覆盖align-items属性。默认值为auto，表示继承父元素的align-items属性，如果没有父元素，则等同于stretch</li>
+<li>flex-grow: 定义项目的放大比例，默认为 0</li>
+<li>flex-shrink: 定义了项目的缩小比例，默认为 1，即如果空间不足，该项目将缩小。</li>
+<li>flex-basis: <code>&lt;length&gt; | auto</code>。 // 在分配多余空间之前，项目占据的主轴空间（main size）。默认值为 auto，即项目的本来大小。</li>
+<li>flex: flex-grow, flex-shrink 和 flex-basis 的简写，默认值为 0 1 auto。后两个属性可选。该属性有两个快捷值：auto (1 1 auto) 和 none (0 0 auto)。</li>
+<li>align-self: <code>auto | flex-start | flex-end | center | baseline | stretch</code>; 允许单个项目有与其他项目不一样的对齐方式，可覆盖 align-items 属性。默认值为 auto，表示继承父元素的 align-items 属性，如果没有父元素，则等同于 stretch</li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="http://www.ruanyifeng.com/blog/2015/07/flex-examples.html">Flex 布局教程：实例篇</a></li>
+<li>
+<p><a href="http://www.ruanyifeng.com/blog/2015/07/flex-examples.html">Flex 布局教程：实例篇</a></p>
+</li>
 </ul>
 <h2 id="grid-%E5%B8%83%E5%B1%80">Grid 布局</h2>
 <ul>
-<li><a href="https://www.zhangxinxu.com/wordpress/2018/11/display-grid-css-css3/">写给自己看的display: grid布局教程</a></li>
+<li><a href="https://www.zhangxinxu.com/wordpress/2018/11/display-grid-css-css3/">写给自己看的 display: grid 布局教程</a></li>
 </ul>
 <h2 id="%E5%B1%85%E4%B8%AD%E6%96%B9%E6%B3%95"><a href="https://juejin.im/post/5b94d8965188255c5a0cdc02">居中方法</a></h2>
-<h2 id="%E5%B0%8Ftips%E4%BA%86%E8%A7%A3csscss3%E5%8E%9F%E7%94%9F%E5%8F%98%E9%87%8Fvar"><a href="https://www.zhangxinxu.com/wordpress/2016/11/css-css3-variables-var/">小tips:了解CSS/CSS3原生变量var</a></h2>
-<h2 id="css%E5%AE%9E%E7%8E%B0%E9%95%BF%E5%AE%BD%E6%AF%94%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%A1%88"><a href="https://www.w3cplus.com/css/aspect-ratio.html">CSS实现长宽比的几种方案</a></h2>
+<ul>
+<li>水平居中
+<ul>
+<li>text-align: center;(针对 inline, 内联块 inline-block, 内联表 inline-table, inline-flex 元素及 img,span,button 等元素)</li>
+<li>margin: 0 auto;(不定宽块状元素居中)</li>
+<li>绝对布局<pre class="hljs"><code><div><span class="hljs-comment">/*已知宽度*/</span>
+<span class="hljs-selector-class">.container</span> {
+  <span class="hljs-attribute">position</span>: relative;
+}
+<span class="hljs-selector-class">.child</span> {
+  <span class="hljs-attribute">position</span>: absolute;
+  <span class="hljs-attribute">left</span>: <span class="hljs-number">50%</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">100px</span>;
+  <span class="hljs-attribute">margin-left</span>: -<span class="hljs-number">50px</span>;
+}
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-comment">/*未知高度*/</span>
+<span class="hljs-selector-class">.container</span> {
+  <span class="hljs-attribute">position</span>: relative;
+}
+<span class="hljs-selector-class">.child</span> {
+  <span class="hljs-attribute">position</span>: absolute;
+  <span class="hljs-attribute">left</span>: <span class="hljs-number">50%</span>;
+  <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateX</span>(-50%);
+}
+</div></code></pre>
+</li>
+<li>flex 布局</li>
+</ul>
+</li>
+<li>垂直居中
+<ul>
+<li>height: 20px; line-height: 20px;(单行内联(inline-)元素垂直居中)</li>
+<li>.container{display: table;} .child {display: table-cell; vertical-align: middle;}</li>
+<li>绝对布局<pre class="hljs"><code><div><span class="hljs-comment">/*已知高度*/</span>
+<span class="hljs-selector-class">.container</span> {
+  <span class="hljs-attribute">position</span>: relative;
+}
+<span class="hljs-selector-class">.child</span> {
+  <span class="hljs-attribute">position</span>: absolute;
+  <span class="hljs-attribute">top</span>: <span class="hljs-number">50%</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">100px</span>;
+  <span class="hljs-attribute">margin-top</span>: -<span class="hljs-number">50px</span>;
+}
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-comment">/*未知高度*/</span>
+<span class="hljs-selector-class">.container</span> {
+  <span class="hljs-attribute">position</span>: relative;
+}
+<span class="hljs-selector-class">.child</span> {
+  <span class="hljs-attribute">position</span>: absolute;
+  <span class="hljs-attribute">top</span>: <span class="hljs-number">50%</span>;
+  <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateY</span>(-50%);
+}
+</div></code></pre>
+</li>
+<li>flex 布局</li>
+</ul>
+</li>
+<li>水平垂直居中
+<ul>
+<li>flex 布局</li>
+<li>grid 布局</li>
+<li>结合以上方案</li>
+</ul>
+</li>
+</ul>
+<h2 id="%E5%B0%8F-tips%E4%BA%86%E8%A7%A3-csscss3-%E5%8E%9F%E7%94%9F%E5%8F%98%E9%87%8F-var"><a href="https://www.zhangxinxu.com/wordpress/2016/11/css-css3-variables-var/">小 tips:了解 CSS/CSS3 原生变量 var</a></h2>
+<ul>
+<li>CSS 中原生的变量定义语法是：<code>--*</code>，变量使用语法是：<code>var(--*)</code>，其中<code>*</code>表示我们的变量名称。<pre class="hljs"><code><div><span class="hljs-selector-pseudo">:root</span> {
+  --1: #369;
+  --深蓝: #369;
+}
+<span class="hljs-selector-tag">body</span> {
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-built_in">var</span>(--1);
+}
+</div></code></pre>
+</li>
+</ul>
+<h2 id="css-%E5%AE%9E%E7%8E%B0%E9%95%BF%E5%AE%BD%E6%AF%94%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%A1%88"><a href="https://www.w3cplus.com/css/aspect-ratio.html">CSS 实现长宽比的几种方案</a></h2>
 <ul>
 <li>
 <p>CSS 实现自适应正方形</p>
-<pre class="hljs"><code><div>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"border: 1px solid; width: 10vmin; height: 10vmin;"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"border: 1px solid; width: 10vmin; height: 10vmin;"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"border: 1px solid; width: 30%; height: 0; padding-bottom: 30%;"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"border: 1px solid; width: 30%; height: 0; padding-bottom: 30%;"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 
-  <span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="css">
-    <span class="hljs-selector-tag">div</span><span class="hljs-selector-pseudo">::after</span> {
-      <span class="hljs-attribute">content</span>: <span class="hljs-string">''</span>;
-      <span class="hljs-attribute">display</span>: block;
-      <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">100%</span>;
-    }
-  </span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"border: 1px solid; width: 30%; overflow: hidden;"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="css">
+  <span class="hljs-selector-tag">div</span><span class="hljs-selector-pseudo">::after</span> {
+    <span class="hljs-attribute">content</span>: <span class="hljs-string">''</span>;
+    <span class="hljs-attribute">display</span>: block;
+    <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">100%</span>;
+  }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"border: 1px solid; width: 30%; overflow: hidden;"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </div></code></pre>
 </li>
 <li>
-<p><a href="https://www.jianshu.com/p/f13122a9651c">CSS3技巧之形状（椭圆）（border-raduis）</a></p>
-<pre class="hljs"><code><div>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"width: 200px; height: 100px; border-raduis: 100px 50px; border: 1px solid;"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<p><a href="https://www.jianshu.com/p/f13122a9651c">CSS3 技巧之形状（椭圆）（border-raduis）</a></p>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"width: 200px; height: 100px; border-raduis: 100px 50px; border: 1px solid;"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </div></code></pre>
 </li>
 <li>
 <p>三角形实现</p>
+<div
+  style="box-size:border-box; width: 0px;border-left: 10px solid red; border-top: 10px solid transparent; border-bottom: 10px solid transparent;border-right: 10px solid red"
+></div>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+  <span class="hljs-attr">style</span>=<span class="hljs-string">"border-left: 10px solid red; border-top: 10px solid transparent; border-bottom: 10px solid transparent;border-right: 10px solid transparent"</span>
+&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</div></code></pre>
+<div style="width: 10px; height: 10px; border-left: 10px solid red; border-top: 10px solid blue; border-bottom: 10px solid green;border-right: 10px solid yellow"></div>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+  <span class="hljs-attr">style</span>=<span class="hljs-string">"width: 10px; height: 10px; border-left: 10px solid red; border-top: 10px solid blue; border-bottom: 10px solid green;border-right: 10px solid yellow"</span>
+&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</div></code></pre>
 </li>
 </ul>
 <h2 id="%E4%BC%AA%E7%B1%BB%E4%B8%8E%E4%BC%AA%E5%85%83%E7%B4%A0"><a href="http://www.alloyteam.com/2016/05/summary-of-pseudo-classes-and-pseudo-elements/">伪类与伪元素</a></h2>
+<p>css 引入伪类和伪元素概念是为了格式化文档树以外的信息</p>
+<ul>
+<li>
+<p>伪元素</p>
+<ul>
+<li>::before/:before</li>
+<li>::after/:after</li>
+<li>::first-line/:first-line</li>
+<li>::first-letter</li>
+<li>::selection</li>
+<li>::placeholder</li>
+<li>::backdrop 用于改变全屏模式下的背景颜色.该伪元素只支持双冒号的形式</li>
+</ul>
+</li>
+<li>
+<p>伪类</p>
+<ul>
+<li>:link</li>
+<li>:visited</li>
+<li>:hover</li>
+<li>:active</li>
+<li>:focus</li>
+<li>:not</li>
+<li>:first-child</li>
+<li>:last-child</li>
+<li>:first-of-type</li>
+<li>:last-of-type</li>
+<li>:nth-child</li>
+<li>:nth-of-type</li>
+<li>:nth-last-child</li>
+<li>:nth-last-type</li>
+<li>:only-child</li>
+<li>:only-of-type</li>
+<li>:target</li>
+<li>:checked</li>
+<li>:disabled</li>
+<li>:enabled</li>
+<li>:root</li>
+</ul>
+</li>
+</ul>
 <h2 id="a-hrefindexhtml-targetblankcss-%E5%B8%83%E5%B1%80a"><a href="./index.html" target="_blank">css 布局</a></h2>
 <ul>
 <li><a href="https://juejin.im/post/5a260aaa6fb9a0451b0464f0">css 网页的几种布局</a></li>
@@ -2357,50 +2586,104 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 <h2 id="http">http</h2>
 <ul>
 <li>
-<p>HTTP响应头</p>
+<p>HTTP 响应头</p>
 <ul>
-<li>X-Frame-Options 禁止页面被加载进 iframe 中</li>
-<li>X-XSS-Protection 对于反射型XSS进行一些防御</li>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP">Content-Security-Policy(内容安全策略( CSP ))</a>
-<code>Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com</code></li>
+<li>
+<p>X-Frame-Options (禁止页面被加载进 iframe 中):</p>
+<ul>
+<li><code>DENY</code>: 表示该页面不允许在 frame 中展示，即便是在相同域名的页面中嵌套也不允许。</li>
+<li><code>SAMEORIGIN</code>: 表示该页面可以在相同域名页面的 frame 中展示。</li>
+<li><code>ALLOW-FROM uri</code>: 表示该页面可以在指定来源的 frame 中展示。</li>
+</ul>
+</li>
+<li>
+<p>X-XSS-Protection 对于反射型 XSS 进行一些防御</p>
+</li>
+<li>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP">Content-Security-Policy(内容安全策略( CSP ))</a></p>
+</li>
+<li>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy__by_cnvoid">Content-Security-Policy</a></p>
+<p><code>Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com</code></p>
+<ul>
+<li>所有内容均来自站点的同一个源 (不包括其子域名)</li>
+</ul>
+<pre class="hljs"><code><div>Content-Security-Policy: <span class="hljs-keyword">default</span>-src <span class="hljs-string">'self'</span>;
+</div></code></pre>
+<ul>
+<li>允许内容来自信任的域名及其子域名 (域名不必须与 CSP 设置所在的域名相同)</li>
+</ul>
+<pre class="hljs"><code><div>Content-Security-Policy: <span class="hljs-keyword">default</span>-src <span class="hljs-string">'self'</span> *.trusted.com;
+</div></code></pre>
+<ul>
+<li>所有内容均来自站点的同一个源 (不包括其子域名)</li>
+</ul>
+<pre class="hljs"><code><div>Content-Security-Policy: <span class="hljs-keyword">default</span>-src <span class="hljs-string">'self'</span>; img-src *; media-src media1.com media2.com; script-src userscripts.example.com;
+</div></code></pre>
+</li>
 </ul>
 </li>
 <li>
 <p><a href="https://www.cnblogs.com/klguang/p/4618526.html">HTTP 报文</a></p>
+<ul>
+<li>请求
+<ul>
+<li>起始行：<code>method</code>、<code>path</code>、<code>HTTP version</code></li>
+<li>首部</li>
+<li>主体</li>
+</ul>
+</li>
+<li>响应
+<ul>
+<li>起始行：<code>HTTP version</code>、<code>status code</code>、<code>status description</code></li>
+<li>首部</li>
+<li>主体</li>
+</ul>
+</li>
+</ul>
 </li>
 <li>
 <p><a href="https://zhuanlan.zhihu.com/p/24913080">HTTP 协议</a></p>
 </li>
 <li>
 <p><a href="https://itbilu.com/other/relate/EkwKysXIl.html">HTTP 请求方法：GET、HEAD、POST、PUT、DELETE、CONNECT、OPTIONS、TRACE、PATCH</a></p>
+<ul>
+<li>PUT 和 PATCH 区别
+<ul>
+<li>PUT 一般是资源的整体更新，PATCH 一般是资源的部分更新</li>
+<li>当资源不存在时，PATCH 会创建一个新的资源，PUT 只会对已在资源进行更新。</li>
+</ul>
+</li>
+</ul>
 </li>
 <li>
 <p><a href="https://mp.weixin.qq.com/s?__biz=MzI3NzIzMzg3Mw==&amp;mid=100000054&amp;idx=1&amp;sn=71f6c214f3833d9ca20b9f7dcd9d33e4">HTTP 中 GET 与 POST 的区别</a></p>
-<p><strong>GET和POST本质上就是TCP链接，并无差别。但是由于HTTP的规定和浏览器/服务器的限制，导致他们在应用过程中体现出一些不同。</strong></p>
+<p><strong>GET 和 POST 本质上就是 TCP 链接，并无差别。但是由于 HTTP 的规定和浏览器/服务器的限制，导致他们在应用过程中体现出一些不同。</strong></p>
 <ol>
-<li>GET在浏览器回退时是无害的，而POST会再次提交请求。</li>
-<li>GET产生的URL地址可以被Bookmark，而POST不可以。</li>
-<li>GET请求会被浏览器主动cache，而POST不会，除非手动设置。</li>
-<li>GET请求只能进行url编码，而POST支持多种编码方式。</li>
-<li>GET请求参数会被完整保留在浏览器历史记录里，而POST中的参数不会被保留。</li>
-<li>GET请求在URL中传送的参数是有长度限制的，而POST么有。</li>
-<li>对参数的数据类型，GET只接受ASCII字符，而POST没有限制。</li>
-<li>GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息。</li>
-<li>GET参数通过URL传递，POST放在Request body中。</li>
-<li><strong>GET产生一个TCP数据包；POST产生两个TCP数据包。</strong><br>
-对于GET方式的请求，浏览器会把http header和data一并发送出去，服务器响应200（返回数据）；<br>
-而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok（返回数据）。</li>
+<li>GET 在浏览器回退时是无害的，而 POST 会再次提交请求。</li>
+<li>GET 产生的 URL 地址可以被 Bookmark，而 POST 不可以。</li>
+<li>GET 请求会被浏览器主动 cache，而 POST 不会，除非手动设置。</li>
+<li>GET 请求只能进行 url 编码，而 POST 支持多种编码方式。</li>
+<li>GET 请求参数会被完整保留在浏览器历史记录里，而 POST 中的参数不会被保留。</li>
+<li>GET 请求在 URL 中传送的参数是有长度限制的，而 POST 么有。</li>
+<li>对参数的数据类型，GET 只接受 ASCII 字符，而 POST 没有限制。</li>
+<li>GET 比 POST 更不安全，因为参数直接暴露在 URL 上，所以不能用来传递敏感信息。</li>
+<li>GET 参数通过 URL 传递，POST 放在 Request body 中。</li>
+<li><strong>GET 产生一个 TCP 数据包；POST 产生两个 TCP 数据包。</strong><br>
+对于 GET 方式的请求，浏览器会把 http header 和 data 一并发送出去，服务器响应 200（返回数据）；<br>
+而对于 POST，浏览器先发送 header，服务器响应 100 continue，浏览器再发送 data，服务器响应 200 ok（返回数据）。</li>
 </ol>
 </li>
 <li>
 <p>HTTP 请求优化</p>
 <ul>
-<li><a href="https://juejin.im/post/59f44c5ef265da4327177b98">前端性能优化之http请求的过程</a></li>
+<li><a href="https://juejin.im/post/59f44c5ef265da4327177b98">前端性能优化之 http 请求的过程</a></li>
 </ul>
 </li>
 </ul>
 <h2 id="https">https</h2>
 <ul>
+<li><a href="https://www.jianshu.com/p/7158568e4867">SSL/TLS 握手过程详解</a></li>
 <li><a href="https://zhuanlan.zhihu.com/p/27395037">HTTPS 原理详解</a></li>
 <li><a href="https://zhuanlan.zhihu.com/p/24854237">HTTPS</a></li>
 </ul>
@@ -2420,7 +2703,7 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 <h2 id="tcp">TCP</h2>
 <ul>
 <li>
-<p><a href="https://yonghaowu.github.io/2019/01/11/http_rfc_handshake/">三次握手的误解与错误类比(RFC解读)</a></p>
+<p><a href="https://yonghaowu.github.io/2019/01/11/http_rfc_handshake/">三次握手的误解与错误类比(RFC 解读)</a></p>
 <p>TCP 需要 seq 序列号来做可靠重传或接收，而避免连接复用时无法分辨出 seq 是延迟或者是旧链接的 seq，因此需要三次握手来约定确定双方的 ISN（初始 seq 序列号）。</p>
 </li>
 <li>
@@ -2430,22 +2713,22 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 <p><a href="https://zhuanlan.zhihu.com/p/35768805">TCP 三次握手、四次挥手</a></p>
 </li>
 <li>
-<p><a href="https://github.com/jawil/blog/issues/14">通俗大白话来理解TCP协议的三次握手和四次分手</a></p>
+<p><a href="https://github.com/jawil/blog/issues/14">通俗大白话来理解 TCP 协议的三次握手和四次分手</a></p>
 </li>
 <li>
-<p><a href="https://blog.csdn.net/zhangdaisylove/article/details/47294315">TCP的滑动窗口与拥塞窗口</a></p>
+<p><a href="https://blog.csdn.net/zhangdaisylove/article/details/47294315">TCP 的滑动窗口与拥塞窗口</a></p>
 </li>
 <li>
 <p><a href="https://my.oschina.net/xinxingegeya/blog/485650">TCP 滑动窗口（发送窗口和接收窗口）</a></p>
 </li>
 <li>
-<p><a href="https://blog.csdn.net/yao5hed/article/details/81046945">解析TCP之滑动窗口(动画演示)</a></p>
+<p><a href="https://blog.csdn.net/yao5hed/article/details/81046945">解析 TCP 之滑动窗口(动画演示)</a></p>
 </li>
 <li>
-<p><a href="https://blog.csdn.net/wdscq1234/article/details/52444277">TCP-IP详解：滑动窗口（Sliding Window）</a></p>
+<p><a href="https://blog.csdn.net/wdscq1234/article/details/52444277">TCP-IP 详解：滑动窗口（Sliding Window）</a></p>
 </li>
 <li>
-<p><a href="https://blog.csdn.net/jtracydy/article/details/52366461">TCP拥塞控制-慢启动、拥塞避免、快重传、快启动</a></p>
+<p><a href="https://blog.csdn.net/jtracydy/article/details/52366461">TCP 拥塞控制-慢启动、拥塞避免、快重传、快启动</a></p>
 </li>
 <li>
 <p><a href="https://blog.csdn.net/wdscq1234/article/details/52517420">TCP-IP 详解: 慢启动和拥塞控制</a></p>
@@ -2486,23 +2769,23 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
     <span class="hljs-attr">__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED</span>: ReactSharedInternals,
   }
 </div></code></pre>
-<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Component</span>(<span class="hljs-params">props, context, updater</span>) </span>{
-    <span class="hljs-keyword">this</span>.props = props;
-    <span class="hljs-keyword">this</span>.context = context;
-    <span class="hljs-comment">// If a component has string refs, we will assign a different object later.</span>
-    <span class="hljs-keyword">this</span>.refs = emptyObject;
-    <span class="hljs-comment">// We initialize the default updater but the real one gets injected by the</span>
-    <span class="hljs-comment">// renderer.</span>
-    <span class="hljs-keyword">this</span>.updater = updater || ReactNoopUpdateQueue;
-  }
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Component</span>(<span class="hljs-params">props, context, updater</span>) </span>{
+  <span class="hljs-keyword">this</span>.props = props
+  <span class="hljs-keyword">this</span>.context = context
+  <span class="hljs-comment">// If a component has string refs, we will assign a different object later.</span>
+  <span class="hljs-keyword">this</span>.refs = emptyObject
+  <span class="hljs-comment">// We initialize the default updater but the real one gets injected by the</span>
+  <span class="hljs-comment">// renderer.</span>
+  <span class="hljs-keyword">this</span>.updater = updater || ReactNoopUpdateQueue
+}
 
-  Component.prototype.isReactComponent = {}
-  Component.prototype.setState = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">partialState, callback</span>) </span>{
-    <span class="hljs-keyword">this</span>.updater.enqueueSetState(<span class="hljs-keyword">this</span>, partialState, callback, <span class="hljs-string">'setState'</span>)
-  }
-  Component.prototype.forceUpdate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">callback</span>) </span>{
-    <span class="hljs-keyword">this</span>.updater.enqueueForceUpdate(<span class="hljs-keyword">this</span>, callback, <span class="hljs-string">'forceUpdate'</span>)
-  }
+Component.prototype.isReactComponent = {}
+Component.prototype.setState = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">partialState, callback</span>) </span>{
+  <span class="hljs-keyword">this</span>.updater.enqueueSetState(<span class="hljs-keyword">this</span>, partialState, callback, <span class="hljs-string">'setState'</span>)
+}
+Component.prototype.forceUpdate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">callback</span>) </span>{
+  <span class="hljs-keyword">this</span>.updater.enqueueForceUpdate(<span class="hljs-keyword">this</span>, callback, <span class="hljs-string">'forceUpdate'</span>)
+}
 </div></code></pre>
 </li>
 <li>
@@ -2542,7 +2825,7 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 </ul>
 <h2 id="fiber">Fiber</h2>
 <ul>
-<li><a href="https://juejin.im/post/5b7016606fb9a0099406f8de">React16源码之React Fiber架构</a></li>
+<li><a href="https://juejin.im/post/5b7016606fb9a0099406f8de">React16 源码之 React Fiber 架构</a></li>
 <li><a href="https://juejin.im/post/59de1b2a51882578c70c0833">React 16 带来了什么以及对 Fiber 的解释</a></li>
 </ul>
 <h2 id="%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">生命周期</h2>
@@ -2554,8 +2837,8 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 <p>挂载阶段</p>
 <ul>
 <li>constructor</li>
-<li>static getDerivedStateFromProps(nextProps, prevState) //一个静态方法，所以不能在这个函数里面使用this，这个函数有两个参数props和state，分别指接收到的新参数和当前的state对象，这个函数会返回一个对象用来更新当前的state对象，如果不需要更新可以返回null</li>
-<li><s>componentWillMount/UNSAFE_componentWillMount</s>  // 或者 <code>&lt;span style=&quot;text-decoration: line-through&quot;&gt;&lt;/span&gt;</code></li>
+<li>static getDerivedStateFromProps(nextProps, prevState) //一个静态方法，所以不能在这个函数里面使用 this，这个函数有两个参数 props 和 state，分别指接收到的新参数和当前的 state 对象，这个函数会返回一个对象用来更新当前的 state 对象，如果不需要更新可以返回 null</li>
+<li><s>componentWillMount/UNSAFE_componentWillMount</s> // 或者 <code>&lt;span style=&quot;text-decoration: line-through&quot;&gt;&lt;/span&gt;</code></li>
 <li>render() 纯函数</li>
 <li>componentDidMount()</li>
 </ul>
@@ -2568,7 +2851,7 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 <li>shouldComponentUpdate(nextProps, nextState)</li>
 <li><s>componentWillUpdate(nextProps, nextState)/UNSAFE_componentWillUpdate(nextProps, nextState)</s></li>
 <li>render()</li>
-<li>getSnapshotBeforeUpdate(prevProps, prevState) //函数有一个返回值，会作为第三个参数传给componentDidUpdate，如果你不想要返回值，请返回null，不写的话控制台会有警告</li>
+<li>getSnapshotBeforeUpdate(prevProps, prevState) //函数有一个返回值，会作为第三个参数传给 componentDidUpdate，如果你不想要返回值，请返回 null，不写的话控制台会有警告</li>
 <li>componentDidUpdate(prevProps, prevState, snapshot)</li>
 </ul>
 </li>
@@ -2589,7 +2872,7 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 </ul>
 </li>
 <li><a href="https://imweb.io/topic/5b189d04d4c96b9b1b4c4ed6">setState</a></li>
-<li><a href="https://juejin.im/post/5afe491e6fb9a07aca7a66a7">React16——看看setState过程中fiber干了什么事情</a></li>
+<li><a href="https://juejin.im/post/5afe491e6fb9a07aca7a66a7">React16——看看 setState 过程中 fiber 干了什么事情</a></li>
 </ul>
 <h2 id="virturl-domdiff-%E7%9A%84%E5%8E%9F%E7%90%86">virturl Dom\diff 的原理</h2>
 <ul>
@@ -2625,19 +2908,19 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 </li>
 <li>
 <p>捕获阶段添加事件</p>
-<p>事件处理程序由冒泡阶段的事件触发。要为捕获阶段注册事件处理程序，请将Capture附加到事件名称；例如，您可以使用 onClickCapture 来处理捕获阶段中的 click 事件，而不是使用 onClick。</p>
 </li>
-<li>
-<p><a href="https://juejin.im/post/59db6e7af265da431f4a02ef">React合成事件和DOM原生事件混用须知</a></p>
-</li>
+</ul>
+<p>事件处理程序由冒泡阶段的事件触发。要为捕获阶段注册事件处理程序，请将 Capture 附加到事件名称；例如，您可以使用 onClickCapture 来处理捕获阶段中的 click 事件，而不是使用 onClick。</p>
+<ul>
+<li><a href="https://juejin.im/post/59db6e7af265da431f4a02ef">React 合成事件和 DOM 原生事件混用须知</a></li>
 </ul>
 <h2 id="%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6%E5%92%8C%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6">受控组件和非受控组件</h2>
 <ul>
-<li><a href="https://segmentfault.com/a/1190000012404114">React中受控与非受控组件</a></li>
+<li><a href="https://segmentfault.com/a/1190000012404114">React 中受控与非受控组件</a></li>
 <li><a href="https://www.jianshu.com/p/fb915d9c99c4">React 中组件间通信的几种方式</a></li>
 </ul>
 <h2 id="react-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">React 性能优化</h2>
-<h2 id="react-router%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6">react-router内部实现机制</h2>
+<h2 id="react-router-%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6">react-router 内部实现机制</h2>
 <ul>
 <li><a href="https://github.com/youngwind/blog/issues/109">单页面应用路由实现原理：以 React-Router 为例</a></li>
 </ul>
@@ -2689,7 +2972,7 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
         <span class="hljs-keyword">return</span> { <span class="hljs-attr">storeState</span>: newStoreState }
       })
     })
-    
+
     <span class="hljs-keyword">const</span> postMountStoreState = store.getState()
     <span class="hljs-keyword">if</span> (postMountStoreState !== <span class="hljs-keyword">this</span>.state.storeState) {
       <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">storeState</span>: postMountStoreState })
@@ -2714,7 +2997,6 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">connectAdvanced</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">wrapWithConnect</span>(<span class="hljs-params">WrappedComponent</span>) </span>{
     <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Connect</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">OuterBaseComponent</span> </span>{
-
       renderWrappedComponent(value) {
         <span class="hljs-comment">// 获取redux state和store</span>
         <span class="hljs-keyword">const</span> { storeState, store } = value
@@ -2723,11 +3005,7 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
         <span class="hljs-keyword">let</span> wrapperProps = <span class="hljs-keyword">this</span>.props
 
         <span class="hljs-comment">// 导出props</span>
-        <span class="hljs-keyword">let</span> derivedProps = <span class="hljs-keyword">this</span>.selectDerivedProps(
-          storeState,
-          wrapperProps,
-          store
-        )
+        <span class="hljs-keyword">let</span> derivedProps = <span class="hljs-keyword">this</span>.selectDerivedProps(storeState, wrapperProps, store)
 
         <span class="hljs-comment">// 返回最终的组件,传入最终的props和ref -&gt; 看selectChildElement发放</span>
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.selectChildElement(derivedProps, forwardedRef)
@@ -2739,9 +3017,7 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 
         <span class="hljs-keyword">return</span> (
           <span class="hljs-comment">// &lt;Privoder /&gt;的消费者</span>
-          &lt;ContextToUse.Consumer&gt;
-            {<span class="hljs-keyword">this</span>.renderWrappedComponent}
-          &lt;<span class="hljs-regexp">/ContextToUse.Consumer&gt;
+          &lt;ContextToUse.Consumer&gt;{<span class="hljs-keyword">this</span>.renderWrappedComponent}&lt;<span class="hljs-regexp">/ContextToUse.Consumer&gt;
         )
       }
     }
@@ -2767,86 +3043,93 @@ DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行
 <ul>
 <li><a href="https://www.cnblogs.com/likeFlyingFish/p/6183630.html">AngularJS 脏检查深入分析</a></li>
 </ul>
-<pre class="hljs"><code><div>
-<span class="hljs-comment">/**
+<pre class="hljs"><code><div><span class="hljs-comment">/**
  * 藏检查的内部实现
  *
  * 每当我们将数据绑定到 UI 上，angular 就会向你的 watchList 上插入一个 $watch。
  * 只有当触发UI事件，ajax请求或者 timeout 延迟，才会触发脏检查。
  *
- * getter 和 setter 是Vue 采用的机制,我觉得他两个最大的区别就是 Angular 采用事件驱动,而Vue 采用数据驱动 .所以 Angular 是当界面事件 或者其他 来触发脏检查, 而Vue 是检测后台数据变化,一旦变化 被 setter 捕捉, 然后来触发 界面更新. 
+ * getter 和 setter 是Vue 采用的机制,我觉得他两个最大的区别就是 Angular 采用事件驱动,而Vue 采用数据驱动 .所以 Angular 是当界面事件 或者其他 来触发脏检查, 而Vue 是检测后台数据变化,一旦变化 被 setter 捕捉, 然后来触发 界面更新.
  */</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">$Scope</span>(<span class="hljs-params"></span>) </span>{
-  <span class="hljs-keyword">this</span>.$$watchList = [];
+  <span class="hljs-keyword">this</span>.$$watchList = []
 }
 
 $Scope.prototype.$watch = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name, getNewValue, listener</span>) </span>{
- <span class="hljs-keyword">const</span> watch = {
-   <span class="hljs-attr">name</span>: name,
-   <span class="hljs-attr">getNewValue</span>: getNewValue,
-   <span class="hljs-attr">listener</span>: listener || <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{},
- };
+  <span class="hljs-keyword">const</span> watch = {
+    <span class="hljs-attr">name</span>: name,
+    <span class="hljs-attr">getNewValue</span>: getNewValue,
+    <span class="hljs-attr">listener</span>: listener || <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{}
+  }
 
- <span class="hljs-keyword">this</span>.$$watchList.push(watch);
+  <span class="hljs-keyword">this</span>.$$watchList.push(watch)
 }
 
-$Scope.prototype.$digest = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
-  <span class="hljs-keyword">let</span> dirty = <span class="hljs-literal">true</span>;
-  <span class="hljs-keyword">let</span> checkTimes = <span class="hljs-number">0</span>;
-  <span class="hljs-keyword">while</span>(dirty) {
-    dirty = <span class="hljs-keyword">this</span>.$digestOnce();
-    checkTimes++;
-    <span class="hljs-keyword">if</span>(checkTimes &gt; <span class="hljs-number">10</span> &amp;&amp; dirty) {
-      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'检测次数超过10次'</span>);
+$Scope.prototype.$digest = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">let</span> dirty = <span class="hljs-literal">true</span>
+  <span class="hljs-keyword">let</span> checkTimes = <span class="hljs-number">0</span>
+  <span class="hljs-keyword">while</span> (dirty) {
+    dirty = <span class="hljs-keyword">this</span>.$digestOnce()
+    checkTimes++
+    <span class="hljs-keyword">if</span> (checkTimes &gt; <span class="hljs-number">10</span> &amp;&amp; dirty) {
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'检测次数超过10次'</span>)
     }
   }
 }
 
 $Scope.prototype.$digestOnce = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-  <span class="hljs-keyword">let</span> dirty=<span class="hljs-literal">false</span>;
-  <span class="hljs-keyword">const</span> list = <span class="hljs-keyword">this</span>.$$watchList;
+  <span class="hljs-keyword">let</span> dirty = <span class="hljs-literal">false</span>
+  <span class="hljs-keyword">const</span> list = <span class="hljs-keyword">this</span>.$$watchList
 
-  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>, len = list.length; i&lt;len; i++ ) {
-    <span class="hljs-keyword">const</span> watch = list[i];
-    <span class="hljs-keyword">const</span> newValue = watch.getNewValue(<span class="hljs-keyword">this</span>);  <span class="hljs-comment">// 传入 scope 获取 scope 内值</span>
-    <span class="hljs-keyword">const</span> oldValue = watch.last;
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>, len = list.length; i &lt; len; i++) {
+    <span class="hljs-keyword">const</span> watch = list[i]
+    <span class="hljs-keyword">const</span> newValue = watch.getNewValue(<span class="hljs-keyword">this</span>) <span class="hljs-comment">// 传入 scope 获取 scope 内值</span>
+    <span class="hljs-keyword">const</span> oldValue = watch.last
 
-    <span class="hljs-keyword">if</span>(newValue !== oldValue) {
-      watch.listen(newValue, oldValue);
-      dirty = <span class="hljs-literal">true</span>;
+    <span class="hljs-keyword">if</span> (newValue !== oldValue) {
+      watch.listen(newValue, oldValue)
+      dirty = <span class="hljs-literal">true</span>
     }
 
-    watch.last = newValue;
+    watch.last = newValue
   }
 
-  <span class="hljs-keyword">return</span> dirty;
+  <span class="hljs-keyword">return</span> dirty
 }
 
 <span class="hljs-comment">/***************************************************/</span>
 
-<span class="hljs-keyword">const</span> scope = <span class="hljs-keyword">new</span> $Scope();
-scope.first = <span class="hljs-number">1</span>;
-scope.secode = <span class="hljs-number">10</span>;
+<span class="hljs-keyword">const</span> scope = <span class="hljs-keyword">new</span> $Scope()
+scope.first = <span class="hljs-number">1</span>
+scope.secode = <span class="hljs-number">10</span>
 
-scope.$watch(<span class="hljs-string">'first'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_scope</span>)</span>{
-  <span class="hljs-keyword">return</span> _scope[<span class="hljs-keyword">this</span>.name]; <span class="hljs-comment">//  getNewValue 通过 watch.getNewValue 方式调用，this 指向 watch</span>
-}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">newValue, oldValue</span>) </span>{
-  scope.second++;
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'first:      newValue:'</span> + newValue + <span class="hljs-string">'-----'</span> + <span class="hljs-string">'oldValue:'</span> + oldValue);
-})
+scope.$watch(
+  <span class="hljs-string">'first'</span>,
+  <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_scope</span>) </span>{
+    <span class="hljs-keyword">return</span> _scope[<span class="hljs-keyword">this</span>.name] <span class="hljs-comment">//  getNewValue 通过 watch.getNewValue 方式调用，this 指向 watch</span>
+  },
+  <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">newValue, oldValue</span>) </span>{
+    scope.second++
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'first:      newValue:'</span> + newValue + <span class="hljs-string">'-----'</span> + <span class="hljs-string">'oldValue:'</span> + oldValue)
+  }
+)
 
-scope.$watch(<span class="hljs-string">'second'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_scope</span>)</span>{
-  <span class="hljs-keyword">return</span> _scope[<span class="hljs-keyword">this</span>.name];
-}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">newValue, oldValue</span>)</span>{
-  scope.first++;
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'second:     newValue:'</span> + newValue + <span class="hljs-string">'-----'</span> + <span class="hljs-string">'oldValue:'</span> + oldValue)
-})
+scope.$watch(
+  <span class="hljs-string">'second'</span>,
+  <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_scope</span>) </span>{
+    <span class="hljs-keyword">return</span> _scope[<span class="hljs-keyword">this</span>.name]
+  },
+  <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">newValue, oldValue</span>) </span>{
+    scope.first++
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'second:     newValue:'</span> + newValue + <span class="hljs-string">'-----'</span> + <span class="hljs-string">'oldValue:'</span> + oldValue)
+  }
+)
 
-scope.$digest();
+scope.$digest()
 </div></code></pre>
 <ul>
 <li><a href="https://www.zhihu.com/question/36040694/answer/65624196">如何衡量一个人的 AngularJS 水平？</a></li>
-<li><a href="https://www.cnblogs.com/likeFlyingFish/p/6201106.html">基于 getter 和 setter 撸一个简易的MVVM</a></li>
+<li><a href="https://www.cnblogs.com/likeFlyingFish/p/6201106.html">基于 getter 和 setter 撸一个简易的 MVVM</a></li>
 </ul>
 <h1 id="nodejs">NodeJS</h1>
 <h2 id="nodejs-%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97%E6%9C%BA%E5%88%B6"><a href="https://juejin.im/entry/5b4b5081e51d451984696cb7">Node.js 中的模块机制</a></h2>
@@ -2858,7 +3141,7 @@ scope.$digest();
 <h2 id="stream">Stream</h2>
 <ul>
 <li><a href="https://juejin.im/post/5940a9c3128fe1006a0ab176">Node.js Stream: 你需要知道的一切</a></li>
-<li><a href="https://juejin.im/post/5a6c7c4df265da3e5234bf14">模拟实现和深入理解Node Stream内部机制</a></li>
+<li><a href="https://juejin.im/post/5a6c7c4df265da3e5234bf14">模拟实现和深入理解 Node Stream 内部机制</a></li>
 </ul>
 <p><img src="https://user-gold-cdn.xitu.io/2017/6/14/d4fff9e6bbb5bb32864b1c64b3169876?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt=""></p>
 <p><img src="https://user-gold-cdn.xitu.io/2017/6/14/03e1f627b419676dbb727ab9bc35e77e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt=""></p>

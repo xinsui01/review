@@ -5,11 +5,13 @@
 # JavaScript
 
 ## var, let 区别
+
 - 顶级作用域 var 声明变量是 window 的属性，let\const 声明变量不是 window 的属性，变量都可以在控制台访问。
-- let声明的变量拥有块级作用域，不存在变量提升
+- let 声明的变量拥有块级作用域，不存在变量提升
 - 暂时性死区
 
-  只要块级作用域内存在let命令，它所声明的变量就“绑定”（binding）这个区域，不再受外部的影响。
+  只要块级作用域内存在 let 命令，它所声明的变量就“绑定”（binding）这个区域，不再受外部的影响。
+
   ```
     var tmp = 123;
 
@@ -18,6 +20,7 @@
       let tmp;
     }
   ```
+
 - 不允许重复声明
 
 ## 箭头函数
@@ -34,8 +37,6 @@
 - 箭头函数不能用作构造器，和 new 一起用会抛出错误。
 - **箭头函数没有 prototype 属性。**
 
-
-
 ## fetch 取消
 
 - [AbortController](https://developer.mozilla.org/zh-CN/docs/Web/API/FetchController)
@@ -46,17 +47,17 @@
 
 - Symbol()
 
-  Symbol函数可以接受一个字符串作为参数，表示对 Symbol 实例的描述，主要是为了在控制台显示，或者转为字符串时，比较容易区分。
+  Symbol 函数可以接受一个字符串作为参数，表示对 Symbol 实例的描述，主要是为了在控制台显示，或者转为字符串时，比较容易区分。
 
 - Symbol.for()
 
   接受一个字符串作为参数，然后搜索有没有以该参数作为名称的 Symbol 值。如果有，就返回这个 Symbol 值，否则就新建并返回一个以该字符串为名称的 Symbol 值。
 
-  Symbol.for()与Symbol()这两种写法，都会生成新的 Symbol。它们的区别是，前者会被登记在全局环境中供搜索，后者不会。
+  Symbol.for()与 Symbol()这两种写法，都会生成新的 Symbol。它们的区别是，前者会被登记在全局环境中供搜索，后者不会。
 
 - Symbol.keyFor()
 
-  Symbol.keyFor方法返回一个已登记的 Symbol 类型值的key。
+  Symbol.keyFor 方法返回一个已登记的 Symbol 类型值的 key。
 
   <iframe src="http://es6.ruanyifeng.com/#docs/symbol" width="100%" frameborder="0" height="500px" ></iframe>
 
@@ -193,11 +194,12 @@
     inst2.sayName()
     inst2.sayAge()
     ```
-  
+
   - 问题
+
     1. 组合继承无论什么情况下，都会`调用两次超类构造函数`：
 
-       - `一次是在创建子类原型的时候`  
+       - `一次是在创建子类原型的时候`
        - `另一次是在子类构造函数内部调用超类构造函数。`
 
 - 原型式继承
@@ -416,17 +418,19 @@ Object.prototype.toString.call(Symbol(1)) // "[object Symbol]"
 ```
 
 ```js
-
-let class2Type = {}
-['Array', 'Date','RegExp', 'Error', 'Object'].forEach(type => class2Type[`[object ${type}]`] = type.toLowerCase())
+let class2Type = {}[('Array', 'Date', 'RegExp', 'Error', 'Object')].forEach(
+  type => (class2Type[`[object ${type}]`] = type.toLowerCase())
+)
 
 function type(obj) {
-  if(obj === null) return String(null)
-  return typeof obj === 'object' ? class2Type[Object.prototype.toString.call(obj)] || 'object' : typeof obj
+  if (obj === null) return String(null)
+  return typeof obj === 'object'
+    ? class2Type[Object.prototype.toString.call(obj)] || 'object'
+    : typeof obj
 }
 ```
 
-## [typeof 和 instanceOf的区别](https://segmentfault.com/a/1190000000730982)
+## [typeof 和 instanceOf 的区别](https://segmentfault.com/a/1190000000730982)
 
 > 只有字面量形式的 `string`、 `number`、 `boolean`、 `undefined`、`function` 才能分辨出来，其他都为 `object`
 
@@ -451,8 +455,7 @@ function type(obj) {
 | undefined          | Undefined | undefined                     |
 
 > Class 一列表示对象的内部属性 [[Class]] 的值。  
->为了获取对象的 [[Class]]，我们需要使用定义在 Object.prototype 上的方法 toString。  
-
+> 为了获取对象的 [[Class]]，我们需要使用定义在 Object.prototype 上的方法 toString。
 
 ## 数字千分位处理，正则和非正则都要实现(千位加逗号)
 
@@ -470,64 +473,64 @@ function type(obj) {
 
 ## [正则](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions)
 
-  ![正则表达式中特殊字符的含义](./imgs/RegExp.png)
+![正则表达式中特殊字符的含义](./imgs/RegExp.png)
 
-  - 标识符：
-    - g: 全局
-    - i: 忽略大小写
-    - m: 多行模式， 在到达一行文本末尾时还会继续查找下一行中是否存在与模式匹配的项。
-  - 元字符：
-    - `([{\^$|}?*+.])`
-    - 所有的元字符都必须经过转义
-  - 使用 `RegExp` 构造函数
-    - 由于 `RegExp` 构造函数的模式参数是个字符串，所以在某些情况下要对字符串进行双重转义
-      | 字面量模式         | 等价的字符串          |
-      | :----------------- | :-------------------- |
-      | `/\[bc\]at/`       | `\\[bc\\]at`          |
-      | `/\.at/`           | `\\.at`               |
-      | `/name\/age/`      | `name\\/age`          |
-      | `/\d.\d{1,2}/`     | `\\d.\\d{1,2}`        |
-      | `/\w\\hello\\123/` | `\\w\\\\hello\\\\123` |
-  - ES5 明确规定，使用正则表达式字面量必须像直接调用 `RegExp` 构造函数一样，每次都创建新的 `RegExp` 实例。
-  - 实例属性
-    - global
-    - ignoreCase
-    - multiline
-    - source: 正则表达式的字符串表示，按照**字面量形式**而非传入构造函数的字符串模式
-    - lastIndex: 开始搜索下一个匹配项的字符位置，起始 0
-  - 实例方法
+- 标识符：
+  - g: 全局
+  - i: 忽略大小写
+  - m: 多行模式， 在到达一行文本末尾时还会继续查找下一行中是否存在与模式匹配的项。
+- 元字符：
+  - `([{\^$|}?*+.])`
+  - 所有的元字符都必须经过转义
+- 使用 `RegExp` 构造函数
+  - 由于 `RegExp` 构造函数的模式参数是个字符串，所以在某些情况下要对字符串进行双重转义
+    | 字面量模式 | 等价的字符串 |
+    | :----------------- | :-------------------- |
+    | `/\[bc\]at/` | `\\[bc\\]at` |
+    | `/\.at/` | `\\.at` |
+    | `/name\/age/` | `name\\/age` |
+    | `/\d.\d{1,2}/` | `\\d.\\d{1,2}` |
+    | `/\w\\hello\\123/` | `\\w\\\\hello\\\\123` |
+- ES5 明确规定，使用正则表达式字面量必须像直接调用 `RegExp` 构造函数一样，每次都创建新的 `RegExp` 实例。
+- 实例属性
+  - global
+  - ignoreCase
+  - multiline
+  - source: 正则表达式的字符串表示，按照**字面量形式**而非传入构造函数的字符串模式
+  - lastIndex: 开始搜索下一个匹配项的字符位置，起始 0
+- 实例方法
 
-    - exec(): 专门为捕获组而设计，返回包含第一个匹配项信息的数组，没有匹配项返回 null
-      - 返回数组属性
-        - 第一项是与整个模式匹配的字符串
-        - 其他项是与模式中的捕获组匹配的字符串
-        - index: 匹配项在字符串中的位置
-        - input: 应用正则表达式的字符串
-      - 模式中设置了 `g` 标志,每次也只返回一个匹配项
-        - 同一个字符串多次调用 `exec()`,每次调用都会在字符串中继续查找新的匹配项
-    - test(): 是否匹配
-    - toLocaleString(): 返回正则表达式字面量
-    - toString(): 返回正则表达式字面量
+  - exec(): 专门为捕获组而设计，返回包含第一个匹配项信息的数组，没有匹配项返回 null
+    - 返回数组属性
+      - 第一项是与整个模式匹配的字符串
+      - 其他项是与模式中的捕获组匹配的字符串
+      - index: 匹配项在字符串中的位置
+      - input: 应用正则表达式的字符串
+    - 模式中设置了 `g` 标志,每次也只返回一个匹配项
+      - 同一个字符串多次调用 `exec()`,每次调用都会在字符串中继续查找新的匹配项
+  - test(): 是否匹配
+  - toLocaleString(): 返回正则表达式字面量
+  - toString(): 返回正则表达式字面量
 
-  - 构造函数属性
+- 构造函数属性
 
-    | 长属性名      | 短属性名                                                         | 说明                                   |
-    | :------------ | :--------------------------------------------------------------- | :------------------------------------- |
-    | input         | $_                                                               | 最近一次要匹配的字符串                 |
-    | lastMatch     | $&                                                               | 最近一次匹配项                         |
-    | lastParen     | $+                                                               | 最近一次匹配的捕获组                   |
-    | leftContext   | $`                                                               | input 字符串中 lastMatch 之前的文本    |
-    | rightContext  | $'                                                               | input字符串中lastMatch之后的文本       |
-    | multiline     | $\*                                                              | 布尔值，是否所有的表达式都使用多行模式 |
-    | $1,$2,...,\$9 | 存储第一到第九个捕获组，调用 exec()或 test()时，这些属性自动填充 |                                        |
-    |               |                                                                  |                                        |
+  | 长属性名      | 短属性名                                                         | 说明                                   |
+  | :------------ | :--------------------------------------------------------------- | :------------------------------------- |
+  | input         | \$\_                                                             | 最近一次要匹配的字符串                 |
+  | lastMatch     | \$&                                                              | 最近一次匹配项                         |
+  | lastParen     | \$+                                                              | 最近一次匹配的捕获组                   |
+  | leftContext   | \$` | input 字符串中 lastMatch 之前的文本                        |
+  | rightContext  | \$'                                                              | input 字符串中 lastMatch 之后的文本    |
+  | multiline     | \$\*                                                             | 布尔值，是否所有的表达式都使用多行模式 |
+  | $1,$2,...,\$9 | 存储第一到第九个捕获组，调用 exec()或 test()时，这些属性自动填充 |                                        |
+  |               |                                                                  |                                        |
 
 - [正则 test, match, exec](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions)
 
   - test\exec 是正则的实例方法， match 是字符串的方法
-  - test 匹配与否，返回Boolean
-  - match\exec 捕获组， 如果匹配，返回数组，未匹配返回null
-    - 返回数组第一项为正则匹配的整个字符串，后面为括号对应的捕获组，index是整个匹配从零开始的索引，Input 为被解析的原始字符串
+  - test 匹配与否，返回 Boolean
+  - match\exec 捕获组， 如果匹配，返回数组，未匹配返回 null
+    - 返回数组第一项为正则匹配的整个字符串，后面为括号对应的捕获组，index 是整个匹配从零开始的索引，Input 为被解析的原始字符串
 
 ## 实现一个 bind 函数 \*
 
@@ -581,181 +584,185 @@ if (!Function.prototype.bind) {
 
 ## 编程
 
-- 实现一个flatten方法。
+- 实现一个 flatten 方法。
 
 ```js
-  function flatten(input) {
-    if (Array.isArray(input)){
-      var output = []
-      function _flatten (input) {
-        for(var i = 0; i < input.length; i++){
-          var value = input[i]
-          if(Array.isArray(value)) {
-            _flatten(value)
-          }
-          else{
-            output.push(value)
-          }
+function flatten(input) {
+  if (Array.isArray(input)) {
+    var output = []
+    function _flatten(input) {
+      for (var i = 0; i < input.length; i++) {
+        var value = input[i]
+        if (Array.isArray(value)) {
+          _flatten(value)
+        } else {
+          output.push(value)
         }
       }
-      _flatten(input)
-      return output
-    }else {
-      return input;
     }
+    _flatten(input)
+    return output
+  } else {
+    return input
   }
+}
 ```
 
 ```js
-  function flatten(input) {
-    return Array.isArray(input) ? input.toString().split(',') : input
-  }
+function flatten(input) {
+  return Array.isArray(input) ? input.toString().split(',') : input
+}
 ```
 
+- 将一个 json 数据的所有 key 从下划线改为驼峰
 
-- 将一个json数据的所有key从下划线改为驼峰
 ```js
 const testData = {
-    a_bbb: 123,
-    a_g: [1, 2, 3, 4],
-    a_d: {
-        s: 2,
-        s_d: 3
-    },
-    a_f: [1, 2, 3, {
-        a_g: 5
-    }],
-    a_d_s: 1
+  a_bbb: 123,
+  a_g: [1, 2, 3, 4],
+  a_d: {
+    s: 2,
+    s_d: 3
+  },
+  a_f: [
+    1,
+    2,
+    3,
+    {
+      a_g: 5
+    }
+  ],
+  a_d_s: 1
 }
 
 /**
  * 将一个json数据的所有key从下划线改为驼峰
- * 
+ *
  * @param {object | array} value 待处理对象或数组
  * @returns {object | array} 处理后的对象或数组
  */
 function mapKeysToCamelCase(data) {
-    
-    /**
-     * 如果是基本常量return
-     */
-    if(isBaseType(data)) {
-        return data
-    }
+  /**
+   * 如果是基本常量return
+   */
+  if (isBaseType(data)) {
+    return data
+  }
 
-    if(Array.isArray(data)) {
-        return data.map(key => {
-            return isBaseType(key)? key: mapKeysToCamelCase(key)
-        })
-    }
-    
-    let obj={};
-
-    Object.keys(data).forEach(key => {
-        const _key = strToCamelCase(key);
-        obj[_key] = mapKeysToCamelCase(data[key])
+  if (Array.isArray(data)) {
+    return data.map(key => {
+      return isBaseType(key) ? key : mapKeysToCamelCase(key)
     })
-    return obj;
+  }
+
+  let obj = {}
+
+  Object.keys(data).forEach(key => {
+    const _key = strToCamelCase(key)
+    obj[_key] = mapKeysToCamelCase(data[key])
+  })
+  return obj
 }
 
-const isBaseType= (function() {
-    const baseTypes = ["Number", "String","Boolean","Null","Undefined"].map(item => `[object ${item}]`);
-    return (val) => {
-      const tp = Object.prototype.toString.call(val)
-      return baseTypes.includes(tp);
-    }
+const isBaseType = (function() {
+  const baseTypes = ['Number', 'String', 'Boolean', 'Null', 'Undefined'].map(
+    item => `[object ${item}]`
+  )
+  return val => {
+    const tp = Object.prototype.toString.call(val)
+    return baseTypes.includes(tp)
+  }
 })()
 
 function strToCamelCase(key) {
-    return (''+key).replace(/(_.{1})/g, (val) => val.slice(1).toUpperCase());
+  return ('' + key).replace(/(_.{1})/g, val => val.slice(1).toUpperCase())
 }
 
 console.log(mapKeysToCamelCase(testData))
 ```
 
-- JS中判断字符串中出现次数最多的字符及出现的次数
+- JS 中判断字符串中出现次数最多的字符及出现的次数
 
 ```js
-  function maxN(str) {
-    // const obj = (''+str).split('').reduce((accu, cur, index) => {
-    // accu[cur] = (accu[cur] || 0) + 1;
-    // return accu
-    // }, 
-    // {}
-    // );
+function maxN(str) {
+  // const obj = (''+str).split('').reduce((accu, cur, index) => {
+  // accu[cur] = (accu[cur] || 0) + 1;
+  // return accu
+  // },
+  // {}
+  // );
 
+  let obj = {}
+  ;('' + str).replace(/(\w{1})/g, letter => {
+    obj[letter] ? (obj[letter] += 1) : (obj[letter] = 1)
+    return letter
+  })
 
-    let obj = {};
-    (''+str).replace(/(\w{1})/g, letter => {
-      obj[letter]?obj[letter] += 1: obj[letter] = 1;
-      return letter;
+  let letter = '',
+    max = 0
+
+  for (let _letter in obj) {
+    if (obj[_letter] > max) {
+      max = obj[_letter]
+      letter = _letter
+    }
+  }
+
+  return { letter, max }
+}
+
+const str = 'qweqrtyuiqqqwrtyudfgerqtywer'
+console.log(maxN(str))
+```
+
+- 请编写一个 JavaScript 函数 parseQueryString ，他的用途是把 URL 参数解析为一个对象
+
+```js
+function parseQueryString(url) {
+  let result = {}
+  let arr = url.split('?')
+  if (arr.length <= 1) {
+    return result
+  } else {
+    arr = arr[1].split('#')
+    arr = arr[0].split('&')
+    arr.forEach(item => {
+      const [key, value] = item.split('=')
+      result[key] = value
     })
-
-    let letter = '',
-        max = 0;
-    
-    for(let _letter in obj) {
-      if(obj[_letter] > max) {
-        max = obj[_letter];
-        letter = _letter
-      }
-    }
-
-    return {letter, max}
   }
 
-  const str = 'qweqrtyuiqqqwrtyudfgerqtywer';
-  console.log(maxN(str))
+  return result
+}
+
+var url = 'http://witmax.cn/index.php?key0=0&key1=1&key2=2#location'
+
+console.log(parseQueryString(url))
 ```
 
-- 请编写一个 JavaScript 函数 parseQueryString ，他的用途是把URL参数解析为一个对象
-
-```js
-  function parseQueryString(url) {
-    let result = {};
-    let arr = url.split('?');
-    if(arr.length <= 1) {
-      return result;
-    } else {
-      arr = arr[1].split('#');
-      arr = arr[0].split('&');
-      arr.forEach(item => {
-        const [key, value] = item.split('=');
-        result[key] = value;
-      })
-    }
-
-    return result;
-  }
-
-  var url = "http://witmax.cn/index.php?key0=0&key1=1&key2=2#location";
-
-  console.log(parseQueryString(url))
-```
-
-- 在IE6.0下面是不支持 `position：fixed` 的，请写一个JS使用固定在页面的右下角。
+- 在 IE6.0 下面是不支持 `position：fixed` 的，请写一个 JS 使用固定在页面的右下角。
 
 ```html
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-      <title>Document</title>
-      <style>
-        .tit {
-          position: absolute;
-          width: 100px;
-          height: 100px;
-          background: red;
-          right: 0;
-          bottom: 0;
-        }
-      </style>
-    </head>
-    <body>
-      <div id="box" class="tit"></div>
-      <!-- <script>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      .tit {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background: red;
+        right: 0;
+        bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box" class="tit"></div>
+    <!-- <script>
         window.onscroll = window.onresize = window.onload = function() {
           const box = document.getElementById('box')
           const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
@@ -763,307 +770,310 @@ console.log(mapKeysToCamelCase(testData))
           box.style.top = document.documentElement.clientHeight + scrollTop - box.offsetHeight + 'px'
         }
       </script> -->
-    </body>
-  </html>
+  </body>
+</html>
 ```
 
 - 请实现，鼠标移到页面中的任意标签，显示出这个标签的基本矩形轮廓。
 
 ```js
-  function mouseOverShowBorder(container) {
-    const children = container.childNodes
-    for (let i = 0; i < children.length; i++) {
-      const child = children[i]
+function mouseOverShowBorder(container) {
+  const children = container.childNodes
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i]
 
-      if (child.nodeType === 1) {
-        child.onmouseover = function() {
-          this.style.border = '1px solid #ccc'
-        }
-
-        child.onmouseout = function() {
-          this.style.border = ''
-        }
-
-        mouseOverShowBorder(child)
+    if (child.nodeType === 1) {
+      child.onmouseover = function() {
+        this.style.border = '1px solid #ccc'
       }
+
+      child.onmouseout = function() {
+        this.style.border = ''
+      }
+
+      mouseOverShowBorder(child)
     }
   }
+}
 
-  mouseOverShowBorder(document.body)
+mouseOverShowBorder(document.body)
 ```
 
 - 排序算法
+
   - 冒泡排序
 
     ```js
-      /**
-        * 从后往前比较
-        */
-      function bubbleSort(arr) {
-        if(arr === null || arr.length === 0) return ;
+    /**
+     * 从后往前比较
+     */
+    function bubbleSort(arr) {
+      if (arr === null || arr.length === 0) return
 
-        for(let i = 0, len = arr.length - 1; i < len; i++) {
-          for(let j = arr.length - 1; j > i; j--) {
-            if(arr[j] < arr[j-1]) {
-              swap(arr, j, j-1);
-            }
+      for (let i = 0, len = arr.length - 1; i < len; i++) {
+        for (let j = arr.length - 1; j > i; j--) {
+          if (arr[j] < arr[j - 1]) {
+            swap(arr, j, j - 1)
           }
         }
-
-        function swap(arr, i, j) {
-          // let temp = arr[i];
-          // arr[i] = arr[j];
-          // arr[j] = temp;
-          [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-
-        return arr;
       }
+
+      function swap(arr, i, j) {
+        // let temp = arr[i];
+        // arr[i] = arr[j];
+        // arr[j] = temp;
+        ;[arr[i], arr[j]] = [arr[j], arr[i]]
+      }
+
+      return arr
+    }
     ```
 
   - 选择排序
-  
+
     ```js
-      function selectSort(arr) {
-        if (arr === null || arr.length === 0) return
+    function selectSort(arr) {
+      if (arr === null || arr.length === 0) return
 
-        for (let i = 0, len = arr.length - 1; i < len; i++) {
-          let minIndex = i
-          for (let j = i + 1, len = arr.length; j < len; j++) {
-            if (arr[minIndex] > arr[j]) {
-              minIndex = j
-            }
-          }
-
-          if (minIndex !== i) {
-            swap(arr, i, minIndex)
+      for (let i = 0, len = arr.length - 1; i < len; i++) {
+        let minIndex = i
+        for (let j = i + 1, len = arr.length; j < len; j++) {
+          if (arr[minIndex] > arr[j]) {
+            minIndex = j
           }
         }
 
-        function swap(arr, i, j) {
-          ;[arr[i], arr[j]] = [arr[j], arr[i]]
+        if (minIndex !== i) {
+          swap(arr, i, minIndex)
         }
-        return arr
       }
+
+      function swap(arr, i, j) {
+        ;[arr[i], arr[j]] = [arr[j], arr[i]]
+      }
+      return arr
+    }
     ```
 
   - 插入排序
-  
+
     ```js
-      function insertSort(arr) {
-        if (arr === null || arr.length === 0) return
+    function insertSort(arr) {
+      if (arr === null || arr.length === 0) return
 
-        for (let i = 1, len = arr.length; i < len; i++) {
-          // 假设第一个数是正确的
-          let j = i,
-            target = arr[i] //待插入的
+      for (let i = 1, len = arr.length; i < len; i++) {
+        // 假设第一个数是正确的
+        let j = i,
+          target = arr[i] //待插入的
 
-          //后移
-          while (j > 0 && target < arr[j - 1]) {
-            arr[j] = arr[j - 1]
-            j--
-          }
-
-          //插入
-          arr[j] = target
+        //后移
+        while (j > 0 && target < arr[j - 1]) {
+          arr[j] = arr[j - 1]
+          j--
         }
 
-        return arr
+        //插入
+        arr[j] = target
       }
+
+      return arr
+    }
     ```
 
   - 数组去重
 
     ```js
-      function unique(arr) {
-        return arr.filter((item, index) => arr.indexOf(item) === index);
-      }
+    function unique(arr) {
+      return arr.filter((item, index) => arr.indexOf(item) === index)
+    }
     ```
 
     ```js
-      function unique(arr) {
-        let obj = {};
-        return arr.filter(item => {
-          if(obj[item]) {
-            return false;
-          }
+    function unique(arr) {
+      let obj = {}
+      return arr.filter(item => {
+        if (obj[item]) {
+          return false
+        }
 
-          obj[item] = true;
-          return true;
-        })
-      }
+        obj[item] = true
+        return true
+      })
+    }
     ```
 
   - 字符串去重
 
-  ```js
+    ```js
     function unique(str) {
       return [...new Set(str)].join('')
     }
-  ```
+    ```
 
   - 输入 `携程C2t0r1i8p2020校招`, 输出 `2018Ctrip`
 
     ```js
-      function handleStr(str) {
-        let nums = str.match(/\d/g).join('');
-        let words = str.match(/[a-zA-Z]/g).join('');
+    function handleStr(str) {
+      let nums = str.match(/\d/g).join('')
+      let words = str.match(/[a-zA-Z]/g).join('')
 
-        return uniqueStr(nums) + words;
-      }
+      return uniqueStr(nums) + words
+    }
 
-      function uniqueStr(str) {
-        const arr = str.split('');
-        return arr.filter((item, index) => arr.indexOf(item) === index).join('');
-      }
+    function uniqueStr(str) {
+      const arr = str.split('')
+      return arr.filter((item, index) => arr.indexOf(item) === index).join('')
+    }
     ```
 
   - 对一维数组，根据 type 类型分组成二维数组
-    
+
     ```js
-      // var input = [null, 2, "test", undefined, {
-      //        "type": "product",
-      //        "content": "product1"
-      //      }, {
-      //        "type": "product",
-      //        "content": "product2"
-      //      }, {
-      //        "type": "tag",
-      //        "content": "tag1"
-      //      }, {
-      //        "type": "product",
-      //        "content": "product3"
-      //      }, {
-      //        "type": "tag",
-      //        "content": "tag2"
-      //      }];
+    // var input = [null, 2, "test", undefined, {
+    //        "type": "product",
+    //        "content": "product1"
+    //      }, {
+    //        "type": "product",
+    //        "content": "product2"
+    //      }, {
+    //        "type": "tag",
+    //        "content": "tag1"
+    //      }, {
+    //        "type": "product",
+    //        "content": "product3"
+    //      }, {
+    //        "type": "tag",
+    //        "content": "tag2"
+    //      }];
 
-      // output = [{"type":"product","contents":["product1","product2","product3"]},{"type":"tag","contents":["tag1","tag2"]}]
+    // output = [{"type":"product","contents":["product1","product2","product3"]},{"type":"tag","contents":["tag1","tag2"]}]
 
-        function groupList(arr) {
-          if(!Array.isArray(arr) || arr.length === 0) {
-            return []
-          }
+    function groupList(arr) {
+      if (!Array.isArray(arr) || arr.length === 0) {
+        return []
+      }
 
-          const validItems = getValidItems(arr);
-          const result = {}
+      const validItems = getValidItems(arr)
+      const result = {}
 
-          validItems.forEach(item => {
-            result[item.type] ? result[item.type].push(item) : result[item.type] = [item]
-            // if(result.hasOwnProperty(item.type)) {
-            //  result[item.type].push(item)
-            // } else {
-            //  result[item.type] = [];
-            //  result[item.type].push(item)
-            // }
-          })
+      validItems.forEach(item => {
+        result[item.type] ? result[item.type].push(item) : (result[item.type] = [item])
+        // if(result.hasOwnProperty(item.type)) {
+        //  result[item.type].push(item)
+        // } else {
+        //  result[item.type] = [];
+        //  result[item.type].push(item)
+        // }
+      })
 
-          return resultFormat(result);
-        }
+      return resultFormat(result)
+    }
 
-        function getValidItems(arr) {
-          return arr.filter(item => isPureObject(item) && item.type && item.content)
-        }
+    function getValidItems(arr) {
+      return arr.filter(item => isPureObject(item) && item.type && item.content)
+    }
 
-        function isPureObject(obj) {
-          return Object.prototype.toString.call(obj).slice(8, -1) === 'Object'
-        }
+    function isPureObject(obj) {
+      return Object.prototype.toString.call(obj).slice(8, -1) === 'Object'
+    }
 
-        function resultFormat(obj) {
-          return Object.keys(obj).map(type => {
-            return {type, contents: obj[type]}
-          })
-        }
+    function resultFormat(obj) {
+      return Object.keys(obj).map(type => {
+        return { type, contents: obj[type] }
+      })
+    }
     ```
 
   - 计算目录 `/a/b/c/d/e.js` 和 `/a/b/f/g.js` 的相对目录
+
     ```js
-      function caculateRoute(path1, path2) {
-        let pathArr1 = path1.split('/'),
-            pathArr2 = path2.split('/'),
+    function caculateRoute(path1, path2) {
+      let pathArr1 = path1.split('/'),
+        pathArr2 = path2.split('/'),
+        routeArr = [],
+        fileArr = [],
+        diff = false
 
-            routeArr = [],
-            fileArr = [],
-            diff = false;
-
-        for(let i=1, len = pathArr1.length; i<len; i++) {
-          if(pathArr1[i] !== pathArr2[i] ||  diff) {
-            if(pathArr1[i]){
-              routeArr.push('..');
-            }
-            if(pathArr2[i]) {
-              fileArr.push(pathArr2[i]);
-            }
-            diff = true
-          } else {
-            diff = false
+      for (let i = 1, len = pathArr1.length; i < len; i++) {
+        if (pathArr1[i] !== pathArr2[i] || diff) {
+          if (pathArr1[i]) {
+            routeArr.push('..')
           }
+          if (pathArr2[i]) {
+            fileArr.push(pathArr2[i])
+          }
+          diff = true
+        } else {
+          diff = false
         }
-
-        return `${routeArr.join('/')}/${fileArr.join('/')}`
       }
 
-      let path = caculateRoute('/a/b/c/d/e.js', '/a/b/f/g.js');
+      return `${routeArr.join('/')}/${fileArr.join('/')}`
+    }
+
+    let path = caculateRoute('/a/b/c/d/e.js', '/a/b/f/g.js')
     ```
 
-  - 使用promise 4秒后打印’A’，然后经过3秒打印’B’，再经过2秒打印’C’，再经过一秒打印’D’。
+  - 使用 promise 4 秒后打印’A’，然后经过 3 秒打印’B’，再经过 2 秒打印’C’，再经过一秒打印’D’。
 
     ```js
-      let promise = new Promise((resolve) => {
-        setTimeout(()=>{
-          console.log('A');
-          resolve();
-        }, 4000);
-      })
+    let promise = new Promise(resolve => {
+      setTimeout(() => {
+        console.log('A')
+        resolve()
+      }, 4000)
+    })
 
-      promise.then(() => {
-        return new Promise((resolve)=> {
+    promise
+      .then(() => {
+        return new Promise(resolve => {
           setTimeout(() => {
-            console.log('B');
-            resolve();
-          }, 3000);
-        })
-      })
-      .then(()=>{
-        return new Promise((resolve) => {
-          setTimeout(()=> {
-            console.log('C');
-            resolve();
-          }, 2000);
+            console.log('B')
+            resolve()
+          }, 3000)
         })
       })
       .then(() => {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           setTimeout(() => {
-            console.log('D');
-            resolve();
-          }, 1000);
+            console.log('C')
+            resolve()
+          }, 2000)
+        })
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            console.log('D')
+            resolve()
+          }, 1000)
         })
       })
     ```
 
-  - 实现一个数组中删除一个子数组的函数，要求函数中不return返回新的数组。
+  - 实现一个数组中删除一个子数组的函数，要求函数中不 return 返回新的数组。
 
     ```js
-      function removeSubArray(main, sub) {
-        for(let i=0; i<main.length; i++) {
-          if(sub.includes(main[i])) {
-            main.splice(i, 1);
-            i--;
-          }
+    function removeSubArray(main, sub) {
+      for (let i = 0; i < main.length; i++) {
+        if (sub.includes(main[i])) {
+          main.splice(i, 1)
+          i--
         }
       }
+    }
     ```
 
 ## [JavaScript 中的对象拷贝](https://juejin.im/entry/5a28ec86f265da43163cf720)
 
-* 浅拷贝
+- 浅拷贝
+
   - Object.assign()、扩展运算符(...)
-    1. 复制对象的可枚举属性  
+    1. 复制对象的可枚举属性
     2. 可以拷贝方法，和循环引用
     3. 复制的嵌套属性是引用，共享
 
-* 深拷贝
+- 深拷贝
   - JSON.parse(JSON.stringify(obj))  
     原型改变，不能复制对象方法，不能复制循环引用
   - 递归遍历属性，复制属性 Object.getOwnPropertyDescriptor
@@ -1081,18 +1091,17 @@ console.log(mapKeysToCamelCase(testData))
   }
 ```
 
-## for...in迭代和for...of有什么区别
+## for...in 迭代和 for...of 有什么区别
 
-  * for...in
-    > 以任意顺序遍历对象的可枚举属性 （enumerable properties），包括对象从其构造函数原型中继承的属性。
+- for...in
 
-  * for...of 
-    > 遍历可迭代对象（iterable object, 定义了 Symbol.iterator 方法） 定义的可迭代的数据 ，比如遍历 Array，Map，Set，String，TypedArray，arguments 等对象的数据。
+  > 以任意顺序遍历对象的可枚举属性 （enumerable properties），包括对象从其构造函数原型中继承的属性。
 
+- for...of
+  > 遍历可迭代对象（iterable object, 定义了 Symbol.iterator 方法） 定义的可迭代的数据 ，比如遍历 Array，Map，Set，String，TypedArray，arguments 等对象的数据。
 
-- [for...in 和 for...of 区别](https://blog.csdn.net/wangjun5159/article/details/51479569)
-- [for in 和for of的区别](https://www.jianshu.com/p/c43f418d6bf0)
-
+* [for...in 和 for...of 区别](https://blog.csdn.net/wangjun5159/article/details/51479569)
+* [for in 和 for of 的区别](https://www.jianshu.com/p/c43f418d6bf0)
 
 ## [深入理解 Babel 原理及其使用](https://www.jianshu.com/p/e9b94b2d52e2)
 
@@ -1288,6 +1297,7 @@ console.log(mapKeysToCamelCase(testData))
     return dfd
   }
   ```
+
 ### generator
 
 <iframe src="http://es6.ruanyifeng.com/#docs/generator" width="100%" frameborder="0" height="500px" ></iframe>
@@ -1297,41 +1307,49 @@ console.log(mapKeysToCamelCase(testData))
 ```js
 function spawn(genF) {
   return new Promise(function(resolve, reject) {
-    const gen = genF();
+    const gen = genF()
 
     function step(nextF) {
-      let next;
-      try{
-        next = nextF();
-      }catch(err) {
-        return reject(err);
+      let next
+      try {
+        next = nextF()
+      } catch (err) {
+        return reject(err)
       }
-      if(next.done) {
-        return resolve(next.value);
+      if (next.done) {
+        return resolve(next.value)
       }
 
-      Promise.resolve(next.value).then(function(v) {
-        step(function() { return gen.next(v); });
-      }, function(err) {
-        step(function() { return gen.throw(err); });
-      });
+      Promise.resolve(next.value).then(
+        function(v) {
+          step(function() {
+            return gen.next(v)
+          })
+        },
+        function(err) {
+          step(function() {
+            return gen.throw(err)
+          })
+        }
+      )
     }
 
-    step(function() { return gen.next(undefined); });
+    step(function() {
+      return gen.next(undefined)
+    })
   })
 }
-
 ```
 
 <iframe src="http://es6.ruanyifeng.com/#docs/async#async-%E5%87%BD%E6%95%B0%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86" width="100%" frameborder="0" height="500px" ></iframe>
 
 ### promise 和 async 区别
 
-  async 和 promise 都不会阻塞执行，await 只会对 async 函数内 await 之后的代码产生阻塞。  
+async 和 promise 都不会阻塞执行，await 只会对 async 函数内 await 之后的代码产生阻塞。
 
-  async 异常捕获用 try...catch, promise 直接用 catch(), try...catch 无法捕获 promise 异常。  
+async 异常捕获用 try...catch, promise 直接用 catch(), try...catch 无法捕获 promise 异常。
 
-  async...await 是 Generator 函数语法糖， co 模块实现是通过 Promise 包装的。
+async...await 是 Generator 函数语法糖， co 模块实现是通过 Promise 包装的。
 
 ## 防抖与节流
 
@@ -1342,44 +1360,44 @@ function spawn(genF) {
   [lodash debounce](https://github.com/lodash/lodash/blob/master/debounce.js)
 
   ```js
-    function debounce(fn, interval) {
-      let timeout = null;
-      return function() {
-        clearTimeout(timeout);
+  function debounce(fn, interval) {
+    let timeout = null
+    return function() {
+      clearTimeout(timeout)
 
-        timeout = setTimeout(() => {
-          fn.apply(this, arguments);
-        }, interval);
-      }
+      timeout = setTimeout(() => {
+        fn.apply(this, arguments)
+      }, interval)
     }
+  }
   ```
 
 - 节流
 
-  每隔一段时间后执行一次，也就是降低频率，将高频操作优化成低频操作，通常使用场景: 滚动条事件 或者 resize 事件，通常每隔 100~500 ms执行一次即可。
-  
+  每隔一段时间后执行一次，也就是降低频率，将高频操作优化成低频操作，通常使用场景: 滚动条事件 或者 resize 事件，通常每隔 100~500 ms 执行一次即可。
+
   [lodash throttle](https://github.com/lodash/lodash/blob/master/throttle.js)
 
   ```js
-    function throttle(fn, interval) {
-      let canRun = true;
-      return function() {
-        if(!canRun) return 
+  function throttle(fn, interval) {
+    let canRun = true
+    return function() {
+      if (!canRun) return
 
-        canRun = false;
+      canRun = false
 
-        setTimeout(() => {
-          fn.apply(this, arguments);
-          canRun = true;
-        }, interval);
-      }
+      setTimeout(() => {
+        fn.apply(this, arguments)
+        canRun = true
+      }, interval)
     }
+  }
   ```
 
 ## this 指向
 
-- [彻底理解js中this的指向，不必硬背。](https://www.cnblogs.com/pssp/p/5216085.html)
-- [彻底理解JavaScript中的this](https://juejin.im/post/5c049e6de51d45471745eb98)
+- [彻底理解 js 中 this 的指向，不必硬背。](https://www.cnblogs.com/pssp/p/5216085.html)
+- [彻底理解 JavaScript 中的 this](https://juejin.im/post/5c049e6de51d45471745eb98)
 
 ## import 和 require 的区别
 
@@ -1453,24 +1471,28 @@ function spawn(genF) {
 
 defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生成，以及其他脚本执行完成），才会执行；async 一旦下载完，渲染引擎就会中断渲染，执行这个脚本以后，再继续渲染。一句话，defer 是“渲染完再执行”，async 是“下载完就执行”。另外，如果有多个 defer 脚本，会按照它们在页面出现的顺序加载，而多个 async 脚本是不能保证加载顺序的。
 
-“每一个defer属性的脚本都是在页面解析完毕之后，按照原本的顺序执行，同时会在document的DOMContentLoaded之前执行。”--------------HTML5规范要求脚本执行应该按照脚本出现的先后顺序执行，但实际情况下，延迟脚本不一定按照先后顺序执行！！！
+“每一个 defer 属性的脚本都是在页面解析完毕之后，按照原本的顺序执行，同时会在 document 的 DOMContentLoaded 之前执行。”--------------HTML5 规范要求脚本执行应该按照脚本出现的先后顺序执行，但实际情况下，延迟脚本不一定按照先后顺序执行！！！
 
 ![](https://segmentfault.com/img/bVWhRl?w=801&h=814)
 
 # 浏览器
 
 ## Cookie
-  - [SameSite cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#SameSite_cookies)
-    - Strict: same origin
-    - Lax: 在跨站点子请求中不携带 same-site cookies，例如加载图像或帧的调用。但是当用户从外部站点导航到URL时将发送 same-site cookies
-  - Secure
-  - HttpOnly
 
-## [chrome显示12px以下字体的解决方法](https://blog.csdn.net/u012011360/article/details/41846905)
+- [SameSite cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#SameSite_cookies)
+  - Strict: same origin
+  - Lax: 在跨站点子请求中不携带 same-site cookies，例如加载图像或帧的调用。但是当用户从外部站点导航到 URL 时将发送 same-site cookies
+  ```js
+    Set-Cookie: key=value; SameSite=Strict
+  ```
+- Secure
+- HttpOnly
+
+## [chrome 显示 12px 以下字体的解决方法](https://blog.csdn.net/u012011360/article/details/41846905)
 
 ```html
-  <span style="display: 'block'; font-size='16px'; transform: scale(0.5);">8px 字体</span>
-``` 
+<span style="display: 'block'; font-size='16px'; transform: scale(0.5);">8px 字体</span>
+```
 
 ## 跨域
 
@@ -1479,13 +1501,23 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
     <iframe src="https://segmentfault.com/a/1190000011145364" width="100%" frameborder="0" height="500px" ></iframe>
 
 - [CORS](http://www.ruanyifeng.com/blog/2016/04/cors.html)
+
   ```js
+    Access-Control-Allow-Origin: *                      // 对于不需要携带身份凭证的请求，服务器可以指定该字段的值为通配符，表示允许来自所有域的请求。
     Access-Control-Allow-Methods: GET, POST, PUT
-    Access-Control-Allow-Headers: X-Custom-Header
+    Access-Control-Allow-Headers: X-Custom-Header       // 允许客户端在请求中携带头部
     Access-Control-Allow-Credentials: true
-    Access-Control-Max-Age: 1728000
+    Access-Control-Max-Age: 1728000                     // 指定了preflight请求的结果能够被缓存多久
+    /**
+      * 在跨域访问时，XMLHttpRequest对象的getResponseHeader()方法只能拿到一些最基本的响应头，Cache-Control、Content-Language、Content-Type、Expires、Last-Modified、Pragma，如果要访问其他头，则需要服务器设置本响应头。
+      */
+    Access-Control-Expose-Headers: X-My-Custom-Header, X-Custom-Header
   ```
+
   - 跨域携带 cookie
+
+    > 对于附带身份凭证的请求，服务器不得设置 Access-Control-Allow-Origin 的值为“\*”。
+
     ```js
       // 服务端
       Access-Control-Allow-Credentials: true
@@ -1493,69 +1525,71 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       // 客户端
       XMLHttpRequest.withCredentials = true
     ```
+
     [XMLHttpRequest.withCredentials](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/withCredentials)
-    
+
     [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials)
 
 ## [跨页面通信的各种姿势](https://zhuanlan.zhihu.com/p/29368435)
 
 - 获取句柄，postMessage
-  ```js
-    const childPage = window.open(strUrl, strWindowName, [strWindowFeatures]);
-
-    childPage.onload = () => {
-      childPage.postMessage(message, targetOrigin, [transfer]);
-    };
-
-    window.onmessage = e => {
-      console.log(e.data)
-      console.log(e.origin)
-      console.log(e.source)
-    }
-
-  ```
-- localStorage,设置共享区域的storage，storage会触发storage事件
 
   ```js
-    localStorage.setItem('message', 'hello');
+  const childPage = window.open(strUrl, strWindowName, [strWindowFeatures])
 
-    window.onStorage = (evt) => {
-      // evt.key evt.oldValue evt.newValue
-    }
+  childPage.onload = () => {
+    childPage.postMessage(message, targetOrigin, [transfer])
+  }
+
+  window.onmessage = e => {
+    console.log(e.data)
+    console.log(e.origin)
+    console.log(e.source)
+  }
   ```
 
-    - 触发写入操作的页面下的 **storage listener** 不会被触发
-    - storage 事件只有在发生改变的时候才会触发，即重复设置相同值不会触发 listener
-    - safari 隐身模式下无法设置localStorage值
+- localStorage,设置共享区域的 storage，storage 会触发 storage 事件
+
+  ```js
+  localStorage.setItem('message', 'hello')
+
+  window.onStorage = evt => {
+    // evt.key evt.oldValue evt.newValue
+  }
+  ```
+
+  - 触发写入操作的页面下的 **storage listener** 不会被触发
+  - storage 事件只有在发生改变的时候才会触发，即重复设置相同值不会触发 listener
+  - safari 隐身模式下无法设置 localStorage 值
 
 - BroadcastChannel
 
   ```js
-    // a.html
-    const channel = new BroadcastChannel('tabs')
-    channel.onmessage = evt => {
-      // evt.data
-    }
+  // a.html
+  const channel = new BroadcastChannel('tabs')
+  channel.onmessage = evt => {
+    // evt.data
+  }
 
-    // b.html
-    const channel = new BroadcastChannel('tabs')
-    channel.postMessage('hello')
+  // b.html
+  const channel = new BroadcastChannel('tabs')
+  channel.postMessage('hello')
   ```
 
 - SharedWorker
 
 - cookie
 
-  一个古老的方案，有点`localStorage`的降级兼容版，我也是整理本文的时候才发现的，思路就是往`document.cookie`写入值，由于cookie的改变没有事件通知，所以只能采取轮询脏检查来实现业务逻辑。
+  一个古老的方案，有点`localStorage`的降级兼容版，我也是整理本文的时候才发现的，思路就是往`document.cookie`写入值，由于 cookie 的改变没有事件通知，所以只能采取轮询脏检查来实现业务逻辑。
 
 - Server
-  
 
 ## [深入浅出浏览器渲染原理](https://juejin.im/post/5c24d736f265da614b120d4a)
 
 ## CSS 和 JS 解析、渲染
+
 - [原来 CSS 与 JS 是这样阻塞 DOM 解析和渲染的](https://juejin.im/post/59c60691518825396f4f71a1)
-- [css加载会造成阻塞吗？](https://juejin.im/post/5b88ddca6fb9a019c7717096)
+- [css 加载会造成阻塞吗？](https://juejin.im/post/5b88ddca6fb9a019c7717096)
   - DOM 解析和 CSSOM 解析是两个并行的线程，CSS 的加载不会阻塞 DOM 的解析
   - CSS 加载会阻塞 DOM 树的渲染的
   - 由于 JS 会操作之前的 DOM 节点和 CSS 样式，因此，浏览器会维持 html 中 CSS 和 JS 的顺序。因此，CSS 会在后面的 JS 执行之前先加载执行完毕，所以 CSS 会阻塞后面 JS 的执行。
@@ -1563,17 +1597,18 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 ## Event loop
 
-- [带你彻底弄懂Event Loop](https://juejin.im/post/5b8f76675188255c7c653811)
+- [带你彻底弄懂 Event Loop](https://juejin.im/post/5b8f76675188255c7c653811)
 - [浏览器事件循环机制（event loop）](https://juejin.im/post/5afbc62151882542af04112d)
-- [JavaScript 运行机制详解：再谈Event Loop](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)
+- [JavaScript 运行机制详解：再谈 Event Loop](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)
 
 ## IO 模式
-- [Linux IO模式及 select、poll、epoll详解](https://segmentfault.com/a/1190000003063859?utm_source=Weibo&utm_medium=shareLink&utm_campaign=socialShare#articleHeader0)
+
+- [Linux IO 模式及 select、poll、epoll 详解](https://segmentfault.com/a/1190000003063859?utm_source=Weibo&utm_medium=shareLink&utm_campaign=socialShare#articleHeader0)
 - [大话 Select、Poll、Epoll](https://cloud.tencent.com/developer/article/1005481)
 
-## V8引擎中的垃圾回收机制
+## V8 引擎中的垃圾回收机制
 
-- [浅谈V8引擎中的垃圾回收机制](https://segmentfault.com/a/1190000000440270)
+- [浅谈 V8 引擎中的垃圾回收机制](https://segmentfault.com/a/1190000000440270)
 
 ## 浏览器缓存
 
@@ -1583,21 +1618,24 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
   - no-cache: 告诉浏览器、缓存服务器，不管本地副本是否过期，使用资源副本前，一定要到源服务器进行副本有效性校验。
   - must-revalidate：告诉浏览器、缓存服务器，本地副本过期前，可以使用本地副本；本地副本一旦过期，必须去源服务器进行有效性校验。
 
-## [DNS解析过程及DNS优化](https://blog.csdn.net/cat_foursi/article/details/71194397)
+## [DNS 解析过程及 DNS 优化](https://blog.csdn.net/cat_foursi/article/details/71194397)
 
 ## 前端安全
 
 - [前端安全知多少](https://juejin.im/entry/598d6eb46fb9a03c3a25d2c1)
-- [如何防止XSS攻击？](https://tech.meituan.com/2018/09/27/fe-security.html)
+- [如何防止 XSS 攻击？](https://tech.meituan.com/2018/09/27/fe-security.html)
+
   - xss
+
     > Cross-Site Scripting（跨站脚本攻击）简称 XSS，是一种代码注入攻击。攻击者通过在目标网站上注入恶意脚本，使之在用户的浏览器上运行。利用这些恶意脚本，攻击者可获取用户的敏感信息如 Cookie、SessionID 等，进而危害数据安全。
 
     > XSS 的本质是：恶意代码未经过滤，与网站正常的代码混在一起；浏览器无法分辨哪些脚本是可信的，导致恶意脚本被执行。
 
     为了和 CSS 区分，这里把攻击的第一个字母改成了 X，于是叫做 XSS。
-        - html 转义为实体
-        - 在标签的 href、src 等属性中，包含 javascript: 等可执行代码。
-    XSS 分类
+
+    - html 转义为实体
+    - 在标签的 href、src 等属性中，包含 `javascript:` 等可执行代码。
+      XSS 分类
 
     - 存储型 XSS：
       存储型 XSS 的攻击步骤：
@@ -1608,7 +1646,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       4. 恶意代码窃取用户数据并发送到攻击者的网站，或者冒充用户的行为，调用目标网站接口执行攻击者指定的操作。
 
       这种攻击常见于带有用户保存数据的网站功能，如论坛发帖、商品评论、用户私信等。
-    
+
     - 反射型 XSS:
       反射型 XSS 的攻击步骤：
 
@@ -1628,29 +1666,30 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
     - DOM 型 XSS:
       DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行恶意代码由浏览器端完成，属于前端 JavaScript 自身的安全漏洞，而其他两种 XSS 都属于服务端的安全漏洞。
       ```html
-        <script>
-          eval(location.hash.substr(1));
-          // 而这个时候，如果用户在网址后面加上恶意代码
-          "http://www.xss.com#alert(document.cookie)"
-        </script>
+      <script>
+        eval(location.hash.substr(1))
+        // 而这个时候，如果用户在网址后面加上恶意代码
+        ;('http://www.xss.com#alert(document.cookie)')
+      </script>
       ```
-    
+
     XSS 预防：
-      1. 输入过滤，转义输出、存储
-      2. 避免使用eval，new Function等执行字符串的方法，除非确定字符串和用户输入无关。
-        `new Function ([arg1[, arg2[, ...argN]],] functionBody)`
-      3. 使用innerHTML，document.write的时候，如果数据是用户输入的，那么需要对关键字符都进行过滤与转义。
-      4. 对于非客户端cookie，比如保存用户凭证的session，务必标识为http only，这样js就获取不到这个cookie值了，安全性得到提高。
-      5. X-XSS-Protection
-      6. cookie secure\httpOnly
+
+    1. 输入过滤，转义输出、存储
+    2. 避免使用 eval，new Function 等执行字符串的方法，除非确定字符串和用户输入无关。
+       `new Function ([arg1[, arg2[, ...argN]],] functionBody)`
+    3. 使用 innerHTML，document.write 的时候，如果数据是用户输入的，那么需要对关键字符都进行过滤与转义。
+    4. 对于非客户端 cookie，比如保存用户凭证的 session，务必标识为 http only，这样 js 就获取不到这个 cookie 值了，安全性得到提高。
+    5. X-XSS-Protection
+    6. cookie secure\httpOnly
 
   - CSRF
-    - [浅谈CSRF攻击方式](https://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html)
+    - [浅谈 CSRF 攻击方式](https://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html)
     - [跨站请求伪造与 Same-Site Cookie](https://www.jianshu.com/p/66f77b8f1759)
     - 预防
-      - 检测http referer是否是同域名，通常来讲，用户提交的请求，referer应该是来来自站内地址，所以如果发现referer中地址异常，那么很可能是遭到了CSRF攻击。
-      - 避免登录的session长时间存储在客户端中。
-      - 关键请求使用验证码或者token机制。在一些十分关键的操作，比如交易付款环节。这种请求中，加入验证码，可以防止被恶意用户攻击。token机制也有一定的防御作用。具体来说就是服务器每次返回客户端页面的时候，在页面中埋上一个token字段，例如 `<input type=“hidden” name=“csrftoken” value=“abcd">`。 之后，客户端请求的时候带上这个token，使用这个机制后，攻击者也就很难发起CSRF攻击了。
+      - 检测 http referer 是否是同域名，通常来讲，用户提交的请求，referer 应该是来来自站内地址，所以如果发现 referer 中地址异常，那么很可能是遭到了 CSRF 攻击。
+      - 避免登录的 session 长时间存储在客户端中。
+      - 关键请求使用验证码或者 token 机制。在一些十分关键的操作，比如交易付款环节。这种请求中，加入验证码，可以防止被恶意用户攻击。token 机制也有一定的防御作用。具体来说就是服务器每次返回客户端页面的时候，在页面中埋上一个 token 字段，例如 `<input type=“hidden” name=“csrftoken” value=“abcd">`。 之后，客户端请求的时候带上这个 token，使用这个机制后，攻击者也就很难发起 CSRF 攻击了。
       - sameSite cookie
       - 浏览器跨域携带 cookie 时 `credentials: 'same-origin'`
 
@@ -1666,6 +1705,22 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 - [BFC(块格式化上下文)](https://segmentfault.com/a/1190000013647777)
 
+  - 创建 BFC
+    - 根元素或包含根元素的元素
+    - 浮动元素 float: left/right/inherit(!= none);
+    - 定位元素 position: absolute/fixed;
+    - display:inline-block/flex/inline-flex/table-cell/table-caption
+    - overflow: hidden/auto/scroll
+  - BFC 特性
+    - 一个独立的布局环境，内部的元素不会影响外部的元素，反之亦如此；
+    - 内部子元素从顶端开始垂直的一个接一个的排列，子元素之间垂直的间距是由 margin 决定的；
+    - 同一个 BFC 中，相邻的块级盒子的垂直外边距会发生重叠；
+    - BFC 区块不会和 float 区块发生重叠；
+    - BFC 能够识别并包含浮动元素，当计算其区域的高度时，浮动元素也参与计算；
+  - BFC 作用
+    - 清除浮动，解决浮动后高度塌陷问题
+    - 避免外边距折叠（外边距折叠（Margin collapsing）只会发生在属于同一 BFC 的块级元素之间。如果它们属于不同的 BFC，它们之间的外边距则不会折叠。所以通过创建一个不同的 BFC ，就可以避免外边距折叠。）
+
 - [关于 CSS-BFC 深入理解](https://juejin.im/post/5909db2fda2f60005d2093db)
 
 - [10 分钟理解 BFC 原理](https://zhuanlan.zhihu.com/p/25321647)
@@ -1676,109 +1731,322 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 - [clearfix（清除浮动）](https://segmentfault.com/a/1190000013664630)
 
+  - 使用 clear 属性
+
+    ```css
+    .container::after {
+      content: ' ';
+      display: block;
+      clear: both;
+    }
+    ```
+
+    // 可能有些代码有添加::before,且 display：table
+
+    ```css
+    .container::before,
+    .container::after {
+      content: ' ';
+      display: table;
+    }
+
+    .container::after {
+      clear: both;
+    }
+    ```
+
+    // 实际上添加的部分跟浮动并没有关系，他们的作用是防止子元素的 margin-top 发生重叠。但添加::before 就必须将 display 设置为 table。主要原理：display 设置为 table 时会出现一个匿名表格单元格（anonymous table-cell），从而创建一个新的 BFC（下文会提及），根据 BFC 的布局规则，会使 margin-top 不重叠。这里只是解释说明有些代码出现这种写法的原因，如果没有防止重叠的需求，完全可以精简代码，使用上一种写法。
+
+    ```css
+    .clearfix::after {
+      content: '';
+      display: block;
+      clear: both;
+      visibility: hidden;
+      height: 0;
+    }
+
+    .clearfix {
+      zoom: 1; /* For IE 6/7 (trigger hasLayout) */
+    }
+    ```
+
+  - 添加标签
+    ```html
+    <br style="clear:both" />
+    ```
+  - 触发浮动元素父元素的 BFC
+
 ## 层叠上下文
 
 - [深入理解 CSS 中的层叠上下文和层叠顺序](https://www.zhangxinxu.com/wordpress/2016/01/understand-css-stacking-context-order-z-index/)
-  
-![](https://image.zhangxinxu.com/image/blog/201601/2016-01-09_211116.png)
+
+  层叠顺序：background/border -> 负 z-index -> block 块状水平盒子 -> float 浮动盒子 -> inline/inline-block 水平盒子 -> z-index:auto/z-index:0/不依赖 z-index -> 正 z-index
+
+  ![](https://image.zhangxinxu.com/image/blog/201601/2016-01-09_211116.png)
 
 ## Flex 布局
 
 - [Flex 布局教程：语法篇](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)
+
   - container 属性
-    - flex-direction: 
+
+    - display: inline-flex/flex
+    - flex-direction: `row`、`row-reverse`、`column`、`column-reverse`
     - flex-wrap: `nowrap`、`wrap`、`wrap-reverse`;
     - flex-flow: flex-direction 属性和 flex-wrap 属性的简写形式，默认值为 `row nowrap`;
-    - justify-content: flex-start | flex-end | center | space-between | space-around;
+    - justify-content: flex-start | flex-end | center | space-between | space-around | space-evenly;
     - align-items: flex-start | flex-end | center | baseline | stretch;
     - align-content: 多根轴线的对齐方式。flex-start | flex-end | center | space-between | space-around | stretch
 
   - 子项的属性
     - order
-    - flex-grow: 定义项目的放大比例，默认为0
-    - flex-shrink: 定义了项目的缩小比例，默认为1，即如果空间不足，该项目将缩小。
-    - flex-basis: `<length> | auto`。 // 在分配多余空间之前，项目占据的主轴空间（main size）。默认值为auto，即项目的本来大小。
-    - flex: flex-grow, flex-shrink 和 flex-basis的简写，默认值为0 1 auto。后两个属性可选。该属性有两个快捷值：auto (1 1 auto) 和 none (0 0 auto)。
-    - align-self: `auto | flex-start | flex-end | center | baseline | stretch`; 允许单个项目有与其他项目不一样的对齐方式，可覆盖align-items属性。默认值为auto，表示继承父元素的align-items属性，如果没有父元素，则等同于stretch
+    - flex-grow: 定义项目的放大比例，默认为 0
+    - flex-shrink: 定义了项目的缩小比例，默认为 1，即如果空间不足，该项目将缩小。
+    - flex-basis: `<length> | auto`。 // 在分配多余空间之前，项目占据的主轴空间（main size）。默认值为 auto，即项目的本来大小。
+    - flex: flex-grow, flex-shrink 和 flex-basis 的简写，默认值为 0 1 auto。后两个属性可选。该属性有两个快捷值：auto (1 1 auto) 和 none (0 0 auto)。
+    - align-self: `auto | flex-start | flex-end | center | baseline | stretch`; 允许单个项目有与其他项目不一样的对齐方式，可覆盖 align-items 属性。默认值为 auto，表示继承父元素的 align-items 属性，如果没有父元素，则等同于 stretch
+
 - [Flex 布局教程：实例篇](http://www.ruanyifeng.com/blog/2015/07/flex-examples.html)
 
 ## Grid 布局
 
-- [写给自己看的display: grid布局教程](https://www.zhangxinxu.com/wordpress/2018/11/display-grid-css-css3/)
+- [写给自己看的 display: grid 布局教程](https://www.zhangxinxu.com/wordpress/2018/11/display-grid-css-css3/)
 
 ## [居中方法](https://juejin.im/post/5b94d8965188255c5a0cdc02)
 
-## [小tips:了解CSS/CSS3原生变量var](https://www.zhangxinxu.com/wordpress/2016/11/css-css3-variables-var/)
+- 水平居中
+  - text-align: center;(针对 inline, 内联块 inline-block, 内联表 inline-table, inline-flex 元素及 img,span,button 等元素)
+  - margin: 0 auto;(不定宽块状元素居中)
+  - 绝对布局
+    ```css
+    /*已知宽度*/
+    .container {
+      position: relative;
+    }
+    .child {
+      position: absolute;
+      left: 50%;
+      width: 100px;
+      margin-left: -50px;
+    }
+    ```
+    ```css
+    /*未知高度*/
+    .container {
+      position: relative;
+    }
+    .child {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    ```
+  - flex 布局
+- 垂直居中
+  - height: 20px; line-height: 20px;(单行内联(inline-)元素垂直居中)
+  - .container{display: table;} .child {display: table-cell; vertical-align: middle;}
+  - 绝对布局
+    ```css
+    /*已知高度*/
+    .container {
+      position: relative;
+    }
+    .child {
+      position: absolute;
+      top: 50%;
+      height: 100px;
+      margin-top: -50px;
+    }
+    ```
+    ```css
+    /*未知高度*/
+    .container {
+      position: relative;
+    }
+    .child {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    ```
+  - flex 布局
+- 水平垂直居中
+  - flex 布局
+  - grid 布局
+  - 结合以上方案
 
-## [CSS实现长宽比的几种方案](https://www.w3cplus.com/css/aspect-ratio.html)
+## [小 tips:了解 CSS/CSS3 原生变量 var](https://www.zhangxinxu.com/wordpress/2016/11/css-css3-variables-var/)
+
+- CSS 中原生的变量定义语法是：`--*`，变量使用语法是：`var(--*)`，其中`*`表示我们的变量名称。
+  ```css
+  :root {
+    --1: #369;
+    --深蓝: #369;
+  }
+  body {
+    background-color: var(--1);
+  }
+  ```
+
+## [CSS 实现长宽比的几种方案](https://www.w3cplus.com/css/aspect-ratio.html)
+
 - CSS 实现自适应正方形
 
   ```html
-    <div style="border: 1px solid; width: 10vmin; height: 10vmin;"></div>
+  <div style="border: 1px solid; width: 10vmin; height: 10vmin;"></div>
 
-    <div style="border: 1px solid; width: 30%; height: 0; padding-bottom: 30%;"></div>
+  <div style="border: 1px solid; width: 30%; height: 0; padding-bottom: 30%;"></div>
 
-    <style>
-      div::after {
-        content: '';
-        display: block;
-        margin-top: 100%;
-      }
-    </style>
-    <div style="border: 1px solid; width: 30%; overflow: hidden;"></div>
+  <style>
+    div::after {
+      content: '';
+      display: block;
+      margin-top: 100%;
+    }
+  </style>
+  <div style="border: 1px solid; width: 30%; overflow: hidden;"></div>
   ```
-  
-- [CSS3技巧之形状（椭圆）（border-raduis）](https://www.jianshu.com/p/f13122a9651c)
+
+- [CSS3 技巧之形状（椭圆）（border-raduis）](https://www.jianshu.com/p/f13122a9651c)
 
   ```html
-    <div style="width: 200px; height: 100px; border-raduis: 100px 50px; border: 1px solid;"></div>
+  <div style="width: 200px; height: 100px; border-raduis: 100px 50px; border: 1px solid;"></div>
   ```
 
 - 三角形实现
 
+  <div
+    style="box-size:border-box; width: 0px;border-left: 10px solid red; border-top: 10px solid transparent; border-bottom: 10px solid transparent;border-right: 10px solid red"
+  ></div>
+
+  ```html
+  <div
+    style="border-left: 10px solid red; border-top: 10px solid transparent; border-bottom: 10px solid transparent;border-right: 10px solid transparent"
+  ></div>
+  ```
+
+  <div style="width: 10px; height: 10px; border-left: 10px solid red; border-top: 10px solid blue; border-bottom: 10px solid green;border-right: 10px solid yellow"></div>
+
+  ```html
+  <div
+    style="width: 10px; height: 10px; border-left: 10px solid red; border-top: 10px solid blue; border-bottom: 10px solid green;border-right: 10px solid yellow"
+  ></div>
+  ```
+
 ## [伪类与伪元素](http://www.alloyteam.com/2016/05/summary-of-pseudo-classes-and-pseudo-elements/)
+
+css 引入伪类和伪元素概念是为了格式化文档树以外的信息
+
+- 伪元素
+
+  - ::before/:before
+  - ::after/:after
+  - ::first-line/:first-line
+  - ::first-letter
+  - ::selection
+  - ::placeholder
+  - ::backdrop 用于改变全屏模式下的背景颜色.该伪元素只支持双冒号的形式
+
+- 伪类
+  - :link
+  - :visited
+  - :hover
+  - :active
+  - :focus
+  - :not
+  - :first-child
+  - :last-child
+  - :first-of-type
+  - :last-of-type
+  - :nth-child
+  - :nth-of-type
+  - :nth-last-child
+  - :nth-last-type
+  - :only-child
+  - :only-of-type
+  - :target
+  - :checked
+  - :disabled
+  - :enabled
+  - :root
 
 ## <a href="./index.html" target="_blank">css 布局</a>
 
 - [css 网页的几种布局](https://juejin.im/post/5a260aaa6fb9a0451b0464f0)
 - [CSS 布局说——可能是最全的](https://mp.weixin.qq.com/s/iQ8mSr4oEAC8Ve6IdiN9jQ)
-  
 
 # 网络层
 
 ## http
 
-- HTTP响应头
-  - X-Frame-Options 禁止页面被加载进 iframe 中
-  - X-XSS-Protection 对于反射型XSS进行一些防御
+- HTTP 响应头
+
+  - X-Frame-Options (禁止页面被加载进 iframe 中):
+    - `DENY`: 表示该页面不允许在 frame 中展示，即便是在相同域名的页面中嵌套也不允许。
+    - `SAMEORIGIN`: 表示该页面可以在相同域名页面的 frame 中展示。
+    - `ALLOW-FROM uri`: 表示该页面可以在指定来源的 frame 中展示。
+  - X-XSS-Protection 对于反射型 XSS 进行一些防御
   - [Content-Security-Policy(内容安全策略( CSP ))](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP)
-    ```Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com```
+  - [Content-Security-Policy](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy__by_cnvoid)
+
+    `Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com`
+
+    - 所有内容均来自站点的同一个源 (不包括其子域名)
+
+    ```js
+    Content-Security-Policy: default-src 'self';
+    ```
+
+    - 允许内容来自信任的域名及其子域名 (域名不必须与 CSP 设置所在的域名相同)
+
+    ```js
+    Content-Security-Policy: default-src 'self' *.trusted.com;
+    ```
+
+    - 所有内容均来自站点的同一个源 (不包括其子域名)
+
+    ```js
+    Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com;
+    ```
 
 - [HTTP 报文](https://www.cnblogs.com/klguang/p/4618526.html)
+  - 请求
+    - 起始行：`method`、`path`、`HTTP version`
+    - 首部
+    - 主体
+  - 响应
+    - 起始行：`HTTP version`、`status code`、`status description`
+    - 首部
+    - 主体
 - [HTTP 协议](https://zhuanlan.zhihu.com/p/24913080)
 - [HTTP 请求方法：GET、HEAD、POST、PUT、DELETE、CONNECT、OPTIONS、TRACE、PATCH](https://itbilu.com/other/relate/EkwKysXIl.html)
+  - PUT 和 PATCH 区别
+    - PUT 一般是资源的整体更新，PATCH 一般是资源的部分更新
+    - 当资源不存在时，PATCH 会创建一个新的资源，PUT 只会对已在资源进行更新。
 - [HTTP 中 GET 与 POST 的区别](https://mp.weixin.qq.com/s?__biz=MzI3NzIzMzg3Mw==&mid=100000054&idx=1&sn=71f6c214f3833d9ca20b9f7dcd9d33e4)
 
-  **GET和POST本质上就是TCP链接，并无差别。但是由于HTTP的规定和浏览器/服务器的限制，导致他们在应用过程中体现出一些不同。**
+  **GET 和 POST 本质上就是 TCP 链接，并无差别。但是由于 HTTP 的规定和浏览器/服务器的限制，导致他们在应用过程中体现出一些不同。**
 
-  1. GET在浏览器回退时是无害的，而POST会再次提交请求。
-  2. GET产生的URL地址可以被Bookmark，而POST不可以。
-  3. GET请求会被浏览器主动cache，而POST不会，除非手动设置。
-  4. GET请求只能进行url编码，而POST支持多种编码方式。
-  5. GET请求参数会被完整保留在浏览器历史记录里，而POST中的参数不会被保留。
-  6. GET请求在URL中传送的参数是有长度限制的，而POST么有。
-  7. 对参数的数据类型，GET只接受ASCII字符，而POST没有限制。
-  8. GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息。
-  9. GET参数通过URL传递，POST放在Request body中。
-  10. **GET产生一个TCP数据包；POST产生两个TCP数据包。**  
-      对于GET方式的请求，浏览器会把http header和data一并发送出去，服务器响应200（返回数据）；  
-      而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok（返回数据）。
+  1. GET 在浏览器回退时是无害的，而 POST 会再次提交请求。
+  2. GET 产生的 URL 地址可以被 Bookmark，而 POST 不可以。
+  3. GET 请求会被浏览器主动 cache，而 POST 不会，除非手动设置。
+  4. GET 请求只能进行 url 编码，而 POST 支持多种编码方式。
+  5. GET 请求参数会被完整保留在浏览器历史记录里，而 POST 中的参数不会被保留。
+  6. GET 请求在 URL 中传送的参数是有长度限制的，而 POST 么有。
+  7. 对参数的数据类型，GET 只接受 ASCII 字符，而 POST 没有限制。
+  8. GET 比 POST 更不安全，因为参数直接暴露在 URL 上，所以不能用来传递敏感信息。
+  9. GET 参数通过 URL 传递，POST 放在 Request body 中。
+  10. **GET 产生一个 TCP 数据包；POST 产生两个 TCP 数据包。**  
+      对于 GET 方式的请求，浏览器会把 http header 和 data 一并发送出去，服务器响应 200（返回数据）；  
+      而对于 POST，浏览器先发送 header，服务器响应 100 continue，浏览器再发送 data，服务器响应 200 ok（返回数据）。
 
 - HTTP 请求优化
-  - [前端性能优化之http请求的过程](https://juejin.im/post/59f44c5ef265da4327177b98)
+  - [前端性能优化之 http 请求的过程](https://juejin.im/post/59f44c5ef265da4327177b98)
 
 ## https
 
+- [SSL/TLS 握手过程详解](https://www.jianshu.com/p/7158568e4867)
 - [HTTPS 原理详解](https://zhuanlan.zhihu.com/p/27395037)
 - [HTTPS](https://zhuanlan.zhihu.com/p/24854237)
 
@@ -1794,18 +2062,18 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 ## TCP
 
-- [三次握手的误解与错误类比(RFC解读)](https://yonghaowu.github.io/2019/01/11/http_rfc_handshake/)
+- [三次握手的误解与错误类比(RFC 解读)](https://yonghaowu.github.io/2019/01/11/http_rfc_handshake/)
 
   TCP 需要 seq 序列号来做可靠重传或接收，而避免连接复用时无法分辨出 seq 是延迟或者是旧链接的 seq，因此需要三次握手来约定确定双方的 ISN（初始 seq 序列号）。
 
 - [TCP 三次握手](https://www.zhihu.com/question/24853633/answer/115173386)
 - [TCP 三次握手、四次挥手](https://zhuanlan.zhihu.com/p/35768805)
-- [通俗大白话来理解TCP协议的三次握手和四次分手](https://github.com/jawil/blog/issues/14)
-- [TCP的滑动窗口与拥塞窗口](https://blog.csdn.net/zhangdaisylove/article/details/47294315)
+- [通俗大白话来理解 TCP 协议的三次握手和四次分手](https://github.com/jawil/blog/issues/14)
+- [TCP 的滑动窗口与拥塞窗口](https://blog.csdn.net/zhangdaisylove/article/details/47294315)
 - [TCP 滑动窗口（发送窗口和接收窗口）](https://my.oschina.net/xinxingegeya/blog/485650)
-- [解析TCP之滑动窗口(动画演示)](https://blog.csdn.net/yao5hed/article/details/81046945)
-- [TCP-IP详解：滑动窗口（Sliding Window）](https://blog.csdn.net/wdscq1234/article/details/52444277)
-- [TCP拥塞控制-慢启动、拥塞避免、快重传、快启动](https://blog.csdn.net/jtracydy/article/details/52366461)
+- [解析 TCP 之滑动窗口(动画演示)](https://blog.csdn.net/yao5hed/article/details/81046945)
+- [TCP-IP 详解：滑动窗口（Sliding Window）](https://blog.csdn.net/wdscq1234/article/details/52444277)
+- [TCP 拥塞控制-慢启动、拥塞避免、快重传、快启动](https://blog.csdn.net/jtracydy/article/details/52366461)
 - [TCP-IP 详解: 慢启动和拥塞控制](https://blog.csdn.net/wdscq1234/article/details/52517420)
 - [TCP 协议详解(慢启动,流量控制,阻塞控制之类)](https://blog.csdn.net/rock_joker/article/details/76769404)
 - [TCP 协议与 UDP 协议的区别](https://zhuanlan.zhihu.com/p/47064829)
@@ -1813,7 +2081,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 # React
 
 - React 基础模块
-  
+
   ```js
     const React = {
       Children: {...},
@@ -1842,23 +2110,23 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
   ```
 
   ```js
-    function Component(props, context, updater) {
-      this.props = props;
-      this.context = context;
-      // If a component has string refs, we will assign a different object later.
-      this.refs = emptyObject;
-      // We initialize the default updater but the real one gets injected by the
-      // renderer.
-      this.updater = updater || ReactNoopUpdateQueue;
-    }
+  function Component(props, context, updater) {
+    this.props = props
+    this.context = context
+    // If a component has string refs, we will assign a different object later.
+    this.refs = emptyObject
+    // We initialize the default updater but the real one gets injected by the
+    // renderer.
+    this.updater = updater || ReactNoopUpdateQueue
+  }
 
-    Component.prototype.isReactComponent = {}
-    Component.prototype.setState = function(partialState, callback) {
-      this.updater.enqueueSetState(this, partialState, callback, 'setState')
-    }
-    Component.prototype.forceUpdate = function(callback) {
-      this.updater.enqueueForceUpdate(this, callback, 'forceUpdate')
-    }
+  Component.prototype.isReactComponent = {}
+  Component.prototype.setState = function(partialState, callback) {
+    this.updater.enqueueSetState(this, partialState, callback, 'setState')
+  }
+  Component.prototype.forceUpdate = function(callback) {
+    this.updater.enqueueForceUpdate(this, callback, 'forceUpdate')
+  }
   ```
 
 - React 渲染模块
@@ -1883,15 +2151,16 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
   ```
 
 - Reconciliation 模块（协调模块）：主要负责任务协调，生命周期管理
+
   - stack Reconciler
+
     > 通过递归的形式遍历 Virtual DOM，存在难以中断和恢复的问题，如果 react 更新任务运行时间过长，就会阻塞布局、动画等的运行，可能导致掉帧。
 
-    
   - Fiber Reconciler
 
 ## Fiber
 
-- [React16源码之React Fiber架构](https://juejin.im/post/5b7016606fb9a0099406f8de)
+- [React16 源码之 React Fiber 架构](https://juejin.im/post/5b7016606fb9a0099406f8de)
 - [React 16 带来了什么以及对 Fiber 的解释](https://juejin.im/post/59de1b2a51882578c70c0833)
 
 ## 生命周期
@@ -1901,24 +2170,26 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 [React v16.4 生命周期的理解](https://juejin.im/post/5b6f1800f265da282d45a79a)
 
-* 挂载阶段
-  * constructor
-  * static getDerivedStateFromProps(nextProps, prevState) //一个静态方法，所以不能在这个函数里面使用this，这个函数有两个参数props和state，分别指接收到的新参数和当前的state对象，这个函数会返回一个对象用来更新当前的state对象，如果不需要更新可以返回null
-  * <s>componentWillMount/UNSAFE_componentWillMount</s>  // 或者 `<span style="text-decoration: line-through"></span>`
-  * render() 纯函数
-  * componentDidMount()
+- 挂载阶段
 
-* 更新阶段
-  * <s>componentWillReceiveProps/UNSAFE_componentWillReceiveProps</s>
-  * static getDerivedStateFromProps(nextProps, prevState)
-  * shouldComponentUpdate(nextProps, nextState)
-  * <s>componentWillUpdate(nextProps, nextState)/UNSAFE_componentWillUpdate(nextProps, nextState)</s>
-  * render()
-  * getSnapshotBeforeUpdate(prevProps, prevState) //函数有一个返回值，会作为第三个参数传给componentDidUpdate，如果你不想要返回值，请返回null，不写的话控制台会有警告
-  * componentDidUpdate(prevProps, prevState, snapshot)
+  - constructor
+  - static getDerivedStateFromProps(nextProps, prevState) //一个静态方法，所以不能在这个函数里面使用 this，这个函数有两个参数 props 和 state，分别指接收到的新参数和当前的 state 对象，这个函数会返回一个对象用来更新当前的 state 对象，如果不需要更新可以返回 null
+  - <s>componentWillMount/UNSAFE_componentWillMount</s> // 或者 `<span style="text-decoration: line-through"></span>`
+  - render() 纯函数
+  - componentDidMount()
 
-* 卸载阶段
-  * componentWillUnmount // 组件卸载前的清理工作
+- 更新阶段
+
+  - <s>componentWillReceiveProps/UNSAFE_componentWillReceiveProps</s>
+  - static getDerivedStateFromProps(nextProps, prevState)
+  - shouldComponentUpdate(nextProps, nextState)
+  - <s>componentWillUpdate(nextProps, nextState)/UNSAFE_componentWillUpdate(nextProps, nextState)</s>
+  - render()
+  - getSnapshotBeforeUpdate(prevProps, prevState) //函数有一个返回值，会作为第三个参数传给 componentDidUpdate，如果你不想要返回值，请返回 null，不写的话控制台会有警告
+  - componentDidUpdate(prevProps, prevState, snapshot)
+
+- 卸载阶段
+  - componentWillUnmount // 组件卸载前的清理工作
 
 ## **setState**
 
@@ -1927,7 +2198,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
   - Calling setState directly in render always causes an update. This was not previously the case. Regardless, you should not be calling setState from render.
   - setState callback (second argument) now fires immediately after `componentDidMount / componentDidUpdate` instead of after all components have `rendered`.
 - [setState](https://imweb.io/topic/5b189d04d4c96b9b1b4c4ed6)
-- [React16——看看setState过程中fiber干了什么事情](https://juejin.im/post/5afe491e6fb9a07aca7a66a7)
+- [React16——看看 setState 过程中 fiber 干了什么事情](https://juejin.im/post/5afe491e6fb9a07aca7a66a7)
 
 ## virturl Dom\diff 的原理
 
@@ -1937,6 +2208,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 ## [合成事件（SyntheticEvent）](https://reactjs.org/docs/events.html)
 
 - SyntheticEvent object
+
   ```js
     boolean bubbles
     boolean cancelable
@@ -1957,23 +2229,23 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 - Event Pooling
 
   SyntheticEvent 对象会被重用，并且在调用事件回调后，所有属性都将无效。**切勿异步调用访问 SyntheticEvent 对象**
+
   > 如果要以异步方式访问事件属性，则应在事件上调用 event.persist()，这将从池中删除合成事件，并允许用户代码保留对事件的引用。
 
 - 捕获阶段添加事件
 
+事件处理程序由冒泡阶段的事件触发。要为捕获阶段注册事件处理程序，请将 Capture 附加到事件名称；例如，您可以使用 onClickCapture 来处理捕获阶段中的 click 事件，而不是使用 onClick。
 
-  事件处理程序由冒泡阶段的事件触发。要为捕获阶段注册事件处理程序，请将Capture附加到事件名称；例如，您可以使用 onClickCapture 来处理捕获阶段中的 click 事件，而不是使用 onClick。
-
-- [React合成事件和DOM原生事件混用须知](https://juejin.im/post/59db6e7af265da431f4a02ef)
+- [React 合成事件和 DOM 原生事件混用须知](https://juejin.im/post/59db6e7af265da431f4a02ef)
 
 ## 受控组件和非受控组件
 
-- [React中受控与非受控组件](https://segmentfault.com/a/1190000012404114)
+- [React 中受控与非受控组件](https://segmentfault.com/a/1190000012404114)
 - [React 中组件间通信的几种方式](https://www.jianshu.com/p/fb915d9c99c4)
 
 ## React 性能优化
 
-## react-router内部实现机制
+## react-router 内部实现机制
 
 - [单页面应用路由实现原理：以 React-Router 为例](https://github.com/youngwind/blog/issues/109)
 
@@ -2027,7 +2299,7 @@ class Provider extends Component {
         return { storeState: newStoreState }
       })
     })
-    
+
     const postMountStoreState = store.getState()
     if (postMountStoreState !== this.state.storeState) {
       this.setState({ storeState: postMountStoreState })
@@ -2054,7 +2326,6 @@ class Provider extends Component {
 export default function connectAdvanced() {
   return function wrapWithConnect(WrappedComponent) {
     class Connect extends OuterBaseComponent {
-
       renderWrappedComponent(value) {
         // 获取redux state和store
         const { storeState, store } = value
@@ -2063,11 +2334,7 @@ export default function connectAdvanced() {
         let wrapperProps = this.props
 
         // 导出props
-        let derivedProps = this.selectDerivedProps(
-          storeState,
-          wrapperProps,
-          store
-        )
+        let derivedProps = this.selectDerivedProps(storeState, wrapperProps, store)
 
         // 返回最终的组件,传入最终的props和ref -> 看selectChildElement发放
         return this.selectChildElement(derivedProps, forwardedRef)
@@ -2079,9 +2346,7 @@ export default function connectAdvanced() {
 
         return (
           // <Privoder />的消费者
-          <ContextToUse.Consumer>
-            {this.renderWrappedComponent}
-          </ContextToUse.Consumer>
+          <ContextToUse.Consumer>{this.renderWrappedComponent}</ContextToUse.Consumer>
         )
       }
     }
@@ -2089,7 +2354,7 @@ export default function connectAdvanced() {
   }
 }
 ```
-  
+
 ## redux 基本组成和设计单向数据流
 
 - [redux 源码解读](https://juejin.im/post/5ae7db125188253dc6127bc7)
@@ -2099,92 +2364,98 @@ export default function connectAdvanced() {
   - 没有副作用
   - 不会依赖外部状态
 
-
 # Angular
 
 - [AngularJS 脏检查深入分析](https://www.cnblogs.com/likeFlyingFish/p/6183630.html)
 
 ```js
-
 /**
  * 藏检查的内部实现
  *
  * 每当我们将数据绑定到 UI 上，angular 就会向你的 watchList 上插入一个 $watch。
  * 只有当触发UI事件，ajax请求或者 timeout 延迟，才会触发脏检查。
  *
- * getter 和 setter 是Vue 采用的机制,我觉得他两个最大的区别就是 Angular 采用事件驱动,而Vue 采用数据驱动 .所以 Angular 是当界面事件 或者其他 来触发脏检查, 而Vue 是检测后台数据变化,一旦变化 被 setter 捕捉, 然后来触发 界面更新. 
+ * getter 和 setter 是Vue 采用的机制,我觉得他两个最大的区别就是 Angular 采用事件驱动,而Vue 采用数据驱动 .所以 Angular 是当界面事件 或者其他 来触发脏检查, 而Vue 是检测后台数据变化,一旦变化 被 setter 捕捉, 然后来触发 界面更新.
  */
 function $Scope() {
-  this.$$watchList = [];
+  this.$$watchList = []
 }
 
 $Scope.prototype.$watch = function(name, getNewValue, listener) {
- const watch = {
-   name: name,
-   getNewValue: getNewValue,
-   listener: listener || function(){},
- };
+  const watch = {
+    name: name,
+    getNewValue: getNewValue,
+    listener: listener || function() {}
+  }
 
- this.$$watchList.push(watch);
+  this.$$watchList.push(watch)
 }
 
-$Scope.prototype.$digest = function () {
-  let dirty = true;
-  let checkTimes = 0;
-  while(dirty) {
-    dirty = this.$digestOnce();
-    checkTimes++;
-    if(checkTimes > 10 && dirty) {
-      throw new Error('检测次数超过10次');
+$Scope.prototype.$digest = function() {
+  let dirty = true
+  let checkTimes = 0
+  while (dirty) {
+    dirty = this.$digestOnce()
+    checkTimes++
+    if (checkTimes > 10 && dirty) {
+      throw new Error('检测次数超过10次')
     }
   }
 }
 
 $Scope.prototype.$digestOnce = function() {
-  let dirty=false;
-  const list = this.$$watchList;
+  let dirty = false
+  const list = this.$$watchList
 
-  for(let i=0, len = list.length; i<len; i++ ) {
-    const watch = list[i];
-    const newValue = watch.getNewValue(this);  // 传入 scope 获取 scope 内值
-    const oldValue = watch.last;
+  for (let i = 0, len = list.length; i < len; i++) {
+    const watch = list[i]
+    const newValue = watch.getNewValue(this) // 传入 scope 获取 scope 内值
+    const oldValue = watch.last
 
-    if(newValue !== oldValue) {
-      watch.listen(newValue, oldValue);
-      dirty = true;
+    if (newValue !== oldValue) {
+      watch.listen(newValue, oldValue)
+      dirty = true
     }
 
-    watch.last = newValue;
+    watch.last = newValue
   }
 
-  return dirty;
+  return dirty
 }
 
 /***************************************************/
 
-const scope = new $Scope();
-scope.first = 1;
-scope.secode = 10;
+const scope = new $Scope()
+scope.first = 1
+scope.secode = 10
 
-scope.$watch('first', function(_scope){
-  return _scope[this.name]; //  getNewValue 通过 watch.getNewValue 方式调用，this 指向 watch
-}, function(newValue, oldValue) {
-  scope.second++;
-  console.log('first:      newValue:' + newValue + '-----' + 'oldValue:' + oldValue);
-})
+scope.$watch(
+  'first',
+  function(_scope) {
+    return _scope[this.name] //  getNewValue 通过 watch.getNewValue 方式调用，this 指向 watch
+  },
+  function(newValue, oldValue) {
+    scope.second++
+    console.log('first:      newValue:' + newValue + '-----' + 'oldValue:' + oldValue)
+  }
+)
 
-scope.$watch('second', function(_scope){
-  return _scope[this.name];
-}, function(newValue, oldValue){
-  scope.first++;
-  console.log('second:     newValue:' + newValue + '-----' + 'oldValue:' + oldValue)
-})
+scope.$watch(
+  'second',
+  function(_scope) {
+    return _scope[this.name]
+  },
+  function(newValue, oldValue) {
+    scope.first++
+    console.log('second:     newValue:' + newValue + '-----' + 'oldValue:' + oldValue)
+  }
+)
 
-scope.$digest();
+scope.$digest()
 ```
 
 - [如何衡量一个人的 AngularJS 水平？](https://www.zhihu.com/question/36040694/answer/65624196)
-- [基于 getter 和 setter 撸一个简易的MVVM](https://www.cnblogs.com/likeFlyingFish/p/6201106.html)
+- [基于 getter 和 setter 撸一个简易的 MVVM](https://www.cnblogs.com/likeFlyingFish/p/6201106.html)
 
 # NodeJS
 
@@ -2198,7 +2469,7 @@ scope.$digest();
 ## Stream
 
 - [Node.js Stream: 你需要知道的一切](https://juejin.im/post/5940a9c3128fe1006a0ab176)
-- [模拟实现和深入理解Node Stream内部机制](https://juejin.im/post/5a6c7c4df265da3e5234bf14)
+- [模拟实现和深入理解 Node Stream 内部机制](https://juejin.im/post/5a6c7c4df265da3e5234bf14)
 
 ![](https://user-gold-cdn.xitu.io/2017/6/14/d4fff9e6bbb5bb32864b1c64b3169876?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
