@@ -2079,7 +2079,9 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
   而一个段在网络中并不会比最大分段寿命（Maximum Segment Lifetime (MSL) ，默认使用 2 分钟）长，MSL 比 4.55 小时要短，所以我们可以认为 ISN 会是唯一的。
 
   1). A –> B SYN my sequence number is X
+
   2). A <– B ACK your sequence number is X, SYN my sequence number is Y
+
   3). A –> B ACK your sequence number is Y
 
 - [TCP 三次握手](https://www.zhihu.com/question/24853633/answer/115173386)
