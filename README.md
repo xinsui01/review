@@ -1613,13 +1613,15 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 - [TIME_WAIT 的意义](https://blog.csdn.net/qq_36132127/article/details/81138873)
 
   - 可靠地实现 TCP 全双工连接的终止
+
     为了保证 A 发送的最后一个 ACK 报文段能够到达 B。
 
     A 给 B 发送的 ACK 可能会丢失，B 收不到 A 发送的确认，B 会超时重传 FIN+ACK 报文段，此时 A 处于 2MSL 时间内，就可以收到 B 重传的 FIN+ACK 报文段，接着 A 重传一次确认，重启 2MSL 计时器。最后，A 和 B 都能够正常进入到 CLOSED 状态。
 
     如果 A 在发完 ACK 后直接立即释放连接，而不等待一段时间，就无法收到 B 重传的 FIN+ACK 报文段，也就不会再次发送确认报文段，这样，B 就无法按照正常步骤进入 CLOSED 状态。
 
-  - 允许旧的报文段在网络中消逝  
+  - 允许旧的报文段在网络中消逝
+
     MSL 全称是 Maximum Segment Lifetime，是一个 TCP 包的最大存活时间，一个 TCP 包一旦在网络上存活超过 MSL，会直接被丢弃。
 
     A 发送确认后，该确认报文段可能因为路由器异常在网络中发生“迷途”，并没有到达 B，该确认报文段可以称为旧的报文段。A 在超时后进行重传，  发送新的报文段，B 在收到新的报文段后进入 CLOSED 状态。在这之后，发生迷途的旧报文段可能到达了 B，通常情况下，该报文段会被丢弃，不会造成任何的影响。但是如果两个相同主机 A 和 B 之间又建立了一个具有相同端口号的新连接，那么旧的报文段可能会被看成是新连接的报文段，如果旧的报文段中数据的任何序列号恰恰在新连接的当前接收窗口中，数据就会被重新接收，对连接造成破坏。为了避免这种情况，TCP 不允许处于 TIME_WAIT 状态的连接启动一个新的连接，因为 TIME_WAIT 状态持续 2MSL，就可以保证当再次成功建立一个 TCP 连接的时，来自之前连接的旧的报文段已经在网络中消逝，不会再出现在新的连接中。
@@ -1746,6 +1748,45 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 - [setState](https://imweb.io/topic/5b189d04d4c96b9b1b4c4ed6)
 - [React16——看看 setState 过程中 fiber 干了什么事情](https://juejin.im/post/5afe491e6fb9a07aca7a66a7)
 
+  组件实例中，`_reactInternalFiber` 是当前组件的 fiber，而 `_reactInternalInstance` 是在 react15 使用的对象
+
+  - updater 更新器
+
+  ```js
+  var updater = {
+    isMounted: false,
+    /*
+     * instance: 上一步传入的App组件实例，
+     * partialState：需要执行更新的箭头函数，
+     * callback：undefined
+     */
+    enqueueSetState: function(instance, partialState, callback) {
+      //获取到当前实例上的fiber
+      var fiber = get(instance)
+      //计算当前fiber的到期时间（优先级）
+      var expirationTime = computeExpirationForFiber(fiber)
+      //一次更新需要的配置参数
+      var update = {
+        expirationTime: expirationTime, //优先级
+        partialState: partialState, //更新的state，通常是函数而不推荐对象写法
+        callback: callback, //更新之后执行的回调函数
+        isReplace: false, //
+        isForced: false, //是否强制更新
+        capturedValue: null, //捕获的值
+        next: null //
+      }
+      //将update上需要更新的信息添加到fiber中
+      insertUpdateIntoFiber(fiber, update)
+      //调度器调度fiber任务
+      scheduleWork(fiber, expirationTime)
+    },
+    //替换更新state，不关注
+    enqueueReplaceState: function(instance, state, callback) {},
+    //执行强制更新state，不关注
+    enqueueForceUpdate: function(instance, callback) {}
+  }
+  ```
+
 ## virturl Dom\diff 的原理
 
 - [Virtual DOM 的实现和 React Fiber 简介](https://www.jianshu.com/p/b189b2949b33)
@@ -1780,7 +1821,7 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 
 - 捕获阶段添加事件
 
-事件处理程序由冒泡阶段的事件触发。要为捕获阶段注册事件处理程序，请将 Capture 附加到事件名称；例如，您可以使用 onClickCapture 来处理捕获阶段中的 click 事件，而不是使用 onClick。
+  事件处理程序由冒泡阶段的事件触发。要为捕获阶段注册事件处理程序，请将 Capture 附加到事件名称；例如，您可以使用 onClickCapture 来处理捕获阶段中的 click 事件，而不是使用 onClick。
 
 - [React 合成事件和 DOM 原生事件混用须知](https://juejin.im/post/59db6e7af265da431f4a02ef)
 
