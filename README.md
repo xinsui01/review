@@ -484,12 +484,12 @@ function type(obj) {
   - 所有的元字符都必须经过转义
 - 使用 `RegExp` 构造函数
   - 由于 `RegExp` 构造函数的模式参数是个字符串，所以在某些情况下要对字符串进行双重转义
-    | 字面量模式 | 等价的字符串 |
+    | 字面量模式         | 等价的字符串          |
     | :----------------- | :-------------------- |
-    | `/\[bc\]at/` | `\\[bc\\]at` |
-    | `/\.at/` | `\\.at` |
-    | `/name\/age/` | `name\\/age` |
-    | `/\d.\d{1,2}/` | `\\d.\\d{1,2}` |
+    | `/\[bc\]at/`       | `\\[bc\\]at`          |
+    | `/\.at/`           | `\\.at`               |
+    | `/name\/age/`      | `name\\/age`          |
+    | `/\d.\d{1,2}/`     | `\\d.\\d{1,2}`        |
     | `/\w\\hello\\123/` | `\\w\\\\hello\\\\123` |
 - ES5 明确规定，使用正则表达式字面量必须像直接调用 `RegExp` 构造函数一样，每次都创建新的 `RegExp` 实例。
 - 实例属性
@@ -519,7 +519,7 @@ function type(obj) {
   | input         | \$\_                                                             | 最近一次要匹配的字符串                 |
   | lastMatch     | \$&                                                              | 最近一次匹配项                         |
   | lastParen     | \$+                                                              | 最近一次匹配的捕获组                   |
-  | leftContext   | \$` | input 字符串中 lastMatch 之前的文本                        |
+  | leftContext   | \$`                                                              | input 字符串中 lastMatch 之前的文本    |
   | rightContext  | \$'                                                              | input 字符串中 lastMatch 之后的文本    |
   | multiline     | \$\*                                                             | 布尔值，是否所有的表达式都使用多行模式 |
   | $1,$2,...,\$9 | 存储第一到第九个捕获组，调用 exec()或 test()时，这些属性自动填充 |                                        |
@@ -2199,6 +2199,40 @@ function respond(ctx) {
     ctx.length = Buffer.byteLength(body)
   }
   res.end(body)
+}
+```
+
+```js
+// koajs/compose
+function compose (middleware) {
+  if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
+  for (const fn of middleware) {
+    if (typeof fn !== 'function') throw new TypeError('Middleware must be composed of functions!')
+  }
+
+  /**
+   * @param {Object} context
+   * @return {Promise}
+   * @api public
+   */
+
+  return function (context, next) {
+    // last called middleware #
+    let index = -1
+    return dispatch(0)
+    function dispatch (i) {
+      if (i <= index) return Promise.reject(new Error('next() called multiple times'))
+      index = i
+      let fn = middleware[i]
+      if (i === middleware.length) fn = next
+      if (!fn) return Promise.resolve()
+      try {
+        return Promise.resolve(fn(context, dispatch.bind(null, i + 1)));
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+  }
 }
 ```
 
