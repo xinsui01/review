@@ -1490,6 +1490,44 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 - [css 网页的几种布局](https://juejin.im/post/5a260aaa6fb9a0451b0464f0)
 - [CSS 布局说——可能是最全的](https://mp.weixin.qq.com/s/iQ8mSr4oEAC8Ve6IdiN9jQ)
 
+## CSS实现单行、多行文本溢出显示省略号
+  
+  - 单行文本溢出显示省略号
+    ```css
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    ```
+  - 多行文本溢出显示省略号
+    ```css
+      overflow:hidden;
+      text-overflow:ellipsis;
+      display:-webkit-box;
+      -webkit-line-clamp:2; 
+      -webkit-box-orient:vertical;
+    ```
+
+    // 比较靠谱简单的做法就是设置相对定位的容器高度，用包含省略号（...）的元素模拟实现
+
+    ```css
+      p{
+        position:relative;
+        line-height:1.4em;
+        /*设置容器高度为3倍行高就是显示3行*/
+        height:4.2em;
+        overflow:hidden;
+      }
+      p::after{
+        content:'...';
+        font-weight:bold;
+        position:absolute;
+        bottom:0;
+        right:0;
+        padding:0 20px 1px 45px;
+        background:#fff;
+      } 
+    ```
+
 # 网络层
 
 ## http
@@ -2244,218 +2282,218 @@ function compose (middleware) {
 
 - 实现一个 flatten 方法。
 
-```js
-function flatten(input) {
-  if (Array.isArray(input)) {
-    var output = []
-    function _flatten(input) {
-      for (var i = 0; i < input.length; i++) {
-        var value = input[i]
-        if (Array.isArray(value)) {
-          _flatten(value)
-        } else {
-          output.push(value)
+  ```js
+  function flatten(input) {
+    if (Array.isArray(input)) {
+      var output = []
+      function _flatten(input) {
+        for (var i = 0; i < input.length; i++) {
+          var value = input[i]
+          if (Array.isArray(value)) {
+            _flatten(value)
+          } else {
+            output.push(value)
+          }
         }
       }
+      _flatten(input)
+      return output
+    } else {
+      return input
     }
-    _flatten(input)
-    return output
-  } else {
-    return input
   }
-}
-```
+  ```
 
-```js
-function flatten(input) {
-  return Array.isArray(input) ? input.toString().split(',') : input
-}
-```
+  ```js
+  function flatten(input) {
+    return Array.isArray(input) ? input.toString().split(',') : input
+  }
+  ```
 
 - 将一个 json 数据的所有 key 从下划线改为驼峰
 
-```js
-const testData = {
-  a_bbb: 123,
-  a_g: [1, 2, 3, 4],
-  a_d: {
-    s: 2,
-    s_d: 3
-  },
-  a_f: [
-    1,
-    2,
-    3,
-    {
-      a_g: 5
-    }
-  ],
-  a_d_s: 1
-}
+  ```js
+  const testData = {
+    a_bbb: 123,
+    a_g: [1, 2, 3, 4],
+    a_d: {
+      s: 2,
+      s_d: 3
+    },
+    a_f: [
+      1,
+      2,
+      3,
+      {
+        a_g: 5
+      }
+    ],
+    a_d_s: 1
+  }
 
-/**
- * 将一个json数据的所有key从下划线改为驼峰
- *
- * @param {object | array} value 待处理对象或数组
- * @returns {object | array} 处理后的对象或数组
- */
-function mapKeysToCamelCase(data) {
   /**
-   * 如果是基本常量return
-   */
-  if (isBaseType(data)) {
-    return data
-  }
+  * 将一个json数据的所有key从下划线改为驼峰
+  *
+  * @param {object | array} value 待处理对象或数组
+  * @returns {object | array} 处理后的对象或数组
+  */
+  function mapKeysToCamelCase(data) {
+    /**
+    * 如果是基本常量return
+    */
+    if (isBaseType(data)) {
+      return data
+    }
 
-  if (Array.isArray(data)) {
-    return data.map(key => {
-      return isBaseType(key) ? key : mapKeysToCamelCase(key)
+    if (Array.isArray(data)) {
+      return data.map(key => {
+        return isBaseType(key) ? key : mapKeysToCamelCase(key)
+      })
+    }
+
+    let obj = {}
+
+    Object.keys(data).forEach(key => {
+      const _key = strToCamelCase(key)
+      obj[_key] = mapKeysToCamelCase(data[key])
     })
+    return obj
   }
 
-  let obj = {}
+  const isBaseType = (function() {
+    const baseTypes = ['Number', 'String', 'Boolean', 'Null', 'Undefined'].map(
+      item => `[object ${item}]`
+    )
+    return val => {
+      const tp = Object.prototype.toString.call(val)
+      return baseTypes.includes(tp)
+    }
+  })()
 
-  Object.keys(data).forEach(key => {
-    const _key = strToCamelCase(key)
-    obj[_key] = mapKeysToCamelCase(data[key])
-  })
-  return obj
-}
-
-const isBaseType = (function() {
-  const baseTypes = ['Number', 'String', 'Boolean', 'Null', 'Undefined'].map(
-    item => `[object ${item}]`
-  )
-  return val => {
-    const tp = Object.prototype.toString.call(val)
-    return baseTypes.includes(tp)
+  function strToCamelCase(key) {
+    return ('' + key).replace(/(_.{1})/g, val => val.slice(1).toUpperCase())
   }
-})()
 
-function strToCamelCase(key) {
-  return ('' + key).replace(/(_.{1})/g, val => val.slice(1).toUpperCase())
-}
-
-console.log(mapKeysToCamelCase(testData))
-```
+  console.log(mapKeysToCamelCase(testData))
+  ```
 
 - JS 中判断字符串中出现次数最多的字符及出现的次数
 
-```js
-function maxN(str) {
-  // const obj = (''+str).split('').reduce((accu, cur, index) => {
-  // accu[cur] = (accu[cur] || 0) + 1;
-  // return accu
-  // },
-  // {}
-  // );
+  ```js
+  function maxN(str) {
+    // const obj = (''+str).split('').reduce((accu, cur, index) => {
+    // accu[cur] = (accu[cur] || 0) + 1;
+    // return accu
+    // },
+    // {}
+    // );
 
-  let obj = {}
-  ;('' + str).replace(/(\w{1})/g, letter => {
-    obj[letter] ? (obj[letter] += 1) : (obj[letter] = 1)
-    return letter
-  })
+    let obj = {}
+    ;('' + str).replace(/(\w{1})/g, letter => {
+      obj[letter] ? (obj[letter] += 1) : (obj[letter] = 1)
+      return letter
+    })
 
-  let letter = '',
-    max = 0
+    let letter = '',
+      max = 0
 
-  for (let _letter in obj) {
-    if (obj[_letter] > max) {
-      max = obj[_letter]
-      letter = _letter
+    for (let _letter in obj) {
+      if (obj[_letter] > max) {
+        max = obj[_letter]
+        letter = _letter
+      }
     }
+
+    return { letter, max }
   }
 
-  return { letter, max }
-}
-
-const str = 'qweqrtyuiqqqwrtyudfgerqtywer'
-console.log(maxN(str))
-```
+  const str = 'qweqrtyuiqqqwrtyudfgerqtywer'
+  console.log(maxN(str))
+  ```
 
 - 请编写一个 JavaScript 函数 parseQueryString ，他的用途是把 URL 参数解析为一个对象
 
-```js
-function parseQueryString(url) {
-  let result = {}
-  let arr = url.split('?')
-  if (arr.length <= 1) {
+  ```js
+  function parseQueryString(url) {
+    let result = {}
+    let arr = url.split('?')
+    if (arr.length <= 1) {
+      return result
+    } else {
+      arr = arr[1].split('#')
+      arr = arr[0].split('&')
+      arr.forEach(item => {
+        const [key, value] = item.split('=')
+        result[key] = value
+      })
+    }
+
     return result
-  } else {
-    arr = arr[1].split('#')
-    arr = arr[0].split('&')
-    arr.forEach(item => {
-      const [key, value] = item.split('=')
-      result[key] = value
-    })
   }
 
-  return result
-}
+  var url = 'http://witmax.cn/index.php?key0=0&key1=1&key2=2#location'
 
-var url = 'http://witmax.cn/index.php?key0=0&key1=1&key2=2#location'
-
-console.log(parseQueryString(url))
-```
+  console.log(parseQueryString(url))
+  ```
 
 - 在 IE6.0 下面是不支持 `position：fixed` 的，请写一个 JS 使用固定在页面的右下角。
 
-```html
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
-    <style>
-      .tit {
-        position: absolute;
-        width: 100px;
-        height: 100px;
-        background: red;
-        right: 0;
-        bottom: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="box" class="tit"></div>
-    <!-- <script>
-        window.onscroll = window.onresize = window.onload = function() {
-          const box = document.getElementById('box')
-          const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-          box.style.left = document.documentElement.clientWidth - box.offsetWidth + 'px'
-          box.style.top = document.documentElement.clientHeight + scrollTop - box.offsetHeight + 'px'
+  ```html
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+      <title>Document</title>
+      <style>
+        .tit {
+          position: absolute;
+          width: 100px;
+          height: 100px;
+          background: red;
+          right: 0;
+          bottom: 0;
         }
-      </script> -->
-  </body>
-</html>
-```
+      </style>
+    </head>
+    <body>
+      <div id="box" class="tit"></div>
+      <!-- <script>
+          window.onscroll = window.onresize = window.onload = function() {
+            const box = document.getElementById('box')
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+            box.style.left = document.documentElement.clientWidth - box.offsetWidth + 'px'
+            box.style.top = document.documentElement.clientHeight + scrollTop - box.offsetHeight + 'px'
+          }
+        </script> -->
+    </body>
+  </html>
+  ```
 
 - 请实现，鼠标移到页面中的任意标签，显示出这个标签的基本矩形轮廓。
 
-```js
-function mouseOverShowBorder(container) {
-  const children = container.childNodes
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i]
+  ```js
+  function mouseOverShowBorder(container) {
+    const children = container.childNodes
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i]
 
-    if (child.nodeType === 1) {
-      child.onmouseover = function() {
-        this.style.border = '1px solid #ccc'
+      if (child.nodeType === 1) {
+        child.onmouseover = function() {
+          this.style.border = '1px solid #ccc'
+        }
+
+        child.onmouseout = function() {
+          this.style.border = ''
+        }
+
+        mouseOverShowBorder(child)
       }
-
-      child.onmouseout = function() {
-        this.style.border = ''
-      }
-
-      mouseOverShowBorder(child)
     }
   }
-}
 
-mouseOverShowBorder(document.body)
-```
+  mouseOverShowBorder(document.body)
+  ```
 
 - 排序算法
 
@@ -2721,6 +2759,8 @@ mouseOverShowBorder(document.body)
       }
     }
     ```
+  
+  
 
 ## others
 
