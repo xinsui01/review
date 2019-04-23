@@ -590,7 +590,7 @@ if (!Function.prototype.bind) {
     obj.__proto__ = Animal.prototype;
 
     const result = Animal.apply(obj, arguments);
-    return result!==null && result : obj; // 忽略 null
+    return result!==null && typeof result === 'object' ? result : obj; // 忽略 null
 
   }
 ```
