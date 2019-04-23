@@ -457,20 +457,6 @@ function type(obj) {
 > Class 一列表示对象的内部属性 [[Class]] 的值。  
 > 为了获取对象的 [[Class]]，我们需要使用定义在 Object.prototype 上的方法 toString。
 
-## 数字千分位处理，正则和非正则都要实现(千位加逗号)
-
-- `numObj.toLocaleString([locales [, options]])`
-
-  ```js
-  // 方法一
-  var num = 234982347.73
-  console.log(num.toLocaleString())
-
-  // 方法二
-  var num = 234982347.73
-  num.toString().replace(/^\d+/g, m => m.replace(/(\d{1,3})(?=(?:\d{3})+$)/g, '$1,'))
-  ```
-
 ## [正则](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions)
 
 ![正则表达式中特殊字符的含义](./imgs/RegExp.png)
@@ -916,6 +902,8 @@ async...await 是 Generator 函数语法糖， co 模块实现是通过 Promise 
 
 - [彻底理解 js 中 this 的指向，不必硬背。](https://www.cnblogs.com/pssp/p/5216085.html)
 - [彻底理解 JavaScript 中的 this](https://juejin.im/post/5c049e6de51d45471745eb98)
+
+## [前端基础进阶：详细图解 JavaScript 内存空间](https://juejin.im/entry/589c29a9b123db16a3c18adf)
 
 ## import 和 require 的区别
 
@@ -1490,43 +1478,44 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 - [css 网页的几种布局](https://juejin.im/post/5a260aaa6fb9a0451b0464f0)
 - [CSS 布局说——可能是最全的](https://mp.weixin.qq.com/s/iQ8mSr4oEAC8Ve6IdiN9jQ)
 
-## CSS实现单行、多行文本溢出显示省略号
-  
-  - 单行文本溢出显示省略号
-    ```css
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    ```
-  - 多行文本溢出显示省略号
-    ```css
-      overflow:hidden;
-      text-overflow:ellipsis;
-      display:-webkit-box;
-      -webkit-line-clamp:2; 
-      -webkit-box-orient:vertical;
-    ```
+## CSS 实现单行、多行文本溢出显示省略号
 
-    // 比较靠谱简单的做法就是设置相对定位的容器高度，用包含省略号（...）的元素模拟实现
+- 单行文本溢出显示省略号
+  ```css
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  ```
+- 多行文本溢出显示省略号
 
-    ```css
-      p{
-        position:relative;
-        line-height:1.4em;
-        /*设置容器高度为3倍行高就是显示3行*/
-        height:4.2em;
-        overflow:hidden;
-      }
-      p::after{
-        content:'...';
-        font-weight:bold;
-        position:absolute;
-        bottom:0;
-        right:0;
-        padding:0 20px 1px 45px;
-        background:#fff;
-      } 
-    ```
+  ```css
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  ```
+
+  // 比较靠谱简单的做法就是设置相对定位的容器高度，用包含省略号（...）的元素模拟实现
+
+  ```css
+  p {
+    position: relative;
+    line-height: 1.4em;
+    /*设置容器高度为3倍行高就是显示3行*/
+    height: 4.2em;
+    overflow: hidden;
+  }
+  p::after {
+    content: '...';
+    font-weight: bold;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 0 20px 1px 45px;
+    background: #fff;
+  }
+  ```
 
 # 网络层
 
@@ -1872,7 +1861,7 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 
 - 页面渲染 1000 个元素
 
-  - [在React项目中，如何优雅的优化长列表](https://juejin.im/post/5c048f25e51d450d16620d8d)
+  - [在 React 项目中，如何优雅的优化长列表](https://juejin.im/post/5c048f25e51d450d16620d8d)
 
 ## react-router 内部实现机制
 
@@ -2246,7 +2235,7 @@ function respond(ctx) {
 
 ```js
 // koajs/compose
-function compose (middleware) {
+function compose(middleware) {
   if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
   for (const fn of middleware) {
     if (typeof fn !== 'function') throw new TypeError('Middleware must be composed of functions!')
@@ -2258,18 +2247,18 @@ function compose (middleware) {
    * @api public
    */
 
-  return function (context, next) {
+  return function(context, next) {
     // last called middleware #
     let index = -1
     return dispatch(0)
-    function dispatch (i) {
+    function dispatch(i) {
       if (i <= index) return Promise.reject(new Error('next() called multiple times'))
       index = i
       let fn = middleware[i]
       if (i === middleware.length) fn = next
       if (!fn) return Promise.resolve()
       try {
-        return Promise.resolve(fn(context, dispatch.bind(null, i + 1)));
+        return Promise.resolve(fn(context, dispatch.bind(null, i + 1)))
       } catch (err) {
         return Promise.reject(err)
       }
@@ -2283,6 +2272,20 @@ function compose (middleware) {
 - [前端笔试&面试爬坑系列---算法](https://juejin.im/post/5b72f0caf265da282809f3b5)
 
 ## 编程
+
+- 数字千分位处理，正则和非正则都要实现(千位加逗号)
+
+  - `numObj.toLocaleString([locales [, options]])`
+
+    ```js
+    // 方法一
+    var num = 234982347.73
+    console.log(num.toLocaleString())
+
+    // 方法二
+    var num = 234982347.73
+    num.toString().replace(/^\d+/g, m => m.replace(/(\d{1,3})(?=(?:\d{3})+$)/g, '$1,'))
+    ```
 
 - 实现一个 flatten 方法。
 
@@ -2336,15 +2339,15 @@ function compose (middleware) {
   }
 
   /**
-  * 将一个json数据的所有key从下划线改为驼峰
-  *
-  * @param {object | array} value 待处理对象或数组
-  * @returns {object | array} 处理后的对象或数组
-  */
+   * 将一个json数据的所有key从下划线改为驼峰
+   *
+   * @param {object | array} value 待处理对象或数组
+   * @returns {object | array} 处理后的对象或数组
+   */
   function mapKeysToCamelCase(data) {
     /**
-    * 如果是基本常量return
-    */
+     * 如果是基本常量return
+     */
     if (isBaseType(data)) {
       return data
     }
@@ -2765,3 +2768,5 @@ function compose (middleware) {
     ```
 
 ## 内存溢出
+
+v'vvv
