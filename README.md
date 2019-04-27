@@ -1201,6 +1201,8 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 ## [前端性能优化最佳实践](https://csspod.com/frontend-performance-best-practices/)
 
+## [React 16 加载性能优化指南](https://juejin.im/post/5b506ae0e51d45191a0d4ec9)
+
 # CSS
 
 ## BFC
@@ -1535,21 +1537,21 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 
     - 所有内容均来自站点的同一个源 (不包括其子域名)
 
-    ```js
-    Content-Security-Policy: default-src 'self';
-    ```
+      ```js
+      Content-Security-Policy: default-src 'self';
+      ```
 
     - 允许内容来自信任的域名及其子域名 (域名不必须与 CSP 设置所在的域名相同)
 
-    ```js
-    Content-Security-Policy: default-src 'self' *.trusted.com;
-    ```
+      ```js
+      Content-Security-Policy: default-src 'self' *.trusted.com;
+      ```
 
     - 所有内容均来自站点的同一个源 (不包括其子域名)
 
-    ```js
-    Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com;
-    ```
+      ```js
+      Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com;
+      ```
 
 - [HTTP 报文](https://www.cnblogs.com/klguang/p/4618526.html)
   - 请求
@@ -2234,7 +2236,7 @@ function respond(ctx) {
 ```
 
 ```js
-// koajs/compose
+// koajs/compose  洋葱模型
 function compose(middleware) {
   if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
   for (const fn of middleware) {
