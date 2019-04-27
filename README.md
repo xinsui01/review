@@ -2,6 +2,8 @@
 
 [中高级前端大厂面试秘籍，寒冬中为您保驾护航，直通大厂(中)](https://juejin.im/post/5c92f499f265da612647b754)
 
+[中高级前端大厂面试秘籍，寒冬中为您保驾护航，直通大厂(下)](https://juejin.im/post/5cc26dfef265da037b611738)
+
 # JavaScript
 
 ## var, let 区别
@@ -470,12 +472,12 @@ function type(obj) {
   - 所有的元字符都必须经过转义
 - 使用 `RegExp` 构造函数
   - 由于 `RegExp` 构造函数的模式参数是个字符串，所以在某些情况下要对字符串进行双重转义
-    | 字面量模式         | 等价的字符串          |
+    | 字面量模式 | 等价的字符串 |
     | :----------------- | :-------------------- |
-    | `/\[bc\]at/`       | `\\[bc\\]at`          |
-    | `/\.at/`           | `\\.at`               |
-    | `/name\/age/`      | `name\\/age`          |
-    | `/\d.\d{1,2}/`     | `\\d.\\d{1,2}`        |
+    | `/\[bc\]at/` | `\\[bc\\]at` |
+    | `/\.at/` | `\\.at` |
+    | `/name\/age/` | `name\\/age` |
+    | `/\d.\d{1,2}/` | `\\d.\\d{1,2}` |
     | `/\w\\hello\\123/` | `\\w\\\\hello\\\\123` |
 - ES5 明确规定，使用正则表达式字面量必须像直接调用 `RegExp` 构造函数一样，每次都创建新的 `RegExp` 实例。
 - 实例属性
@@ -505,7 +507,7 @@ function type(obj) {
   | input         | \$\_                                                             | 最近一次要匹配的字符串                 |
   | lastMatch     | \$&                                                              | 最近一次匹配项                         |
   | lastParen     | \$+                                                              | 最近一次匹配的捕获组                   |
-  | leftContext   | \$`                                                              | input 字符串中 lastMatch 之前的文本    |
+  | leftContext   | \$` | input 字符串中 lastMatch 之前的文本                        |
   | rightContext  | \$'                                                              | input 字符串中 lastMatch 之后的文本    |
   | multiline     | \$\*                                                             | 布尔值，是否所有的表达式都使用多行模式 |
   | $1,$2,...,\$9 | 存储第一到第九个捕获组，调用 exec()或 test()时，这些属性自动填充 |                                        |
@@ -1202,6 +1204,46 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 ## [前端性能优化最佳实践](https://csspod.com/frontend-performance-best-practices/)
 
 ## [React 16 加载性能优化指南](https://juejin.im/post/5b506ae0e51d45191a0d4ec9)
+
+## 项目性能优化
+
+- 页面基础优化
+
+  - 引入位置: `css 文件<head>中引入， js 文件<body>底部引入；`
+
+    - 影响首屏的，优先级很高的 js 也可以头部引入，甚至内联；
+
+  - 减少请求 (http 1.0 - 1.1)，合并请求，正确设置 http 缓存；
+
+  - 减少文件体积:
+
+    - 删除多余代码:
+      - tree-shaking
+      - code-spliting
+    - 混淆 / 压缩代码(UglifyJs)，开启 gzip 压缩；
+    - 多份编译文件按条件引入:
+      - 针对现代浏览器直接给 ES6 文件，只针对低端浏览器引用编译后的 ES5 文件；
+      - 可以利用`<script type="module"> / <script type="module">`进行条件引入用
+    - 动态 polyfill，只针对不支持的浏览器引入 polyfill；
+
+  - 图片优化:
+
+    - 根据业务场景，与 UI 探讨选择 合适质量，合适尺寸；
+    - 根据需求和平台，选择合适格式，例如非透明时可用 jpg；非苹果端，使用 webp；
+    - 小图片合成 雪碧图，低于 5K 的图片可以转换成 base64 内嵌；
+    - 合适场景下，使用 iconfont 或者 svg；
+
+  - 使用缓存:
+
+    - 浏览器缓存: 通过设置请求的过期时间，合理运用浏览器缓存；
+    - CDN 缓存: 静态文件合理使用 CDN 缓存技术；
+
+      - HTML 放于自己的服务器上；
+      - 打包后的图片 / js / css 等资源上传到 CDN 上，文件带上 hash 值；
+      - 由于浏览器对单个域名请求的限制，可以将资源放在多个不同域的 CDN 上，可以绕开该限制；
+
+    - 服务器缓存: 将不变的数据、页面缓存到 内存 或 远程存储(redis 等) 上；
+    - 数据缓存: 通过各种存储将不常变的数据进行缓存，缩短数据的获取时间；
 
 # CSS
 
@@ -2268,6 +2310,10 @@ function compose(middleware) {
   }
 }
 ```
+
+## webpack
+
+- [超详细的 webpack 原理解读](https://segmentfault.com/a/1190000017890529)
 
 ## 算法
 
