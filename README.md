@@ -2183,6 +2183,8 @@ scope.$digest()
 
 ![](https://user-gold-cdn.xitu.io/2017/6/14/03e1f627b419676dbb727ab9bc35e77e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
+## [Nodejs 进程间通信](http://www.ayqy.net/blog/nodejs%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/)
+
 ## [单线程与多线程的区别](https://blog.csdn.net/u012134199/article/details/46290465)
 
 ## [[NodeJS] 优缺点及适用场景讨论](https://www.cnblogs.com/sysuys/p/3460614.html)
@@ -2356,6 +2358,12 @@ function compose(middleware) {
   }
 }
 ```
+
+## Node 内存泄漏问题
+
+- [nodejs 调试工具之 heapdump 简介](https://leokongwq.github.io/2016/11/08/nodejs-heapdump.html)
+- [v8-profiler](https://github.com/node-inspector/v8-profiler)
+- [easy-monitor](https://github.com/hyj1991/easy-monitor)
 
 ## webpack
 
@@ -2861,6 +2869,4 @@ function compose(middleware) {
     }
     ```
 
-## 内存溢出
-
-v'vvv
+# Nginx
