@@ -1100,7 +1100,25 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 - Server
 
-## [深入浅出浏览器渲染原理](https://juejin.im/post/5c24d736f265da614b120d4a)
+## [深入浅出浏览器渲染原理](https://juejin.im/post/5c35cf62f265da615e05a67d)
+
+  - 以下操作会导致重排或重绘
+    - 增、删、改 DOM 节点
+    - 修改 CSS 样式，改变元素的大小、位置，或使用 `display:none;` 时会造成重排；修改颜色 `visibility: hidden` 会造成重绘
+    - 修改网页的默认字体大小会造成重排
+    - Resize 窗口或滚动时
+    - 内容改变时（用户输入改变也会）
+    - 计算 offsetWidth 和 offsetHeight
+    
+  - 减少重排和重绘
+    - 尽量避免style的使用，对于需要操作DOM元素节点，重新命名className，更改className名称。
+    - 如果增加元素或者clone元素，可以先把元素通过documentFragment放入内存中，等操作完毕后，再appendChild到DOM元素中
+    - 不要经常获取同一个元素，可以第一次获取元素后，用变量保存下来，减少遍历时间
+    - 尽量少使用dispaly:none，可以使用visibility:hidden代替，dispaly:none会造成重排，visibility:hidden会造成重绘。
+    - 不要使用Table布局，因为一个小小的操作，可能就会造成整个表格的重排或重绘
+    - 使用resize事件时，做防抖和节流处理。
+    - 对动画元素使用absolute / fixed属性。
+    - 批量修改元素时，可以先让元素脱离文档流，等修改完毕后，再放入文档流。
 
 ## CSS 和 JS 解析、渲染
 
