@@ -856,7 +856,7 @@ async 和 promise 都不会阻塞执行，await 只会对 async 函数内 await 
 
 async 异常捕获用 try...catch, promise 直接用 catch(), try...catch 无法捕获 promise 异常。
 
-async...await 是 Generator 函数语法糖， co 模块实现是通过 Promise 包装的。
+async...await 是 Generator 函数语法糖。[ co 模块类似实现](#asyncawait)。
 
 ## 防抖与节流
 
