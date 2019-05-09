@@ -1006,6 +1006,13 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 ## 跨域
 
 - [前端常见跨域解决方案（全）](https://segmentfault.com/a/1190000011145364)
+  - JSONP(JSON with padding)
+  - postMessage
+  - cors
+  - document.domain + iFrame
+  - window.name + iFrame
+  - location.hash + iFrame
+  - 同域服务器转发请求
 
     <iframe src="https://segmentfault.com/a/1190000011145364" width="100%" frameborder="0" height="500px" ></iframe>
 
