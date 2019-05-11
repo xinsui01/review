@@ -1169,7 +1169,8 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
     - html 转义为实体
     - 在标签的 href、src 等属性中，包含 `javascript:` 等可执行代码。
-      XSS 分类
+      
+    XSS 分类
 
     - 存储型 XSS：
       存储型 XSS 的攻击步骤：
