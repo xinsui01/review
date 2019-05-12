@@ -1166,13 +1166,11 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
     > XSS 的本质是：恶意代码未经过滤，与网站正常的代码混在一起；浏览器无法分辨哪些脚本是可信的，导致恶意脚本被执行。
 
     为了和 CSS 区分，这里把攻击的第一个字母改成了 X，于是叫做 XSS。
-
-    - html 转义为实体
-    - 在标签的 href、src 等属性中，包含 `javascript:` 等可执行代码。
       
     XSS 分类
 
     - 存储型 XSS：
+    
       存储型 XSS 的攻击步骤：
 
       1. 攻击者将恶意代码提交到目标网站的数据库中。
@@ -1183,6 +1181,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       这种攻击常见于带有用户保存数据的网站功能，如论坛发帖、商品评论、用户私信等。
 
     - 反射型 XSS:
+    
       反射型 XSS 的攻击步骤：
 
       1. 攻击者构造出特殊的 URL，其中包含恶意代码。
@@ -1199,6 +1198,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       POST 的内容也可以触发反射型 XSS，只不过其触发条件比较苛刻（需要构造表单提交页面，并引导用户点击），所以非常少见。
 
     - DOM 型 XSS:
+    
       DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行恶意代码由浏览器端完成，属于前端 JavaScript 自身的安全漏洞，而其他两种 XSS 都属于服务端的安全漏洞。
       ```html
       <script>
@@ -1210,13 +1210,14 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
     XSS 预防：
 
-    1. 输入过滤，转义输出、存储
-    2. 避免使用 eval，new Function 等执行字符串的方法，除非确定字符串和用户输入无关。
+    1. 输入过滤，转义(html 转义为实体)输出、存储
+    2. 在标签的 href、src 等属性中，包含 `javascript:` 等可执行代码。
+    3. 避免使用 eval，new Function 等执行字符串的方法，除非确定字符串和用户输入无关。
        `new Function ([arg1[, arg2[, ...argN]],] functionBody)`
-    3. 使用 innerHTML，document.write 的时候，如果数据是用户输入的，那么需要对关键字符都进行过滤与转义。
-    4. 对于非客户端 cookie，比如保存用户凭证的 session，务必标识为 http only，这样 js 就获取不到这个 cookie 值了，安全性得到提高。
-    5. X-XSS-Protection
-    6. cookie secure\httpOnly
+    4. 使用 innerHTML，document.write 的时候，如果数据是用户输入的，那么需要对关键字符都进行过滤与转义。
+    5. 对于非客户端 cookie，比如保存用户凭证的 session，务必标识为 http only，这样 js 就获取不到这个 cookie 值了，安全性得到提高。
+    6. X-XSS-Protection
+    7. cookie secure\httpOnly
 
   - CSRF
     - [浅谈 CSRF 攻击方式](https://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html)
@@ -1226,7 +1227,6 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       - 避免登录的 session 长时间存储在客户端中。
       - 关键请求使用验证码或者 token 机制。在一些十分关键的操作，比如交易付款环节。这种请求中，加入验证码，可以防止被恶意用户攻击。token 机制也有一定的防御作用。具体来说就是服务器每次返回客户端页面的时候，在页面中埋上一个 token 字段，例如 `<input type=“hidden” name=“csrftoken” value=“abcd">`。 之后，客户端请求的时候带上这个 token，使用这个机制后，攻击者也就很难发起 CSRF 攻击了。
       - sameSite cookie
-      - 浏览器跨域携带 cookie 时 `credentials: 'same-origin'`
 
 ## [前端性能优化最佳实践](https://csspod.com/frontend-performance-best-practices/)
 
