@@ -1350,53 +1350,53 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 - [清除浮动（clearfix）的常见方法](https://segmentfault.com/a/1190000008012247)
 
-- [clearfix（清除浮动）](https://segmentfault.com/a/1190000013664630)
+  - [clearfix（清除浮动）](https://segmentfault.com/a/1190000013664630)
 
-  - 使用 clear 属性
+    - 使用 clear 属性
 
-    ```css
-    .container::after {
-      content: ' ';
-      display: block;
-      clear: both;
-    }
-    ```
+      ```css
+      .container::after {
+        content: ' ';
+        display: block;
+        clear: both;
+      }
+      ```
 
-    // 可能有些代码有添加::before,且 display：table
+      // 可能有些代码有添加::before,且 display：table
 
-    ```css
-    .container::before,
-    .container::after {
-      content: ' ';
-      display: table;
-    }
+      ```css
+      .container::before,
+      .container::after {
+        content: ' ';
+        display: table;
+      }
 
-    .container::after {
-      clear: both;
-    }
-    ```
+      .container::after {
+        clear: both;
+      }
+      ```
 
-    // 实际上添加的部分跟浮动并没有关系，他们的作用是防止子元素的 margin-top 发生重叠。但添加::before 就必须将 display 设置为 table。主要原理：display 设置为 table 时会出现一个匿名表格单元格（anonymous table-cell），从而创建一个新的 BFC（下文会提及），根据 BFC 的布局规则，会使 margin-top 不重叠。这里只是解释说明有些代码出现这种写法的原因，如果没有防止重叠的需求，完全可以精简代码，使用上一种写法。
+      // 实际上添加的部分跟浮动并没有关系，他们的作用是防止子元素的 margin-top 发生重叠。但添加::before 就必须将 display 设置为 table。主要原理：display 设置为 table 时会出现一个匿名表格单元格（anonymous table-cell），从而创建一个新的 BFC（下文会提及），根据 BFC 的布局规则，会使 margin-top 不重叠。这里只是解释说明有些代码出现这种写法的原因，如果没有防止重叠的需求，完全可以精简代码，使用上一种写法。
 
-    ```css
-    .clearfix::after {
-      content: '';
-      display: block;
-      clear: both;
-      visibility: hidden;
-      height: 0;
-    }
+      ```css
+      .clearfix::after {
+        content: '';
+        display: block;
+        clear: both;
+        visibility: hidden;
+        height: 0;
+      }
 
-    .clearfix {
-      zoom: 1; /* For IE 6/7 (trigger hasLayout) */
-    }
-    ```
+      .clearfix {
+        zoom: 1; /* For IE 6/7 (trigger hasLayout) */
+      }
+      ```
 
-  - 添加标签
-    ```html
-    <br style="clear:both" />
-    ```
-  - 触发浮动元素父元素的 BFC
+    - 添加标签
+      ```html
+      <br style="clear:both" />
+      ```
+    - 触发浮动元素父元素的 BFC
 
 ## 层叠上下文
 
