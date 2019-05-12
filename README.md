@@ -1362,7 +1362,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       }
       ```
 
-      // 可能有些代码有添加::before,且 display：table
+      可能有些代码有添加::before,且 display：table
 
       ```css
       .container::before,
@@ -1376,7 +1376,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       }
       ```
 
-      // 实际上添加的部分跟浮动并没有关系，他们的作用是防止子元素的 margin-top 发生重叠。但添加::before 就必须将 display 设置为 table。主要原理：display 设置为 table 时会出现一个匿名表格单元格（anonymous table-cell），从而创建一个新的 BFC（下文会提及），根据 BFC 的布局规则，会使 margin-top 不重叠。这里只是解释说明有些代码出现这种写法的原因，如果没有防止重叠的需求，完全可以精简代码，使用上一种写法。
+      实际上添加的部分跟浮动并没有关系，他们的作用是防止子元素的 margin-top 发生重叠。但添加::before 就必须将 display 设置为 table。主要原理：display 设置为 table 时会出现一个匿名表格单元格（anonymous table-cell），从而创建一个新的 BFC（下文会提及），根据 BFC 的布局规则，会使 margin-top 不重叠。这里只是解释说明有些代码出现这种写法的原因，如果没有防止重叠的需求，完全可以精简代码，使用上一种写法。
 
       ```css
       .clearfix::after {
