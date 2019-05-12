@@ -1870,8 +1870,14 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 - 挂载阶段
 
   - constructor
-  - static getDerivedStateFromProps(nextProps, prevState) //一个静态方法，所以不能在这个函数里面使用 this，这个函数有两个参数 props 和 state，分别指接收到的新参数和当前的 state 对象，这个函数会返回一个对象用来更新当前的 state 对象，如果不需要更新可以返回 null
-  - <s>componentWillMount/UNSAFE_componentWillMount</s> // 或者 `<span style="text-decoration: line-through"></span>`
+  - static getDerivedStateFromProps(nextProps, prevState)
+  
+    一个静态方法，所以不能在这个函数里面使用 this，这个函数有两个参数 props 和 state，分别指接收到的新参数和当前的 state 对象，这个函数会返回一个对象用来更新当前的 state 对象，如果不需要更新可以返回 null
+    
+  - <s>componentWillMount/UNSAFE_componentWillMount</s>
+  
+    或者 `<span style="text-decoration: line-through"></span>`
+    
   - render() 纯函数
   - componentDidMount()
 
@@ -1882,7 +1888,10 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
   - shouldComponentUpdate(nextProps, nextState)
   - <s>componentWillUpdate(nextProps, nextState)/UNSAFE_componentWillUpdate(nextProps, nextState)</s>
   - render()
-  - getSnapshotBeforeUpdate(prevProps, prevState) //函数有一个返回值，会作为第三个参数传给 componentDidUpdate，如果你不想要返回值，请返回 null，不写的话控制台会有警告
+  - getSnapshotBeforeUpdate(prevProps, prevState)
+  
+    函数有一个返回值，会作为第三个参数传给 componentDidUpdate，如果你不想要返回值，请返回 null，不写的话控制台会有警告
+  
   - componentDidUpdate(prevProps, prevState, snapshot)
 
 - 卸载阶段
