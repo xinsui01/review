@@ -1324,18 +1324,20 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 - [BFC(块格式化上下文)](https://segmentfault.com/a/1190000013647777)
 
-  - 创建 BFC
-    - 根元素或包含根元素的元素
-    - 浮动元素 float: left/right/inherit(!= none);
-    - 定位元素 position: absolute/fixed;
-    - display:inline-block/flex/inline-flex/table-cell/table-caption
-    - overflow: hidden/auto/scroll
   - BFC 特性
     - 一个独立的布局环境，内部的元素不会影响外部的元素，反之亦如此；
     - 内部子元素从顶端开始垂直的一个接一个的排列，子元素之间垂直的间距是由 margin 决定的；
     - 同一个 BFC 中，相邻的块级盒子的垂直外边距会发生重叠；
     - BFC 区块不会和 float 区块发生重叠；
     - BFC 能够识别并包含浮动元素，当计算其区域的高度时，浮动元素也参与计算；
+
+  - 创建 BFC
+    - 根元素或包含根元素的元素
+    - 浮动元素 float: left/right/inherit(!= none);
+    - 定位元素 position: absolute/fixed;
+    - display:inline-block/flex/inline-flex/table-cell/table-caption
+    - overflow: hidden/auto/scroll
+  
   - BFC 作用
     - 清除浮动，解决浮动后高度塌陷问题
     - 避免外边距折叠（外边距折叠（Margin collapsing）只会发生在属于同一 BFC 的块级元素之间。如果它们属于不同的 BFC，它们之间的外边距则不会折叠。所以通过创建一个不同的 BFC ，就可以避免外边距折叠。）
