@@ -1680,7 +1680,7 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
     - 首部
     - 主体
 - [HTTP 协议](https://zhuanlan.zhihu.com/p/24913080)
-- [HTTP 请求方法：GET、HEAD、POST、PUT、DELETE、CONNECT、OPTIONS、TRACE、PATCH](https://itbilu.com/other/relate/EkwKysXIl.html)
+- [HTTP 请求方法：GET、HEAD、POST、PUT、DELETE、CONNECT、OPTIONS、TRACE、PATCH](https://itbilu.com/other/relate/EkwKysXIl.html)
   - PUT 和 PATCH 区别
     - PUT 一般是资源的整体更新，PATCH 一般是资源的部分更新
     - 当资源不存在时，PATCH 会创建一个新的资源，PUT 只会对已在资源进行更新。
