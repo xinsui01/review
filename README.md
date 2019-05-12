@@ -1746,6 +1746,9 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 
 - [TCP 三次握手](https://www.zhihu.com/question/24853633/answer/115173386)
 - [TCP 三次握手、四次挥手](https://zhuanlan.zhihu.com/p/35768805)
+  
+  ![](https://img-blog.csdn.net/20180720212258640?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM2MTMyMTI3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+  
 - [通俗大白话来理解 TCP 协议的三次握手和四次分手](https://github.com/jawil/blog/issues/14)
 - [TCP 的滑动窗口与拥塞窗口](https://blog.csdn.net/zhangdaisylove/article/details/47294315)
 - [TCP 滑动窗口（发送窗口和接收窗口）](https://my.oschina.net/xinxingegeya/blog/485650)
