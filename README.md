@@ -1948,6 +1948,26 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 ## virturl Dom\diff 的原理
 
 - [Virtual DOM 的实现和 React Fiber 简介](https://www.jianshu.com/p/b189b2949b33)
+  - vDOM
+    ```js
+      var element = {
+        type: 'ul',
+        props: {
+          id: 'list',
+          children: [
+            {type: 'li', props: { className: 'item', children: ['Item 1'] } },
+            {type: 'li', props: { className: 'item', children: ['Item 2'] } },
+            {type: 'li', props: { className: 'item', children: ['Item 3'] } },
+            {type: 'li', props: { className: 'item', children: ['Item 4'] } }
+          ]
+        }
+      }
+    
+    ```
+    
+    - 用 JavaScript 对象结构表示 DOM 树结构；然后用这个树构建真正的 DOM 树，插入到文档中
+    - 当状态变更时，重新构建一个新的对象树，然后新旧树作对比，记录两棵树的差异
+    - 把差异应用到真正的 DOM 树上，视图就更新了
 - [react diff](https://zhuanlan.zhihu.com/p/20346379)
 
 ## [合成事件（SyntheticEvent）](https://reactjs.org/docs/events.html)
