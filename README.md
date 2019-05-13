@@ -2968,6 +2968,12 @@ function compose(middleware) {
 
     ```js
     function unique(arr) {
+      return [...new Set(arr)];
+    }
+    ```
+
+    ```js
+    function unique(arr) {
       return arr.filter((item, index) => arr.indexOf(item) === index)
     }
     ```
@@ -2980,8 +2986,7 @@ function compose(middleware) {
           return false
         }
 
-        obj[item] = true
-        return true
+        return obj[item] = true
       })
     }
     ```
