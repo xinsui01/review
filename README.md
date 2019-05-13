@@ -2655,10 +2655,10 @@ function compose(middleware) {
   ```js
   function flatten(input) {
     if (Array.isArray(input)) {
-      var output = []
+      let output = []
       function _flatten(input) {
-        for (var i = 0; i < input.length; i++) {
-          var value = input[i]
+        for (let i = 0, len = input.length; i < len; i++) {
+          let value = input[i]
           if (Array.isArray(value)) {
             _flatten(value)
           } else {
@@ -2758,23 +2758,23 @@ function compose(middleware) {
     // {}
     // );
 
-    let obj = {}
-    ;('' + str).replace(/(\w{1})/g, letter => {
-      obj[letter] ? (obj[letter] += 1) : (obj[letter] = 1)
-      return letter
+    let obj = {};
+    ('' + str).replace(/\w{1}/g, letter => {
+      obj[letter] = (obj[letter] || 0 ) + 1;
+      return letter;
     })
 
     let letter = '',
-      max = 0
+      maxNum = 0;
 
     for (let _letter in obj) {
-      if (obj[_letter] > max) {
-        max = obj[_letter]
-        letter = _letter
+      if (obj[_letter] > maxNum) {
+        maxNum = obj[_letter];
+        letter = _letter;
       }
     }
 
-    return { letter, max }
+    return { letter, maxNum };
   }
 
   const str = 'qweqrtyuiqqqwrtyudfgerqtywer'
