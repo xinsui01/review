@@ -2647,7 +2647,7 @@ function compose(middleware) {
 
     // 方法二
     var num = 234982347.73
-    num.toString().replace(/^\d+/g, m => m.replace(/(\d{1,3})(?=(?:\d{3})+$)/g, '$1,'))
+    num.toString().replace(/^\d+/, m => m.replace(/(\d{1,3})(?=(?:\d{3})+$)/g, '$1,'))
     ```
 
 - 实现一个 flatten 方法。
