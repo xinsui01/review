@@ -2844,26 +2844,44 @@ function compose(middleware) {
 
   ```js
   function mouseOverShowBorder(container) {
-    const children = container.childNodes
+    const children = container.childNodes;
     for (let i = 0; i < children.length; i++) {
-      const child = children[i]
+      const child = children[i];
 
       if (child.nodeType === 1) {
-        child.onmouseover = function() {
-          this.style.border = '1px solid #ccc'
+        child.onmouseover = function(evt) {
+          if(evt && evt.stopPropagation) {
+            evt.stopPropagation();
+          } else {
+            evt.cancelBubble = true; // IE 阻止事件冒泡
+          }
+          this.style.border = '1px solid #ccc';
         }
 
         child.onmouseout = function() {
-          this.style.border = ''
+          this.style.border = '';
         }
 
-        mouseOverShowBorder(child)
+        mouseOverShowBorder(child);
       }
     }
   }
 
-  mouseOverShowBorder(document.body)
+  mouseOverShowBorder(document.body);
   ```
+
+  nodeType:
+
+  | 常量                             | 值   | 描述                                                                            |
+  | :------------------------------- | :--- | :------------------------------------------------------------------------------ |
+  | Node.ELEMENT_NODE                | 1    | 一个 元素 节点，例如 `<p>` 和 `<div>`。                                         |
+  | Node.TEXT_NODE                   | 3    | Element 或者 Attr 中实际的文字                                                  |
+  | Node.PROCESSING_INSTRUCTION_NODE | 7    | 一个用于XML文档的 ProcessingInstruction ，例如 `<?xml-stylesheet ... ?>` 声明。 |
+  | Node.COMMENT_NODE                | 8    | 一个 Comment 节点。                                                             |
+  |                                  |      |                                                                                 |
+  | Node.DOCUMENT_NODE               | 9    | 一个 Document 节点。                                                            |
+  | Node.DOCUMENT_TYPE_NODE          | 10   | 描述文档类型的 DocumentType 节点。例如 `<!DOCTYPE html>`  就是用于 HTML5 的。   |
+  | Node.DOCUMENT_FRAGMENT_NODE      | 11   | 一个 DocumentFragment 节点                                                      |
 
 - 排序算法
 
