@@ -473,12 +473,12 @@ function type(obj) {
 - 使用 `RegExp` 构造函数
   - 由于 `RegExp` 构造函数的模式参数是个字符串，所以在某些情况下要对字符串进行双重转义
   
-    | 字面量模式 | 等价的字符串 |
+    | 字面量模式         | 等价的字符串          |
     | :----------------- | :-------------------- |
-    | `/\[bc\]at/` | `\\[bc\\]at` |
-    | `/\.at/` | `\\.at` |
-    | `/name\/age/` | `name\\/age` |
-    | `/\d.\d{1,2}/` | `\\d.\\d{1,2}` |
+    | `/\[bc\]at/`       | `\\[bc\\]at`          |
+    | `/\.at/`           | `\\.at`               |
+    | `/name\/age/`      | `name\\/age`          |
+    | `/\d.\d{1,2}/`     | `\\d.\\d{1,2}`        |
     | `/\w\\hello\\123/` | `\\w\\\\hello\\\\123` |
 - ES5 明确规定，使用正则表达式字面量必须像直接调用 `RegExp` 构造函数一样，每次都创建新的 `RegExp` 实例。
 - 实例属性
@@ -508,7 +508,7 @@ function type(obj) {
   | input         | \$\_                                                             | 最近一次要匹配的字符串                 |
   | lastMatch     | \$&                                                              | 最近一次匹配项                         |
   | lastParen     | \$+                                                              | 最近一次匹配的捕获组                   |
-  | leftContext   | \$` | input 字符串中 lastMatch 之前的文本                        |
+  | leftContext   | \$`                                                              | input 字符串中 lastMatch 之前的文本    |
   | rightContext  | \$'                                                              | input 字符串中 lastMatch 之后的文本    |
   | multiline     | \$\*                                                             | 布尔值，是否所有的表达式都使用多行模式 |
   | $1,$2,...,\$9 | 存储第一到第九个捕获组，调用 exec()或 test()时，这些属性自动填充 |                                        |
@@ -2429,6 +2429,204 @@ function compose(middleware) {
 ## webpack
 
 - [超详细的 webpack 原理解读](https://segmentfault.com/a/1190000017890529)
+
+  1. 初始化阶段
+      | 事件            | 描述                                                                                                                                           |
+      | :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- |
+      | 初始化参数      | 从配置文件和shell 中读取和合并参数，得出最终的参数，这个过程还会执行配置文件中插件的实例化语句 new Plugin()                                    |
+      | 实例化 Compiler | 根据得到的配置文件，实例化Compiler，Compiler 负责文件监听和启动编译。在Compiler 实例中包含了完整的 webpack 配置，全局只有一个 Compiler 实例    |
+      | 加载插件        | 依次调用插件的 apply 方法，让插件可以监听后续的所有事件节点。同时向插件中传入 compiler 实例的引用，以方便插件通过 compiler 调用 webpack 的 api |
+      | environment     | 开始应用node.js风格的文件系统到compiler 对象，以方便后续的文件寻找和读取                                                                       |
+      | Entry-option    | 读取配置的Entrys,为每个Entry实例化一个对应的EntryPlugin,为后面该Entry的递归解析工作做准备                                                      |
+      | After-plugins   | 调用完所有内置的和配置的插件的apply方法                                                                                                        |
+      | After-resolvers | 根据配置初始化resolver,resolver负责在文件系统中寻找指定路径的文件                                                                              |
+  2. 编译阶段
+      | 事件          | 描述                                                                                                                                                                                                   |
+      | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+      | run           | 启动一次编译                                                                                                                                                                                           |
+      | watch-run     | 在监听模式下启动编译，文件发生变化会重新编译                                                                                                                                                           |
+      | compile       | 告诉插件一次新的编译将要启动，同时会给插件带上 compiler 对象                                                                                                                                           |
+      | compilation   | 当webpack以开发模式运行时，每当检测到文件的变化，便有一次新的compilation被创建。一个Compilation对象包含了当前的模块资源、编译生成资源、变化的文件等。compilation对象也提供了很多事件回调给插件进行拓展 |
+      | make          | 一个新的compilation对象创建完毕,即将从entry开始读取文件,根据文件类型和编译的loader对文件进行 ==编译== ,编译完后再找出该文件依赖的文件,递归地编译和解析                                                 |
+      | after-compile | 一次compilation执行完成                                                                                                                                                                                |
+      | invalid       | 当遇到错误会触发改事件,该事件不会导致webpack退出                                                                                                                                                       |
+  3. 输出阶段
+
+      | 事件        | 描述                                                                                                 |
+      | :---------- | :--------------------------------------------------------------------------------------------------- |
+      | should-emit | 所有需要输出的文件已经生成,询问插件有哪些文件需要输出,有哪些不需要输出                               |
+      | emit        | 确定好要输出哪些文件后,执行文件输出, ==可以在这里获取和修改输出的内容==                              |
+      | after-emit  | 文件输出完毕                                                                                         |
+      | done        | 成功完成一次完整的编译和输出流程                                                                     |
+      | failed      | 如果在编译和输出中出现错误,导致webpack退出,就会直接跳转到本步骤,插件可以在本事件中获取具体的错误原因 |
+
+  ```js
+    //以下代码用来包含webpack运行过程中的每个阶段
+    //file:webpack.config.js
+
+    const path = require('path');
+    //插件监听事件并执行相应的逻辑
+    class TestPlugin {
+      constructor() {
+        console.log('@plugin constructor');
+      }
+
+      apply(compiler) {
+        console.log('@plugin apply');
+
+        compiler.plugin('environment', (options) => {
+          console.log('@environment');
+        });
+
+        compiler.plugin('after-environment', (options) => {
+          console.log('@after-environment');
+        });
+
+        compiler.plugin('entry-option', (options) => {
+          console.log('@entry-option');
+        });
+
+        compiler.plugin('after-plugins', (options) => {
+          console.log('@after-plugins');
+        });
+
+        compiler.plugin('after-resolvers', (options) => {
+          console.log('@after-resolvers');
+        });
+
+        compiler.plugin('before-run', (options, callback) => {
+          console.log('@before-run');
+          callback();
+        });
+
+        compiler.plugin('run', (options, callback) => {
+          console.log('@run');
+          callback();
+        });
+
+        compiler.plugin('watch-run', (options, callback) => {
+          console.log('@watch-run');
+          callback();
+        });
+
+        compiler.plugin('normal-module-factory', (options) => {
+          console.log('@normal-module-factory');
+        });
+
+        compiler.plugin('context-module-factory', (options) => {
+          console.log('@context-module-factory');
+        });
+
+        compiler.plugin('before-compile', (options, callback) => {
+          console.log('@before-compile');
+          callback();
+        });
+
+        compiler.plugin('compile', (options) => {
+          console.log('@compile');
+        });
+
+        compiler.plugin('this-compilation', (options) => {
+          console.log('@this-compilation');
+        });
+
+        compiler.plugin('compilation', (options) => {
+          console.log('@compilation');
+        });
+
+        compiler.plugin('make', (options, callback) => {
+          console.log('@make');
+          callback();
+        });
+
+        compiler.plugin('compilation', (compilation) => {
+
+          compilation.plugin('build-module', (options) => {
+            console.log('@build-module');
+          });
+
+          compilation.plugin('normal-module-loader', (options) => {
+            console.log('@normal-module-loader');
+          });
+
+          compilation.plugin('program', (options, callback) => {
+            console.log('@program');
+            callback();
+          });
+
+          compilation.plugin('seal', (options) => {
+            console.log('@seal');
+          });
+        });
+
+        compiler.plugin('after-compile', (options, callback) => {
+          console.log('@after-compile');
+          callback();
+        });
+
+        compiler.plugin('should-emit', (options) => {
+          console.log('@should-emit');
+        });
+
+        compiler.plugin('emit', (options, callback) => {
+          console.log('@emit');
+          callback();
+        });
+
+        compiler.plugin('after-emit', (options, callback) => {
+          console.log('@after-emit');
+          callback();
+        });
+
+        compiler.plugin('done', (options) => {
+          console.log('@done');
+        });
+
+        compiler.plugin('failed', (options, callback) => {
+          console.log('@failed');
+          callback();
+        });
+
+        compiler.plugin('invalid', (options) => {
+          console.log('@invalid');
+        });
+
+      }
+    }
+
+  ```
+
+  ```
+    #在目录下执行
+    webpack
+    #输出以下内容
+    @plugin constructor
+    @plugin apply
+    @environment
+    @after-environment
+    @entry-option
+    @after-plugins
+    @after-resolvers
+    @before-run
+    @run
+    @normal-module-factory
+    @context-module-factory
+    @before-compile
+    @compile
+    @this-compilation
+    @compilation
+    @make
+    @build-module
+    @normal-module-loader
+    @build-module
+    @normal-module-loader
+    @seal
+    @after-compile
+    @should-emit
+    @emit
+    @after-emit
+    @done
+  ```
 
 ## 算法
 
