@@ -2889,13 +2889,29 @@ function compose(middleware) {
 
     ```js
     /**
-     * 从后往前比较
+     * 每次比较相邻两个值
      */
     function bubbleSort(arr) {
       if (arr === null || arr.length === 0) return
 
-      for (let i = 0, len = arr.length - 1; i < len; i++) {
-        for (let j = arr.length - 1; j > i; j--) {
+      const length = arr.length;
+      
+      /**
+        * 从前往后冒泡
+        */
+      // for(let i=0; i < length -1; i++) {
+      //   for(let j=0; j < length - 1 - i; j++){
+      //     if(arr[j]>arr[j+1]){
+      //       swap(arr, j, j+1);
+      //     }
+      //   }
+      // }
+
+      /**
+        * 从后往前冒泡
+        */
+      for (let i = 0, len = length - 1; i < len; i++) {
+        for (let j = length - 1; j > i; j--) {
           if (arr[j] < arr[j - 1]) {
             swap(arr, j, j - 1)
           }
@@ -3076,7 +3092,7 @@ function compose(middleware) {
   - 计算目录 `/a/b/c/d/e.js` 和 `/a/b/f/g.js` 的相对目录
 
     ```js
-    function caculateRoute(path1, path2) {
+    function calculateRoute(path1, path2) {
       let pathArr1 = path1.split('/'),
         pathArr2 = path2.split('/'),
         routeArr = [],
