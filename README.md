@@ -582,6 +582,7 @@ if (!Function.prototype.bind) {
 
 - 深拷贝
   - [深入深入再深入 js 深拷贝对象](https://juejin.im/post/5ad6b72f6fb9a028d375ecf6)
+  - [lodash baseClone](https://github.com/lodash/lodash/blob/master/.internal/baseClone.js)
   - JSON.parse(JSON.stringify(obj))  
     原型改变，不能复制对象方法，不能复制循环引用
   - 递归遍历属性，复制属性 Object.getOwnPropertyDescriptor
