@@ -586,6 +586,93 @@ if (!Function.prototype.bind) {
   - JSON.parse(JSON.stringify(obj))  
     原型改变，不能复制对象方法，不能复制循环引用
   - 递归遍历属性，复制属性 Object.getOwnPropertyDescriptor
+    - 可枚举属性
+    - 循环引用
+    - Symbol键
+    - 原型上的属性
+    - 不可枚举的属性：属性描述符、setters、getters 等
+    ```js
+      function isObject(data) {
+        return data != null && (typeof data === 'object' || typeof data === 'function')
+      }
+
+      function deepClone(obj, hash = new WeakMap()) {
+
+        if(!isObject(obj)) {
+          return obj;
+        }
+        // 查表，防止循环拷贝
+        if(hash.has(obj)) {
+          return hash.get(obj);
+        }
+
+        let isArray = Array.isArray(obj)
+        // 初始化拷贝对象
+        let cloneObj = isArray ? [] : {};
+        // 哈希表设置
+        hash.set(obj, cloneObj)
+        // 获取原对象的所有属性描述符
+        let descriptors = Object.getOwnPropertyDescriptors(obj);
+        // 获取原对象所有 symbol 类型值
+        let symbolKeys = Object.getOwnPropertySymbols(obj);
+        // 拷贝所有 symbol 属性
+        if(symbolKeys.length >0) {
+          symbolKeys.forEach(symbolKey => {
+            cloneObj[symbolKey] = isObject(obj[symbolKey]) ? deepClone(obj[symbolKey], hash) : obj[symbolKey];
+          })
+        }
+
+        // 拷贝不可枚举属性 ?????
+        cloneObj = Object.create(Object.getPrototypeOf(cloneObj), descriptors)
+
+        // 拷贝可枚举属性（包括原型链上的）
+        for(let key in obj) {
+          cloneObj[key] = isObject(obj[key]) ? deepClone(obj[key]) : obj[key];
+        }
+
+        return cloneObj;
+      } 
+      /**
+        * 拷贝原型链
+        * 拷贝属性描述符
+        * 拷贝symbol属性
+        */
+      function cloneDeep(obj) {
+        // 拷贝原型链
+        let family = {};
+        let parent = Object.getPrototypeOf(obj)
+        while(parent != null) {
+          family = completeAssign(deepClone(obj), parent) //
+          parent = Object.getPrototypeOf(parent)
+        }
+
+        // 拷贝所有自有属性的属性描述符,来自于 MDN
+        // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+        function completeAssign(target, ...sources) {
+          sources.forEach(source => {
+            // 复制属性描述符
+            let descriptors = Object.keys(source).reduce((descriptors, curKey)=>{
+              descriptors[curKeys] = Object.getOwnPropertyDescriptor(source, curKey)
+              return descriptors;
+            }, {});
+
+            // 复制可枚举的 symbols 属性
+            Object.getOwnPropertySymbols(source).forEach(sym => {
+              let descriptor = Object.getOwnPropertyDescriptor(source, sym);
+              if(descriptor.enumerable) {
+                descriptors[sym] = descriptor;
+              }
+            });
+
+            Object.defineProperties(target, descriptors);
+          });
+
+          return target;
+        }
+        
+        return completeAssign(deepClone(obj), family )
+      }
+    ```
 
 ## [深入理解 new 操作符](https://www.cnblogs.com/onepixel/p/5043523.html)
 
