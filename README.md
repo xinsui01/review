@@ -1073,6 +1073,69 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 ![](https://segmentfault.com/img/bVWhRl?w=801&h=814)
 
+## 判断元素是否在视窗之内
+
+- Element.getBoundingClientRect(): 除了 width 和 height 外的属性都是相对于视口的左上角位置而言的。
+  - left
+  - right
+  - top
+  - bottom
+  - width
+  - height
+  - x(同left)
+  - y(同top)
+  
+  ![](./imgs/rect.png)
+
+- IntersectionObserver
+  1. 创建一个 intersection observer
+
+      ```js
+        let options = {
+          root: document.querySelector('#scrollArea'),  // 指定根(root)元素，用于检查目标的可见性。必须是目标元素的父级元素。如果未指定或者为null，则默认为浏览器视窗。
+          rootMargin: '0px', // root元素的外边距。类似于css中的 margin 属性，比如 "10px 20px 30px 40px" (top, right, bottom, left)。如果有指定root参数，则rootMargin也可以使用百分比来取值。该属性值是用作root元素和target发生交集时候的计算交集的区域范围，使用该属性可以控制root元素每一边的收缩或者扩张。默认值为0。
+          threshold: 1.0 // 可以是单一的number也可以是number数组，target元素和root元素相交程度达到该值的时候IntersectionObserver注册的回调函数将会被执行。
+        }
+        let observer = new IntersectionObserver(callback, options)
+      ```
+
+  2. 为每个观察者配置一个目标
+
+      ```js
+        let target = document.querySelector('#listItem')
+        observer.observe(target)
+
+        let callback = function(entries, observer) {
+          entries.forEach(entry => {
+            // Each entry describes an intersection change for one observed
+            // target element:
+            //   entry.boundingClientRect
+            //   entry.intersectionRatio
+            //   entry.intersectionRect
+            //   entry.isIntersecting
+            //   entry.rootBounds
+            //   entry.target
+            //   entry.time   
+          })
+        }
+      ```
+
+## window.requestIdleCallback() 
+
+> 在浏览器空闲时期依次调用函数，这就可以让开发者在主事件循环中执行后台或低优先级的任务，而且不会对像动画和用户交互这样延迟敏感的事件产生影响。函数一般会按先进先出调用的顺序执行，然而，如果回调函数指定了执行超时时间timeout，则有可能为了在超时前执行函数而打乱执行顺序。
+
+- 语法：`let handle = window.requestIdleCallBack(callback[,options])`
+  - 返回值：无符号长整数，可以传入`window.cancelIdleCallback()`结束回调
+  - options
+    - timeout: timeout 值被指定为正数时，当做浏览器调用 callback 的最后期限。它的单位是毫秒。当指定的时间过去后回调还没有被执行，那么回调会在下一次空闲时期被强制执行，尽管可能会对性能造成负面影响。
+
+## window.requestAnimationFrame(callback)
+
+> 告诉浏览器——你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。该方法需要传入一个回调函数作为参数，该回调函数会在浏览器下一次重绘之前执行
+
+- window.cancelAnimationFrame(id)
+
+
 # 浏览器
 
 ## Cookie
