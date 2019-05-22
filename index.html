@@ -127,9 +127,34 @@
     <footer style="position: sticky; bottom: 0px; height: 100px; background: #0f0;">
       aaaa
     </footer>
+    <img src="./404.png" alt="" />
     <script>
       let a = 123
       var abs = 232414124
+      window.onerror = function(msg, url, row, col, error) {
+        console.log('我知道错误了1')
+        console.log({
+          msg,
+          url,
+          row,
+          col,
+          error
+        })
+        return true
+      }
+      setTimeout(() => {
+        axsaxs
+      })
+
+      window.addEventListener(
+        'error',
+        errorEvent => {
+          console.log(errorEvent)
+          console.log('我知道 404 错误了2')
+          return true
+        },
+        true
+      )
     </script>
   </body>
 </html>
