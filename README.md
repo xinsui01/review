@@ -3325,6 +3325,8 @@ function compose(middleware) {
 
 # 前端监控
 
+[前端监控和前端埋点方案设计](https://juejin.im/post/5b62d68df265da0f9d1a1cd6)
+
 ## 数据监控
 
 数据监控，顾名思义就是监听用户的行为。常见的数据监控包括：
@@ -3460,6 +3462,12 @@ function compose(middleware) {
    ```html
     <script src='xxx/com/xxx' crossOrigin></script>
    ```
+
+    > 增加 crossorigin 属性后，浏览器将自动在请求头中添加一个 Origin 字段，发起一个 跨域资源共享 请求。Origin 向服务端表明了请求来源，服务端将根据来源判断是否正常响应。
+
+    > **指定域名的 Access-Control-Allow-Origin 的响应头中需带上Vary:Origin**
+    Vary 字段的作用在于为缓存服务器提供缓存规则及缓存筛选的依据。当增加 Vary:Origin 响应头后，缓存服务器将会按照 Origin 字段的内容，缓存不同版本，在请求响应时根据请求头中的 Origin 决定是否能够使用缓存响应。
+
 2. window.onerror 能否捕获 iframe 的错误
     1. 如果你的 iframe 页面和你的主站是同域名的话，直接给 iframe 添加 onerror 事件即可
       ```html
