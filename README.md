@@ -2285,6 +2285,26 @@ export default function connectAdvanced() {
   - 没有副作用
   - 不会依赖外部状态
 
+## Immutable.js
+
+> Immutable Data 就是一旦创建，就不能再被更改的数据。对 Immutable 对象的任何添加、修改、删除操作都会返回一个新的 Immutable 对象。  
+> Immutable 实现原理是持久化数据结构（Persistent Data Structure），也就是使用旧数据创建新数据时，要保证旧数据同时可用且不变。同时为了避免 deepCopy 把所有节点都复制一遍带来的性能损失，Immutable 使用了结构共享（Structural Sharing），即如果对象中的一个节点发生了变化，只修改这个节点和受它影响的父节点，其他节点则进行共享。
+
+![](https://user-gold-cdn.xitu.io/2018/4/4/1628e77dc419816b?imageslim)
+
+- 优缺点
+  1. 降低 Mutable 带来的复杂度
+      ```js
+        let obj = {a: 1};
+        let copy_obj = obj;
+        copy_obj.a = 2;
+        console.log(obj.a); // 2
+      ```
+  2. 节省内存空间（结构共享）
+  3. 拥抱函数式编程
+    纯函数式编程比面向对象更适用于前端开发。因为只要输入一致，输出必然一致，开发的组件更易于调试和安装。
+
+
 # Angular
 
 - [AngularJS 脏检查深入分析](https://www.cnblogs.com/likeFlyingFish/p/6183630.html)
