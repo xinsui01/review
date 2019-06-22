@@ -2278,12 +2278,30 @@ export default function connectAdvanced() {
 
 ## redux 基本组成和设计单向数据流
 
+  ![](https://user-gold-cdn.xitu.io/2017/10/14/c08df9d398f505f4aa0ac620396fb9e0?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
 - [redux 源码解读](https://juejin.im/post/5ae7db125188253dc6127bc7)
 
-- [征服 JavaScript 面试：什么是纯函数？](https://zcfy.cc/article/master-the-javascript-interview-what-is-a-pure-function-2186.html)
-  - 相同的输入，相同的输出
-  - 没有副作用
-  - 不会依赖外部状态
+- Redux 试图让 state 的变化变得可预测。这些限制条件反映在Redux的三大原则中。
+
+- 三大原则
+
+  - 单一数据源
+
+    整个应用的 state 被存储在一棵 Object tree 中，并且这个 Object tree 只存在于唯一一个 store 中。
+
+  - State 是只读的
+
+    唯一改变 State 的方法就是触发 Action, Action 是一个用于描述已发生事件的普通对象。
+
+  - 使用纯函数来执行修改
+
+    为了描述 Action 如何改变 state tree，需要编写 reducers。
+
+    - [征服 JavaScript 面试：什么是纯函数？](https://zcfy.cc/article/master-the-javascript-interview-what-is-a-pure-function-2186.html)
+      - 相同的输入，相同的输出
+      - 没有副作用
+      - 不会依赖外部状态
 
 ## Immutable.js
 
