@@ -3359,7 +3359,7 @@ function compose(middleware) {
     }
     ```
 
-# Nginx
+# [国际化](./intl.md)
 
 # 前端监控
 
@@ -3531,6 +3531,8 @@ function compose(middleware) {
 4. 环境信息
 
 ## 开源方案 sentry
+
+# Nginx
 
 ## [分享阿里前端p7架构图谱](https://juejin.im/post/5cf5f358e51d45778f076ce5)
 
