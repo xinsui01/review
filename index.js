@@ -135,19 +135,19 @@
 //   .pipe(objToStr)
 //   .pipe(process.stdout)
 
-const fs = require('fs')
-const zlib = require('zlib')
-const file = process.argv[2]
-console.log('argv: ', process.argv)
+const fs = require('fs');
+const zlib = require('zlib');
+const file = process.argv[2];
+console.log('argv: ', process.argv);
 
-const { Transform } = require('stream')
+const { Transform } = require('stream');
 
 const transform = new Transform({
   transform(chunk, encoding, callback) {
-    process.stdout.write('.')
-    callback(null, chunk)
+    process.stdout.write('.');
+    callback(null, chunk);
   }
-})
+});
 
 fs.createReadStream(file)
   .pipe(zlib.createGzip())
@@ -156,4 +156,4 @@ fs.createReadStream(file)
   // })
   .pipe(transform)
   .pipe(fs.createWriteStream(file.split('.')[0] + '.gz'))
-  .on('finish', () => process.stdout.write('\ndone'))
+  .on('finish', () => process.stdout.write('\ndone'));
