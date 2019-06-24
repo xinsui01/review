@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <ul>
+      <li><a href="#/">turn white</a></li>
+      <li><a href="#/blue">turn blue</a></li>
+      <li><a href="#/green">turn green</a></li>
+    </ul>
+    <script>
+      function Router() {
+        this.routes = {};
+        this.currentUrl = '';
+      }
+      Router.prototype.route = function(path, callback) {
+        this.routes[path] = callback || function() {};
+      };
+      Router.prototype.refresh = function() {
+        this.currentUrl = location.hash.slice(1) || '/';
+        console.log('refresh', 'currentUrl: ', this.currentUrl);
+        this.routes[this.currentUrl]();
+      };
+      Router.prototype.init = function() {
+        window.addEventListener('load', this.refresh.bind(this), false);
+        window.addEventListener('hashchange', this.refresh.bind(this), false);
+      };
+
+      window.Router = new Router();
+      window.Router.init();
+
+      let content = document.querySelector('body');
+      function changeBackgroundColor(color) {
+        content.style.backgroundColor = color;
+      }
+
+      Router.route('/', function() {
+        changeBackgroundColor('white');
+      });
+      Router.route('/blue', function() {
+        changeBackgroundColor('blue');
+      });
+      Router.route('/green', function() {
+        changeBackgroundColor('green');
+      });
+    </script>
+  </body>
+</html>

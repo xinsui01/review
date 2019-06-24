@@ -129,32 +129,35 @@
     </footer>
     <img src="./404.png" alt="" />
     <script>
-      let a = 123
-      var abs = 232414124
+      let a = 123;
+      var abs = 232414124;
       window.onerror = function(msg, url, row, col, error) {
-        console.log('我知道错误了1')
+        console.log('我知道错误了1');
         console.log({
           msg,
           url,
           row,
           col,
           error
-        })
-        return true
-      }
+        });
+        return true;
+      };
       setTimeout(() => {
-        axsaxs
-      })
+        axsaxs;
+      });
 
       window.addEventListener(
         'error',
         errorEvent => {
-          console.log(errorEvent)
-          console.log('我知道 404 错误了2')
-          return true
+          console.log(errorEvent);
+          console.log('我知道 404 错误了2');
+          return true;
         },
         true
-      )
+      );
+      window.addEventListener('hashchange', function() {
+        console.log('hashchange: ', location.hash);
+      });
     </script>
   </body>
 </html>

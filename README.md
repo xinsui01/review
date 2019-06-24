@@ -71,28 +71,28 @@
 
     ```js
     function SuperType() {
-      this.property = true
+      this.property = true;
     }
 
     SuperType.prototype.getSuperValue = function() {
-      return this.property
-    }
+      return this.property;
+    };
 
     function SubType() {
-      this.subProperty = false
+      this.subProperty = false;
     }
 
     // 继承了 SuperType
-    SubType.prototype = new SuperType()
+    SubType.prototype = new SuperType();
 
-    SubType.prototype.constructor = SubType
+    SubType.prototype.constructor = SubType;
 
     SubType.prototype.getSubValue = function() {
-      return this.subProperty
-    }
+      return this.subProperty;
+    };
 
-    var inst = new SubType()
-    alert(inst.getSuperValue())
+    var inst = new SubType();
+    alert(inst.getSuperValue());
     ```
 
   - 确定原型和实例关系
@@ -104,19 +104,19 @@
 
        ```js
        function SuperType() {
-         this.colors = ['red', 'blue', 'green']
+         this.colors = ['red', 'blue', 'green'];
        }
 
        function SubType() {}
 
        // 继承了 SuperType
-       SubType.prototype = new SuperType()
-       var inst1 = new SubType()
-       inst1.colors.push('black')
-       console.log(inst1.colors) // 'red', 'blue', 'green', 'black'
+       SubType.prototype = new SuperType();
+       var inst1 = new SubType();
+       inst1.colors.push('black');
+       console.log(inst1.colors); // 'red', 'blue', 'green', 'black'
 
-       var inst2 = new SubType()
-       console.log(inst2.colors) // 'red', 'blue', 'green', 'black'
+       var inst2 = new SubType();
+       console.log(inst2.colors); // 'red', 'blue', 'green', 'black'
        ```
 
     2. 在创建子类型实例的时候，不能向超类型的构造函数中传递参数。
@@ -131,23 +131,23 @@
 
     ```js
     function SuperType(name) {
-      this.name = name
-      this.colors = ['red', 'blue', 'green']
+      this.name = name;
+      this.colors = ['red', 'blue', 'green'];
     }
 
     function SubType(name, age) {
       // 继承了 SuperType, 同时还传递了参数
-      SuperType.call(this, name)
+      SuperType.call(this, name);
       // 实例属性
-      this.age = age
+      this.age = age;
     }
 
-    var inst1 = new SubType('Nicholas', 29)
-    inst1.colors.push('black')
-    console.log(inst1.colors) // 'red', 'blue', 'green', 'black'
+    var inst1 = new SubType('Nicholas', 29);
+    inst1.colors.push('black');
+    console.log(inst1.colors); // 'red', 'blue', 'green', 'black'
 
-    var inst2 = new SubType('Jerry', 27)
-    console.log(inst2.colors) // 'red', 'blue', 'green'
+    var inst2 = new SubType('Jerry', 27);
+    console.log(inst2.colors); // 'red', 'blue', 'green'
     ```
 
   - 问题
@@ -162,39 +162,39 @@
 
     ```js
     function SuperType(name) {
-      this.name = name
-      this.colors = ['red', 'blue', 'green']
+      this.name = name;
+      this.colors = ['red', 'blue', 'green'];
     }
 
     SuperType.prototype.sayName = function() {
-      console.log(this.name)
-    }
+      console.log(this.name);
+    };
 
     function SubType(name, age) {
       // 继承 SuperType 实例属性并传递参数
-      SuperType.call(this, name)
+      SuperType.call(this, name);
 
-      this.age = age
+      this.age = age;
     }
 
     // 继承方法
-    SubType.prototype = new SuperType()
+    SubType.prototype = new SuperType();
     // 修复构造函数
-    SubType.prototype.constructor = SubType
+    SubType.prototype.constructor = SubType;
     SubType.prototype.sayAge = function() {
-      console.log(this.age)
-    }
+      console.log(this.age);
+    };
 
-    var inst1 = new SubType('Nicholas', 29)
-    inst1.colors.push('black')
-    console.log(inst1.colors) // 'red', 'blue', 'green', 'black'
-    inst1.sayName()
-    inst1.sayAge()
+    var inst1 = new SubType('Nicholas', 29);
+    inst1.colors.push('black');
+    console.log(inst1.colors); // 'red', 'blue', 'green', 'black'
+    inst1.sayName();
+    inst1.sayAge();
 
-    var inst2 = new SubType('Jerry', 27)
-    console.log(inst2.colors) // 'red', 'blue', 'green'
-    inst2.sayName()
-    inst2.sayAge()
+    var inst2 = new SubType('Jerry', 27);
+    console.log(inst2.colors); // 'red', 'blue', 'green'
+    inst2.sayName();
+    inst2.sayAge();
     ```
 
   - 问题
@@ -226,23 +226,23 @@
       if (typeof Object.create !== 'function') {
         Object.create = function(proto, propertiesObject) {
           if (typeof proto !== 'object' && typeof proto !== 'function') {
-            throw new TypeError('Object prototype may only be an Object: ' + proto)
+            throw new TypeError('Object prototype may only be an Object: ' + proto);
           } else if (proto === null) {
             throw new Error(
               "This browser's implementation of Object.create is a shim and doesn't support 'null' as the first argument."
-            )
+            );
           }
 
           if (typeof propertiesObject != 'undefined')
             throw new Error(
               "This browser's implementation of Object.create is a shim and doesn't support a second argument."
-            )
+            );
 
           function F() {}
-          F.prototype = proto
+          F.prototype = proto;
 
-          return new F()
-        }
+          return new F();
+        };
       }
       ```
 
@@ -259,20 +259,20 @@
     ```js
     function createAnother(original) {
       // 通过调用函数创建一个新对象
-      var clone = Object.create(original)
+      var clone = Object.create(original);
       // 以某种方式来增强新对象
       clone.sayHi = function() {
-        console.log('Hi')
-      }
-      return clone
+        console.log('Hi');
+      };
+      return clone;
     }
 
     var person = {
       name: 'Nicholas',
       friends: ['red', 'blue', 'green']
-    }
-    var anotherPerson = createAnother(person)
-    anotherPerson.sayHi()
+    };
+    var anotherPerson = createAnother(person);
+    anotherPerson.sayHi();
     ```
 
   - 问题
@@ -318,32 +318,32 @@
 
     ```js
     function inheritPrototype(subType, superType) {
-      var prototype = Object.create(superType.prototype) // 创建对象
-      prototype.constructor = subType // 增强对象
-      subType.protototype = prototype // 指定对象
+      var prototype = Object.create(superType.prototype); // 创建对象
+      prototype.constructor = subType; // 增强对象
+      subType.protototype = prototype; // 指定对象
     }
     ```
 
     ```js
     function SuperType(name) {
-      this.name = name
-      this.colors = ['red', 'blue', 'green']
+      this.name = name;
+      this.colors = ['red', 'blue', 'green'];
     }
 
     SuperType.prototype.sayName = function() {
-      console.log(this.name)
-    }
+      console.log(this.name);
+    };
 
     function SubType(name, age) {
-      SuperType.call(this, name) // 第二次调用 SuperType()
+      SuperType.call(this, name); // 第二次调用 SuperType()
 
-      this.age = age
+      this.age = age;
     }
 
-    inheritPrototype(SubType, SuperType)
+    inheritPrototype(SubType, SuperType);
     SubType.prototype.sayAge = function() {
-      console.log(this.age)
-    }
+      console.log(this.age);
+    };
     ```
 
   - 引用类型最理想的继承范式
@@ -363,16 +363,16 @@
 
   ```js
   function new_instance_of(leftVaule, rightVaule) {
-    let rightProto = rightVaule.prototype // 取右表达式的 prototype 值
-    leftVaule = leftVaule.__proto__ // 取左表达式的__proto__值
+    let rightProto = rightVaule.prototype; // 取右表达式的 prototype 值
+    leftVaule = leftVaule.__proto__; // 取左表达式的__proto__值
     while (true) {
       if (leftVaule === null) {
-        return false
+        return false;
       }
       if (leftVaule === rightProto) {
-        return true
+        return true;
       }
-      leftVaule = leftVaule.__proto__
+      leftVaule = leftVaule.__proto__;
     }
   }
   ```
@@ -380,10 +380,10 @@
 - 几个有趣的例子
 
   ```js
-  Function instanceof Function // true
-  Object instanceof Function // Object 本身是一个函数，由 Function 所创建，所以 `Object.__proto__` 的值是 `Function.prototype`
-  Object instanceof Object // `Function.prototype` 的 `__proto__` 属性是 `Object.prototype`
-  Function instanceof Object // Function.__proto__ === Function.prototype, Function.prototype 是由 Object 所创建，所以 Function.prototype.__proto__ === Object.prototype
+  Function instanceof Function; // true
+  Object instanceof Function; // Object 本身是一个函数，由 Function 所创建，所以 `Object.__proto__` 的值是 `Function.prototype`
+  Object instanceof Object; // `Function.prototype` 的 `__proto__` 属性是 `Object.prototype`
+  Function instanceof Object; // Function.__proto__ === Function.prototype, Function.prototype 是由 Object 所创建，所以 Function.prototype.__proto__ === Object.prototype
   ```
 
   ![原型继承的原理图](https://user-gold-cdn.xitu.io/2018/5/28/163a55d5d35b866d?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
@@ -395,40 +395,38 @@ typeof 在判断一个 object 的数据的时候只能告诉我们这个数据�
 最好是用 typeof 来判断基本数据类型（包括 symbol）和 function，避免对 null 的判断。
 
 ```js
-typeof undefined // "undefined"
-typeof true // "boolean"
-typeof function() {} // "function"
-typeof {} // "object"
-typeof [] // "object"
-typeof null // "object"
-typeof new String('abc') // "object"
-typeof new Date() // "object"
+typeof undefined; // "undefined"
+typeof true; // "boolean"
+typeof function() {}; // "function"
+typeof {}; // "object"
+typeof []; // "object"
+typeof null; // "object"
+typeof new String('abc'); // "object"
+typeof new Date(); // "object"
 ```
 
 **还有一个不错的判断类型的方法，就是 Object.prototype.toString**
 
 ```js
-Object.prototype.toString.call(1) // "[object Number]"
-Object.prototype.toString.call('hi') // "[object String]"
-Object.prototype.toString.call({ a: 'hi' }) // "[object Object]"
-Object.prototype.toString.call([1, 'a']) // "[object Array]"
-Object.prototype.toString.call(true) // "[object Boolean]"
-Object.prototype.toString.call(() => {}) // "[object Function]"
-Object.prototype.toString.call(null) // "[object Null]"
-Object.prototype.toString.call(undefined) // "[object Undefined]"
-Object.prototype.toString.call(Symbol(1)) // "[object Symbol]"
+Object.prototype.toString.call(1); // "[object Number]"
+Object.prototype.toString.call('hi'); // "[object String]"
+Object.prototype.toString.call({ a: 'hi' }); // "[object Object]"
+Object.prototype.toString.call([1, 'a']); // "[object Array]"
+Object.prototype.toString.call(true); // "[object Boolean]"
+Object.prototype.toString.call(() => {}); // "[object Function]"
+Object.prototype.toString.call(null); // "[object Null]"
+Object.prototype.toString.call(undefined); // "[object Undefined]"
+Object.prototype.toString.call(Symbol(1)); // "[object Symbol]"
 ```
 
 ```js
 let class2Type = {}[('Array', 'Date', 'RegExp', 'Error', 'Object')].forEach(
   type => (class2Type[`[object ${type}]`] = type.toLowerCase())
-)
+);
 
 function type(obj) {
-  if (obj === null) return String(null)
-  return typeof obj === 'object'
-    ? class2Type[Object.prototype.toString.call(obj)] || 'object'
-    : typeof obj
+  if (obj === null) return String(null);
+  return typeof obj === 'object' ? class2Type[Object.prototype.toString.call(obj)] || 'object' : typeof obj;
 }
 ```
 
@@ -471,8 +469,9 @@ function type(obj) {
   - `([{\^$|}?*+.])`
   - 所有的元字符都必须经过转义
 - 使用 `RegExp` 构造函数
+
   - 由于 `RegExp` 构造函数的模式参数是个字符串，所以在某些情况下要对字符串进行双重转义
-  
+
     | 字面量模式         | 等价的字符串          |
     | :----------------- | :-------------------- |
     | `/\[bc\]at/`       | `\\[bc\\]at`          |
@@ -480,6 +479,7 @@ function type(obj) {
     | `/name\/age/`      | `name\\/age`          |
     | `/\d.\d{1,2}/`     | `\\d.\\d{1,2}`        |
     | `/\w\\hello\\123/` | `\\w\\\\hello\\\\123` |
+
 - ES5 明确规定，使用正则表达式字面量必须像直接调用 `RegExp` 构造函数一样，每次都创建新的 `RegExp` 实例。
 - 实例属性
   - global
@@ -508,7 +508,7 @@ function type(obj) {
   | input         | \$\_                                                             | 最近一次要匹配的字符串                 |
   | lastMatch     | \$&                                                              | 最近一次匹配项                         |
   | lastParen     | \$+                                                              | 最近一次匹配的捕获组                   |
-  | leftContext   | \$`                                                              | input 字符串中 lastMatch 之前的文本    |
+  | leftContext   | \$` | input 字符串中 lastMatch 之前的文本                        |
   | rightContext  | \$'                                                              | input 字符串中 lastMatch 之后的文本    |
   | multiline     | \$\*                                                             | 布尔值，是否所有的表达式都使用多行模式 |
   | $1,$2,...,\$9 | 存储第一到第九个捕获组，调用 exec()或 test()时，这些属性自动填充 |                                        |
@@ -539,35 +539,35 @@ bind()方法创建一个新的函数，在调用时设置 this 关键字为提�
 if (!Function.prototype.bind) {
   Function.prototype.bind = function(oThis) {
     if (typeof this !== 'function') {
-      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable')
+      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
     }
 
     var args = Array.prototype.slice.call(arguments, 1),
       functionToBind = this,
       functionBound = function() {
-        var bindArgs = Array.prototype.slice.call(arguments)
+        var bindArgs = Array.prototype.slice.call(arguments);
         // this instanceof fBound === true时,说明返回的fBound被当做new的构造函数调用
         return functionToBind.apply(
           this instanceof functionBound ? this : oThis,
           // 获取调用时(fBound)的传参.bind 返回的函数入参往往是这么传递的
           args.concat(bindArgs)
-        )
-      }
+        );
+      };
 
     // 我们直接将 fBound.prototype = this.prototype，我们直接修改 fBound.prototype 的时候，也会直接修改绑定函数的 prototype。这个时候，我们可以通过一个空函数来进行中转：
 
     // 维护原型关系(原型链继承)
-    var fNOP = function() {}
+    var fNOP = function() {};
     if (this.prototype) {
-      fNOP.prototype = this.prototype
+      fNOP.prototype = this.prototype;
     }
 
-    functionBound.prototype = new fNOP()
+    functionBound.prototype = new fNOP();
 
     // functionbound.prototype = Object.create(this.prototype);
 
-    return functionBound
-  }
+    return functionBound;
+  };
 }
 ```
 
@@ -581,97 +581,99 @@ if (!Function.prototype.bind) {
     3. 复制的嵌套属性是引用，共享
 
 - 深拷贝
+
   - [深入深入再深入 js 深拷贝对象](https://juejin.im/post/5ad6b72f6fb9a028d375ecf6)
   - [lodash baseClone](https://github.com/lodash/lodash/blob/master/.internal/baseClone.js)
   - JSON.parse(JSON.stringify(obj))  
     原型改变，不能复制对象方法，不能复制循环引用
   - 递归遍历属性，复制属性 Object.getOwnPropertyDescriptor
+
     - 可枚举属性
     - 循环引用
-    - Symbol键
+    - Symbol 键
     - 原型上的属性
     - 不可枚举的属性：属性描述符、setters、getters 等
+
     ```js
-      function isObject(data) {
-        return data != null && (typeof data === 'object' || typeof data === 'function')
+    function isObject(data) {
+      return data != null && (typeof data === 'object' || typeof data === 'function');
+    }
+
+    function deepClone(obj, hash = new WeakMap()) {
+      if (!isObject(obj)) {
+        return obj;
+      }
+      // 查表，防止循环拷贝
+      if (hash.has(obj)) {
+        return hash.get(obj);
       }
 
-      function deepClone(obj, hash = new WeakMap()) {
+      let isArray = Array.isArray(obj);
+      // 初始化拷贝对象
+      let cloneObj = isArray ? [] : {};
+      // 哈希表设置
+      hash.set(obj, cloneObj);
+      // 获取原对象的所有属性描述符
+      let descriptors = Object.getOwnPropertyDescriptors(obj);
+      // 获取原对象所有 symbol 类型值
+      let symbolKeys = Object.getOwnPropertySymbols(obj);
+      // 拷贝所有 symbol 属性
+      if (symbolKeys.length > 0) {
+        symbolKeys.forEach(symbolKey => {
+          cloneObj[symbolKey] = isObject(obj[symbolKey]) ? deepClone(obj[symbolKey], hash) : obj[symbolKey];
+        });
+      }
 
-        if(!isObject(obj)) {
-          return obj;
-        }
-        // 查表，防止循环拷贝
-        if(hash.has(obj)) {
-          return hash.get(obj);
-        }
+      // 拷贝不可枚举属性 ?????
+      cloneObj = Object.create(Object.getPrototypeOf(cloneObj), descriptors);
 
-        let isArray = Array.isArray(obj)
-        // 初始化拷贝对象
-        let cloneObj = isArray ? [] : {};
-        // 哈希表设置
-        hash.set(obj, cloneObj)
-        // 获取原对象的所有属性描述符
-        let descriptors = Object.getOwnPropertyDescriptors(obj);
-        // 获取原对象所有 symbol 类型值
-        let symbolKeys = Object.getOwnPropertySymbols(obj);
-        // 拷贝所有 symbol 属性
-        if(symbolKeys.length >0) {
-          symbolKeys.forEach(symbolKey => {
-            cloneObj[symbolKey] = isObject(obj[symbolKey]) ? deepClone(obj[symbolKey], hash) : obj[symbolKey];
-          })
-        }
+      // 拷贝可枚举属性（包括原型链上的）
+      for (let key in obj) {
+        cloneObj[key] = isObject(obj[key]) ? deepClone(obj[key]) : obj[key];
+      }
 
-        // 拷贝不可枚举属性 ?????
-        cloneObj = Object.create(Object.getPrototypeOf(cloneObj), descriptors)
+      return cloneObj;
+    }
+    /**
+     * 拷贝原型链
+     * 拷贝属性描述符
+     * 拷贝symbol属性
+     */
+    function cloneDeep(obj) {
+      // 拷贝原型链
+      let family = {};
+      let parent = Object.getPrototypeOf(obj);
+      while (parent != null) {
+        family = completeAssign(deepClone(obj), parent); //
+        parent = Object.getPrototypeOf(parent);
+      }
 
-        // 拷贝可枚举属性（包括原型链上的）
-        for(let key in obj) {
-          cloneObj[key] = isObject(obj[key]) ? deepClone(obj[key]) : obj[key];
-        }
+      // 拷贝所有自有属性的属性描述符,来自于 MDN
+      // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+      function completeAssign(target, ...sources) {
+        sources.forEach(source => {
+          // 复制属性描述符
+          let descriptors = Object.keys(source).reduce((descriptors, curKey) => {
+            descriptors[curKeys] = Object.getOwnPropertyDescriptor(source, curKey);
+            return descriptors;
+          }, {});
 
-        return cloneObj;
-      } 
-      /**
-        * 拷贝原型链
-        * 拷贝属性描述符
-        * 拷贝symbol属性
-        */
-      function cloneDeep(obj) {
-        // 拷贝原型链
-        let family = {};
-        let parent = Object.getPrototypeOf(obj)
-        while(parent != null) {
-          family = completeAssign(deepClone(obj), parent) //
-          parent = Object.getPrototypeOf(parent)
-        }
-
-        // 拷贝所有自有属性的属性描述符,来自于 MDN
-        // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-        function completeAssign(target, ...sources) {
-          sources.forEach(source => {
-            // 复制属性描述符
-            let descriptors = Object.keys(source).reduce((descriptors, curKey)=>{
-              descriptors[curKeys] = Object.getOwnPropertyDescriptor(source, curKey)
-              return descriptors;
-            }, {});
-
-            // 复制可枚举的 symbols 属性
-            Object.getOwnPropertySymbols(source).forEach(sym => {
-              let descriptor = Object.getOwnPropertyDescriptor(source, sym);
-              if(descriptor.enumerable) {
-                descriptors[sym] = descriptor;
-              }
-            });
-
-            Object.defineProperties(target, descriptors);
+          // 复制可枚举的 symbols 属性
+          Object.getOwnPropertySymbols(source).forEach(sym => {
+            let descriptor = Object.getOwnPropertyDescriptor(source, sym);
+            if (descriptor.enumerable) {
+              descriptors[sym] = descriptor;
+            }
           });
 
-          return target;
-        }
-        
-        return completeAssign(deepClone(obj), family )
+          Object.defineProperties(target, descriptors);
+        });
+
+        return target;
       }
+
+      return completeAssign(deepClone(obj), family);
+    }
     ```
 
 ## [深入理解 new 操作符](https://www.cnblogs.com/onepixel/p/5043523.html)
@@ -725,173 +727,173 @@ if (!Function.prototype.bind) {
 
   ```js
   function Promise(executor) {
-    var self = this
-    self.status = 'pending'
-    self.value = undefined
-    self.onResolveCallback = []
-    self.onRejectCallback = []
+    var self = this;
+    self.status = 'pending';
+    self.value = undefined;
+    self.onResolveCallback = [];
+    self.onRejectCallback = [];
 
     function resolve(value) {
       if (value instanceof Promise) {
-        return value.then(resolve, reject)
+        return value.then(resolve, reject);
       }
       setTimeout(function() {
         if (self.status === 'pending') {
-          self.status = 'fulfilled'
-          self.value = value
+          self.status = 'fulfilled';
+          self.value = value;
           for (var i = 0; i < self.onResolveCallback.length; i++) {
-            self.onResolveCallback[i](value)
+            self.onResolveCallback[i](value);
           }
         }
-      })
+      });
     }
 
     function reject(reason) {
       setTimeout(function() {
         if (self.status === 'pending') {
-          self.status = 'rejected'
-          self.value = reason
+          self.status = 'rejected';
+          self.value = reason;
           for (var i = 0; i < self.onRejectCallback.length; i++) {
-            self.onRejectCallback[i](reason)
+            self.onRejectCallback[i](reason);
           }
         }
-      })
+      });
     }
 
     try {
-      executor(resolve, reject)
+      executor(resolve, reject);
     } catch (e) {
-      reject(e)
+      reject(e);
     }
   }
 
   function resolvePromise(promise2, x, resolve, reject) {
-    var then
-    var thenCalledOrThrow = false
+    var then;
+    var thenCalledOrThrow = false;
 
     if (promise2 === x) {
-      return reject(new TypeError('Chaining cycle detected for promise!'))
+      return reject(new TypeError('Chaining cycle detected for promise!'));
     }
 
     if (x instanceof Promise) {
       if (x.status === 'pending') {
         x.then(function(value) {
-          resolvePromise(promise2, value, resolve, reject)
-        }, reject)
+          resolvePromise(promise2, value, resolve, reject);
+        }, reject);
       } else {
-        x.then(resolve, reject)
+        x.then(resolve, reject);
       }
-      return
+      return;
     }
 
     if (x !== null && (typeof x === 'object' || typeof x === 'function')) {
       try {
-        then = x.then
+        then = x.then;
         if (typeof then === 'function') {
           then.call(
             x,
             function rs(y) {
-              if (thenCalledOrThrow) return
-              thenCalledOrThrow = true
-              return resolvePromise(promise2, y, resolve, reject)
+              if (thenCalledOrThrow) return;
+              thenCalledOrThrow = true;
+              return resolvePromise(promise2, y, resolve, reject);
             },
             function rj(r) {
-              if (thenCalledOrThrow) return
-              thenCalledOrThrow = true
-              return reject(r)
+              if (thenCalledOrThrow) return;
+              thenCalledOrThrow = true;
+              return reject(r);
             }
-          )
+          );
         } else {
-          resolve(x)
+          resolve(x);
         }
       } catch (e) {
-        if (thenCalledOrThrow) return
-        thenCalledOrThrow = true
-        return reject(e)
+        if (thenCalledOrThrow) return;
+        thenCalledOrThrow = true;
+        return reject(e);
       }
     } else {
-      resolve(x)
+      resolve(x);
     }
   }
 
   Promise.prototype.then = function(onResolved, onRejected) {
-    var self = this
-    var promise2
+    var self = this;
+    var promise2;
 
     onResolved =
       typeof onResolved === 'function'
         ? onResolved
         : function(value) {
-            return value
-          }
+            return value;
+          };
     onRejected =
       typeof onRejected === 'function'
         ? onRejected
         : function(reason) {
-            throw reason
-          }
+            throw reason;
+          };
 
     if (self.status === 'fulfilled') {
       return (promise2 = new Promise(function(resolve, reject) {
         setTimeout(function() {
           try {
-            var x = onResolved(self.value)
-            resolvePromise(promise2, x, resolve, reject)
+            var x = onResolved(self.value);
+            resolvePromise(promise2, x, resolve, reject);
           } catch (e) {
-            reject(e)
+            reject(e);
           }
-        })
-      }))
+        });
+      }));
     }
 
     if (self.status === 'rejected') {
       return (promise2 = new Promise(function(resolve, reject) {
         setTimeout(function() {
           try {
-            var x = onReject(self.value)
-            resolvePromise(promise2, x, resolve, reject)
+            var x = onReject(self.value);
+            resolvePromise(promise2, x, resolve, reject);
           } catch (e) {
-            reject(e)
+            reject(e);
           }
-        })
-      }))
+        });
+      }));
     }
 
     if (self.status === 'pending') {
       return (promise2 = new Promise(function(resolve, reject) {
         self.onResolvedCallback.push(function(value) {
           try {
-            var x = onResolved(value)
-            resolvePromise(promise2, x, resolve, reject)
+            var x = onResolved(value);
+            resolvePromise(promise2, x, resolve, reject);
           } catch (e) {
-            reject(e)
+            reject(e);
           }
-        })
+        });
 
         self.onRejectedCallback.push(function(reason) {
           try {
-            var x = onReject(reason)
-            resolvePromise(promise2, x, resolve, reject)
+            var x = onReject(reason);
+            resolvePromise(promise2, x, resolve, reject);
           } catch (e) {
-            reject(e)
+            reject(e);
           }
-        })
-      }))
+        });
+      }));
     }
-  }
+  };
 
   Promise.prototype.catch = function(onReject) {
-    return this.then(null, onReject)
-  }
+    return this.then(null, onReject);
+  };
 
   Promise.deferred = Promise.defer = function() {
-    var dfd = {}
+    var dfd = {};
     dfd.promise = new Promise(function(resolve, reject) {
-      dfd.resolve = resolve
-      dfd.reject = reject
-    })
-    return dfd
-  }
+      dfd.resolve = resolve;
+      dfd.reject = reject;
+    });
+    return dfd;
+  };
   ```
 
 ### generator
@@ -903,37 +905,37 @@ if (!Function.prototype.bind) {
 ```js
 function spawn(genF) {
   return new Promise(function(resolve, reject) {
-    const gen = genF()
+    const gen = genF();
 
     function step(nextF) {
-      let next
+      let next;
       try {
-        next = nextF()
+        next = nextF();
       } catch (err) {
-        return reject(err)
+        return reject(err);
       }
       if (next.done) {
-        return resolve(next.value)
+        return resolve(next.value);
       }
 
       Promise.resolve(next.value).then(
         function(v) {
           step(function() {
-            return gen.next(v)
-          })
+            return gen.next(v);
+          });
         },
         function(err) {
           step(function() {
-            return gen.throw(err)
-          })
+            return gen.throw(err);
+          });
         }
-      )
+      );
     }
 
     step(function() {
-      return gen.next(undefined)
-    })
-  })
+      return gen.next(undefined);
+    });
+  });
 }
 ```
 
@@ -957,14 +959,14 @@ async...await 是 Generator 函数语法糖。[ co 模块类似实现](#asyncawa
 
   ```js
   function debounce(fn, interval) {
-    let timeout = null
+    let timeout = null;
     return function() {
-      clearTimeout(timeout)
+      clearTimeout(timeout);
 
       timeout = setTimeout(() => {
-        fn.apply(this, arguments)
-      }, interval)
-    }
+        fn.apply(this, arguments);
+      }, interval);
+    };
   }
   ```
 
@@ -976,17 +978,17 @@ async...await 是 Generator 函数语法糖。[ co 模块类似实现](#asyncawa
 
   ```js
   function throttle(fn, interval) {
-    let canRun = true
+    let canRun = true;
     return function() {
-      if (!canRun) return
+      if (!canRun) return;
 
-      canRun = false
+      canRun = false;
 
       setTimeout(() => {
-        fn.apply(this, arguments)
-        canRun = true
-      }, interval)
-    }
+        fn.apply(this, arguments);
+        canRun = true;
+      }, interval);
+    };
   }
   ```
 
@@ -1014,13 +1016,13 @@ async...await 是 Generator 函数语法糖。[ co 模块类似实现](#asyncawa
 
   ```js
   // CommonJS模块
-  let { stat, exists, readFile } = require('fs')
+  let { stat, exists, readFile } = require('fs');
 
   // 等同于
-  let _fs = require('fs')
-  let stat = _fs.stat
-  let exists = _fs.exists
-  let readfile = _fs.readfile
+  let _fs = require('fs');
+  let stat = _fs.stat;
+  let exists = _fs.exists;
+  let readfile = _fs.readfile;
   ```
 
   > 上面代码的实质是整体加载 fs 模块（即加载 fs 的所有方法），生成一个对象（`_fs`），然后再从这个对象上面读取 3 个方法。这种加载称为“运行时加载”，因为只有运行时才能得到这个对象，导致完全没办法在编译时做“静态优化”。
@@ -1029,7 +1031,7 @@ async...await 是 Generator 函数语法糖。[ co 模块类似实现](#asyncawa
 
   ```js
   // ES6模块
-  import { stat, exists, readFile } from 'fs'
+  import { stat, exists, readFile } from 'fs';
   ```
 
   > 上面代码的实质是从 fs 模块加载 3 个方法，其他方法不加载。这种加载称为“编译时加载”或者静态加载，即 ES6 可以在编译时就完成模块加载，效率要比 CommonJS 模块的加载方式高。当然，这也导致了没法引用 ES6 模块本身，因为它不是对象。
@@ -1056,9 +1058,9 @@ async...await 是 Generator 函数语法糖。[ co 模块类似实现](#asyncawa
   理论上可以运用在代码的任何地方，甚至不需要赋值给某个变量之后再使用
 
   ```js
-  require('./a')() // a模块是一个函数，立即执行a模块函数
-  var data = require('./a').data // a模块导出的是一个对象
-  var a = require('./a')[0] // a模块导出的是一个数组
+  require('./a')(); // a模块是一个函数，立即执行a模块函数
+  var data = require('./a').data; // a模块导出的是一个对象
+  var a = require('./a')[0]; // a模块导出的是一个数组
   ```
 
 ## [ES6 模块与 CommonJS 模块的差异](http://es6.ruanyifeng.com/#docs/module-loader#ES6-%E6%A8%A1%E5%9D%97%E4%B8%8E-CommonJS-%E6%A8%A1%E5%9D%97%E7%9A%84%E5%B7%AE%E5%BC%82)
@@ -1076,53 +1078,55 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 ## 判断元素是否在视窗之内
 
 - Element.getBoundingClientRect(): 除了 width 和 height 外的属性都是相对于视口的左上角位置而言的。
+
   - left
   - right
   - top
   - bottom
   - width
   - height
-  - x(同left)
-  - y(同top)
-  
+  - x(同 left)
+  - y(同 top)
+
   ![](./imgs/rect.png)
 
 - IntersectionObserver
+
   1. 创建一个 intersection observer
 
-      ```js
-        let options = {
-          root: document.querySelector('#scrollArea'),  // 指定根(root)元素，用于检查目标的可见性。必须是目标元素的父级元素。如果未指定或者为null，则默认为浏览器视窗。
-          rootMargin: '0px', // root元素的外边距。类似于css中的 margin 属性，比如 "10px 20px 30px 40px" (top, right, bottom, left)。如果有指定root参数，则rootMargin也可以使用百分比来取值。该属性值是用作root元素和target发生交集时候的计算交集的区域范围，使用该属性可以控制root元素每一边的收缩或者扩张。默认值为0。
-          threshold: 1.0 // 可以是单一的number也可以是number数组，target元素和root元素相交程度达到该值的时候IntersectionObserver注册的回调函数将会被执行。
-        }
-        let observer = new IntersectionObserver(callback, options)
-      ```
+     ```js
+     let options = {
+       root: document.querySelector('#scrollArea'), // 指定根(root)元素，用于检查目标的可见性。必须是目标元素的父级元素。如果未指定或者为null，则默认为浏览器视窗。
+       rootMargin: '0px', // root元素的外边距。类似于css中的 margin 属性，比如 "10px 20px 30px 40px" (top, right, bottom, left)。如果有指定root参数，则rootMargin也可以使用百分比来取值。该属性值是用作root元素和target发生交集时候的计算交集的区域范围，使用该属性可以控制root元素每一边的收缩或者扩张。默认值为0。
+       threshold: 1.0 // 可以是单一的number也可以是number数组，target元素和root元素相交程度达到该值的时候IntersectionObserver注册的回调函数将会被执行。
+     };
+     let observer = new IntersectionObserver(callback, options);
+     ```
 
   2. 为每个观察者配置一个目标
 
-      ```js
-        let target = document.querySelector('#listItem')
-        observer.observe(target)
+     ```js
+     let target = document.querySelector('#listItem');
+     observer.observe(target);
 
-        let callback = function(entries, observer) {
-          entries.forEach(entry => {
-            // Each entry describes an intersection change for one observed
-            // target element:
-            //   entry.boundingClientRect
-            //   entry.intersectionRatio
-            //   entry.intersectionRect
-            //   entry.isIntersecting
-            //   entry.rootBounds
-            //   entry.target
-            //   entry.time   
-          })
-        }
-      ```
+     let callback = function(entries, observer) {
+       entries.forEach(entry => {
+         // Each entry describes an intersection change for one observed
+         // target element:
+         //   entry.boundingClientRect
+         //   entry.intersectionRatio
+         //   entry.intersectionRect
+         //   entry.isIntersecting
+         //   entry.rootBounds
+         //   entry.target
+         //   entry.time
+       });
+     };
+     ```
 
-## window.requestIdleCallback() 
+## window.requestIdleCallback()
 
-> 在浏览器空闲时期依次调用函数，这就可以让开发者在主事件循环中执行后台或低优先级的任务，而且不会对像动画和用户交互这样延迟敏感的事件产生影响。函数一般会按先进先出调用的顺序执行，然而，如果回调函数指定了执行超时时间timeout，则有可能为了在超时前执行函数而打乱执行顺序。
+> 在浏览器空闲时期依次调用函数，这就可以让开发者在主事件循环中执行后台或低优先级的任务，而且不会对像动画和用户交互这样延迟敏感的事件产生影响。函数一般会按先进先出调用的顺序执行，然而，如果回调函数指定了执行超时时间 timeout，则有可能为了在超时前执行函数而打乱执行顺序。
 
 - 语法：`let handle = window.requestIdleCallBack(callback[,options])`
   - 返回值：无符号长整数，可以传入`window.cancelIdleCallback()`结束回调
@@ -1134,7 +1138,6 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 > 告诉浏览器——你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。该方法需要传入一个回调函数作为参数，该回调函数会在浏览器下一次重绘之前执行
 
 - window.cancelAnimationFrame(id)
-
 
 # 浏览器
 
@@ -1158,6 +1161,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 ## 跨域
 
 - [前端常见跨域解决方案（全）](https://segmentfault.com/a/1190000011145364)
+
   - JSONP(JSON with padding)
   - postMessage
   - cors
@@ -1203,27 +1207,27 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 - 获取句柄，postMessage
 
   ```js
-  const childPage = window.open(strUrl, strWindowName, [strWindowFeatures])
+  const childPage = window.open(strUrl, strWindowName, [strWindowFeatures]);
 
   childPage.onload = () => {
-    childPage.postMessage(message, targetOrigin, [transfer])
-  }
+    childPage.postMessage(message, targetOrigin, [transfer]);
+  };
 
   window.onmessage = e => {
-    console.log(e.data)
-    console.log(e.origin)
-    console.log(e.source)
-  }
+    console.log(e.data);
+    console.log(e.origin);
+    console.log(e.source);
+  };
   ```
 
 - localStorage,设置共享区域的 storage，storage 会触发 storage 事件
 
   ```js
-  localStorage.setItem('message', 'hello')
+  localStorage.setItem('message', 'hello');
 
   window.onStorage = evt => {
     // evt.key evt.oldValue evt.newValue
-  }
+  };
   ```
 
   - 触发写入操作的页面下的 **storage listener** 不会被触发
@@ -1234,14 +1238,14 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
   ```js
   // a.html
-  const channel = new BroadcastChannel('tabs')
+  const channel = new BroadcastChannel('tabs');
   channel.onmessage = evt => {
     // evt.data
-  }
+  };
 
   // b.html
-  const channel = new BroadcastChannel('tabs')
-  channel.postMessage('hello')
+  const channel = new BroadcastChannel('tabs');
+  channel.postMessage('hello');
   ```
 
 - SharedWorker
@@ -1254,23 +1258,24 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 ## [深入浅出浏览器渲染原理](https://juejin.im/post/5c35cf62f265da615e05a67d)
 
-  - 以下操作会导致重排或重绘
-    - 增、删、改 DOM 节点
-    - 修改 CSS 样式，改变元素的大小、位置，或使用 `display:none;` 时会造成重排；修改颜色 `visibility: hidden` 会造成重绘
-    - 修改网页的默认字体大小会造成重排
-    - Resize 窗口或滚动时
-    - 内容改变时（用户输入改变也会）
-    - 计算 offsetWidth 和 offsetHeight
-    
-  - 减少重排和重绘
-    - 尽量避免style的使用，对于需要操作DOM元素节点，重新命名className，更改className名称。
-    - 如果增加元素或者clone元素，可以先把元素通过documentFragment放入内存中，等操作完毕后，再appendChild到DOM元素中
-    - 不要经常获取同一个元素，可以第一次获取元素后，用变量保存下来，减少遍历时间
-    - 尽量少使用dispaly:none，可以使用visibility:hidden代替，dispaly:none会造成重排，visibility:hidden会造成重绘。
-    - 不要使用Table布局，因为一个小小的操作，可能就会造成整个表格的重排或重绘
-    - 使用resize事件时，做防抖和节流处理。
-    - 对动画元素使用absolute / fixed属性。
-    - 批量修改元素时，可以先让元素脱离文档流，等修改完毕后，再放入文档流。
+- 以下操作会导致重排或重绘
+
+  - 增、删、改 DOM 节点
+  - 修改 CSS 样式，改变元素的大小、位置，或使用 `display:none;` 时会造成重排；修改颜色 `visibility: hidden` 会造成重绘
+  - 修改网页的默认字体大小会造成重排
+  - Resize 窗口或滚动时
+  - 内容改变时（用户输入改变也会）
+  - 计算 offsetWidth 和 offsetHeight
+
+- 减少重排和重绘
+  - 尽量避免 style 的使用，对于需要操作 DOM 元素节点，重新命名 className，更改 className 名称。
+  - 如果增加元素或者 clone 元素，可以先把元素通过 documentFragment 放入内存中，等操作完毕后，再 appendChild 到 DOM 元素中
+  - 不要经常获取同一个元素，可以第一次获取元素后，用变量保存下来，减少遍历时间
+  - 尽量少使用 dispaly:none，可以使用 visibility:hidden 代替，dispaly:none 会造成重排，visibility:hidden 会造成重绘。
+  - 不要使用 Table 布局，因为一个小小的操作，可能就会造成整个表格的重排或重绘
+  - 使用 resize 事件时，做防抖和节流处理。
+  - 对动画元素使用 absolute / fixed 属性。
+  - 批量修改元素时，可以先让元素脱离文档流，等修改完毕后，再放入文档流。
 
 ## CSS 和 JS 解析、渲染
 
@@ -1318,11 +1323,11 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
     > XSS 的本质是：恶意代码未经过滤，与网站正常的代码混在一起；浏览器无法分辨哪些脚本是可信的，导致恶意脚本被执行。
 
     为了和 CSS 区分，这里把攻击的第一个字母改成了 X，于是叫做 XSS。
-      
+
     XSS 分类
 
     - 存储型 XSS：
-    
+
       存储型 XSS 的攻击步骤：
 
       1. 攻击者将恶意代码提交到目标网站的数据库中。
@@ -1333,7 +1338,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       这种攻击常见于带有用户保存数据的网站功能，如论坛发帖、商品评论、用户私信等。
 
     - 反射型 XSS:
-    
+
       反射型 XSS 的攻击步骤：
 
       1. 攻击者构造出特殊的 URL，其中包含恶意代码。
@@ -1350,13 +1355,14 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       POST 的内容也可以触发反射型 XSS，只不过其触发条件比较苛刻（需要构造表单提交页面，并引导用户点击），所以非常少见。
 
     - DOM 型 XSS:
-    
+
       DOM 型 XSS 跟前两种 XSS 的区别：DOM 型 XSS 攻击中，取出和执行恶意代码由浏览器端完成，属于前端 JavaScript 自身的安全漏洞，而其他两种 XSS 都属于服务端的安全漏洞。
+
       ```html
       <script>
-        eval(location.hash.substr(1))
+        eval(location.hash.substr(1));
         // 而这个时候，如果用户在网址后面加上恶意代码
-        ;('http://www.xss.com#alert(document.cookie)')
+        ('http://www.xss.com#alert(document.cookie)');
       </script>
       ```
 
@@ -1477,6 +1483,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 - [BFC(块格式化上下文)](https://segmentfault.com/a/1190000013647777)
 
   - BFC 特性
+
     - 一个独立的布局环境，内部的元素不会影响外部的元素，反之亦如此；
     - 内部子元素从顶端开始垂直的一个接一个的排列，子元素之间垂直的间距是由 margin 决定的；
     - 同一个 BFC 中，相邻的块级盒子的垂直外边距会发生重叠；
@@ -1484,12 +1491,13 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
     - BFC 能够识别并包含浮动元素，当计算其区域的高度时，浮动元素也参与计算；
 
   - 创建 BFC
+
     - 根元素或包含根元素的元素
     - 浮动元素 float: left/right/inherit(!= none);
     - 定位元素 position: absolute/fixed;
     - display:inline-block/flex/inline-flex/table-cell/table-caption
     - overflow: hidden/auto/scroll
-  
+
   - BFC 作用
     - 清除浮动，解决浮动后高度塌陷问题
     - 避免外边距折叠（外边距折叠（Margin collapsing）只会发生在属于同一 BFC 的块级元素之间。如果它们属于不同的 BFC，它们之间的外边距则不会折叠。所以通过创建一个不同的 BFC ，就可以避免外边距折叠。）
@@ -1898,9 +1906,9 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 
 - [TCP 三次握手](https://www.zhihu.com/question/24853633/answer/115173386)
 - [TCP 三次握手、四次挥手](https://zhuanlan.zhihu.com/p/35768805)
-  
+
   ![](https://img-blog.csdn.net/20180720212258640?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM2MTMyMTI3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
-  
+
 - [通俗大白话来理解 TCP 协议的三次握手和四次分手](https://github.com/jawil/blog/issues/14)
 - [TCP 的滑动窗口与拥塞窗口](https://blog.csdn.net/zhangdaisylove/article/details/47294315)
 - [TCP 滑动窗口（发送窗口和接收窗口）](https://my.oschina.net/xinxingegeya/blog/485650)
@@ -1960,22 +1968,22 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 
   ```js
   function Component(props, context, updater) {
-    this.props = props
-    this.context = context
+    this.props = props;
+    this.context = context;
     // If a component has string refs, we will assign a different object later.
-    this.refs = emptyObject
+    this.refs = emptyObject;
     // We initialize the default updater but the real one gets injected by the
     // renderer.
-    this.updater = updater || ReactNoopUpdateQueue
+    this.updater = updater || ReactNoopUpdateQueue;
   }
 
-  Component.prototype.isReactComponent = {}
+  Component.prototype.isReactComponent = {};
   Component.prototype.setState = function(partialState, callback) {
-    this.updater.enqueueSetState(this, partialState, callback, 'setState')
-  }
+    this.updater.enqueueSetState(this, partialState, callback, 'setState');
+  };
   Component.prototype.forceUpdate = function(callback) {
-    this.updater.enqueueForceUpdate(this, callback, 'forceUpdate')
-  }
+    this.updater.enqueueForceUpdate(this, callback, 'forceUpdate');
+  };
   ```
 
 - React 渲染模块
@@ -2023,13 +2031,13 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 
   - constructor
   - static getDerivedStateFromProps(nextProps, prevState)
-  
+
     一个静态方法，所以不能在这个函数里面使用 this，这个函数有两个参数 props 和 state，分别指接收到的新参数和当前的 state 对象，这个函数会返回一个对象用来更新当前的 state 对象，如果不需要更新可以返回 null
-    
+
   - <s>componentWillMount/UNSAFE_componentWillMount</s>
-  
+
     或者 `<span style="text-decoration: line-through"></span>`
-    
+
   - render() 纯函数
   - componentDidMount()
 
@@ -2041,9 +2049,9 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
   - <s>componentWillUpdate(nextProps, nextState)/UNSAFE_componentWillUpdate(nextProps, nextState)</s>
   - render()
   - getSnapshotBeforeUpdate(prevProps, prevState)
-  
+
     函数有一个返回值，会作为第三个参数传给 componentDidUpdate，如果你不想要返回值，请返回 null，不写的话控制台会有警告
-  
+
   - componentDidUpdate(prevProps, prevState, snapshot)
 
 - 卸载阶段
@@ -2072,9 +2080,9 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
      */
     enqueueSetState: function(instance, partialState, callback) {
       //获取到当前实例上的fiber
-      var fiber = get(instance)
+      var fiber = get(instance);
       //计算当前fiber的到期时间（优先级）
-      var expirationTime = computeExpirationForFiber(fiber)
+      var expirationTime = computeExpirationForFiber(fiber);
       //一次更新需要的配置参数
       var update = {
         expirationTime: expirationTime, //优先级
@@ -2084,42 +2092,44 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
         isForced: false, //是否强制更新
         capturedValue: null, //捕获的值
         next: null //
-      }
+      };
       //将update上需要更新的信息添加到fiber中
-      insertUpdateIntoFiber(fiber, update)
+      insertUpdateIntoFiber(fiber, update);
       //调度器调度fiber任务
-      scheduleWork(fiber, expirationTime)
+      scheduleWork(fiber, expirationTime);
     },
     //替换更新state，不关注
     enqueueReplaceState: function(instance, state, callback) {},
     //执行强制更新state，不关注
     enqueueForceUpdate: function(instance, callback) {}
-  }
+  };
   ```
 
 ## virturl Dom\diff 的原理
 
 - [Virtual DOM 的实现和 React Fiber 简介](https://www.jianshu.com/p/b189b2949b33)
+
   - vDOM
+
     ```js
-      var element = {
-        type: 'ul',
-        props: {
-          id: 'list',
-          children: [
-            {type: 'li', props: { className: 'item', children: ['Item 1'] } },
-            {type: 'li', props: { className: 'item', children: ['Item 2'] } },
-            {type: 'li', props: { className: 'item', children: ['Item 3'] } },
-            {type: 'li', props: { className: 'item', children: ['Item 4'] } }
-          ]
-        }
+    var element = {
+      type: 'ul',
+      props: {
+        id: 'list',
+        children: [
+          { type: 'li', props: { className: 'item', children: ['Item 1'] } },
+          { type: 'li', props: { className: 'item', children: ['Item 2'] } },
+          { type: 'li', props: { className: 'item', children: ['Item 3'] } },
+          { type: 'li', props: { className: 'item', children: ['Item 4'] } }
+        ]
       }
-    
+    };
     ```
-    
+
     - 用 JavaScript 对象结构表示 DOM 树结构；然后用这个树构建真正的 DOM 树，插入到文档中
     - 当状态变更时，重新构建一个新的对象树，然后新旧树作对比，记录两棵树的差异
     - 把差异应用到真正的 DOM 树上，视图就更新了
+
 - [react diff](https://zhuanlan.zhihu.com/p/20346379)
 
 ## [合成事件（SyntheticEvent）](https://reactjs.org/docs/events.html)
@@ -2167,6 +2177,48 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
   - [在 React 项目中，如何优雅的优化长列表](https://juejin.im/post/5c048f25e51d450d16620d8d)
 
 ## react-router 内部实现机制
+
+- [前端路由实现与 react-router 源码分析](https://github.com/joeyguo/blog/issues/2)
+
+  ```js
+  /**
+    * hash router 简单实现
+    */
+  function Router() {
+    this.routes = {};
+    this.currentUrl = '';
+  }
+  Router.prototype.route = function(path, callback) {
+    this.routes[path] = callback || function() {};
+  };
+  Router.prototype.refresh = function() {
+    this.currentUrl = location.hash.slice(1) || '/';
+    console.log('refresh', 'currentUrl: ', this.currentUrl);
+    this.routes[this.currentUrl]();
+  };
+  Router.prototype.init = function() {
+    window.addEventListener('load', this.refresh.bind(this), false);
+    window.addEventListener('hashchange', this.refresh.bind(this), false);
+  };
+
+  window.Router = new Router();
+  window.Router.init();
+
+  let content = document.querySelector('body');
+  function changeBackgroundColor(color) {
+    content.style.backgroundColor = color;
+  }
+
+  Router.route('/', function() {
+    changeBackgroundColor('white');
+  });
+  Router.route('/blue', function() {
+    changeBackgroundColor('blue');
+  });
+  Router.route('/green', function() {
+    changeBackgroundColor('green');
+  });
+  ```
 
 - [单页面应用路由实现原理：以 React-Router 为例](https://github.com/youngwind/blog/issues/109)
 
@@ -2249,40 +2301,40 @@ export default function connectAdvanced() {
     class Connect extends OuterBaseComponent {
       renderWrappedComponent(value) {
         // 获取redux state和store
-        const { storeState, store } = value
+        const { storeState, store } = value;
 
         // 定义wrapperProps为this.props
-        let wrapperProps = this.props
+        let wrapperProps = this.props;
 
         // 导出props
-        let derivedProps = this.selectDerivedProps(storeState, wrapperProps, store)
+        let derivedProps = this.selectDerivedProps(storeState, wrapperProps, store);
 
         // 返回最终的组件,传入最终的props和ref -> 看selectChildElement发放
-        return this.selectChildElement(derivedProps, forwardedRef)
+        return this.selectChildElement(derivedProps, forwardedRef);
       }
 
       render() {
         // 默认情况下公用的ReactReduxContext
-        const ContextToUse = this.props.context || Context
+        const ContextToUse = this.props.context || Context;
 
         return (
           // <Privoder />的消费者
           <ContextToUse.Consumer>{this.renderWrappedComponent}</ContextToUse.Consumer>
-        )
+        );
       }
     }
-    return hoistStatics(Connect, WrappedComponent)
-  }
+    return hoistStatics(Connect, WrappedComponent);
+  };
 }
 ```
 
 ## redux 基本组成和设计单向数据流
 
-  ![](https://user-gold-cdn.xitu.io/2017/10/14/c08df9d398f505f4aa0ac620396fb9e0?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+![](https://user-gold-cdn.xitu.io/2017/10/14/c08df9d398f505f4aa0ac620396fb9e0?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 - [redux 源码解读](https://juejin.im/post/5ae7db125188253dc6127bc7)
 
-- Redux 试图让 state 的变化变得可预测。这些限制条件反映在Redux的三大原则中。
+- Redux 试图让 state 的变化变得可预测。这些限制条件反映在 Redux 的三大原则中。
 
 - 三大原则
 
@@ -2312,16 +2364,15 @@ export default function connectAdvanced() {
 
 - 优缺点
   1. 降低 Mutable 带来的复杂度
-      ```js
-        let obj = {a: 1};
-        let copy_obj = obj;
-        copy_obj.a = 2;
-        console.log(obj.a); // 2
-      ```
+     ```js
+     let obj = { a: 1 };
+     let copy_obj = obj;
+     copy_obj.a = 2;
+     console.log(obj.a); // 2
+     ```
   2. 节省内存空间（结构共享）
   3. 拥抱函数式编程
-    纯函数式编程比面向对象更适用于前端开发。因为只要输入一致，输出必然一致，开发的组件更易于调试和安装。
-
+     纯函数式编程比面向对象更适用于前端开发。因为只要输入一致，输出必然一致，开发的组件更易于调试和安装。
 
 # Angular
 
@@ -2337,7 +2388,7 @@ export default function connectAdvanced() {
  * getter 和 setter 是Vue 采用的机制,我觉得他两个最大的区别就是 Angular 采用事件驱动,而Vue 采用数据驱动 .所以 Angular 是当界面事件 或者其他 来触发脏检查, 而Vue 是检测后台数据变化,一旦变化 被 setter 捕捉, 然后来触发 界面更新.
  */
 function $Scope() {
-  this.$$watchList = []
+  this.$$watchList = [];
 }
 
 $Scope.prototype.$watch = function(name, getNewValue, listener) {
@@ -2345,72 +2396,72 @@ $Scope.prototype.$watch = function(name, getNewValue, listener) {
     name: name,
     getNewValue: getNewValue,
     listener: listener || function() {}
-  }
+  };
 
-  this.$$watchList.push(watch)
-}
+  this.$$watchList.push(watch);
+};
 
 $Scope.prototype.$digest = function() {
-  let dirty = true
-  let checkTimes = 0
+  let dirty = true;
+  let checkTimes = 0;
   while (dirty) {
-    dirty = this.$digestOnce()
-    checkTimes++
+    dirty = this.$digestOnce();
+    checkTimes++;
     if (checkTimes > 10 && dirty) {
-      throw new Error('检测次数超过10次')
+      throw new Error('检测次数超过10次');
     }
   }
-}
+};
 
 $Scope.prototype.$digestOnce = function() {
-  let dirty = false
-  const list = this.$$watchList
+  let dirty = false;
+  const list = this.$$watchList;
 
   for (let i = 0, len = list.length; i < len; i++) {
-    const watch = list[i]
-    const newValue = watch.getNewValue(this) // 传入 scope 获取 scope 内值
-    const oldValue = watch.last
+    const watch = list[i];
+    const newValue = watch.getNewValue(this); // 传入 scope 获取 scope 内值
+    const oldValue = watch.last;
 
     if (newValue !== oldValue) {
-      watch.listen(newValue, oldValue)
-      dirty = true
+      watch.listen(newValue, oldValue);
+      dirty = true;
     }
 
-    watch.last = newValue
+    watch.last = newValue;
   }
 
-  return dirty
-}
+  return dirty;
+};
 
 /***************************************************/
 
-const scope = new $Scope()
-scope.first = 1
-scope.secode = 10
+const scope = new $Scope();
+scope.first = 1;
+scope.secode = 10;
 
 scope.$watch(
   'first',
   function(_scope) {
-    return _scope[this.name] //  getNewValue 通过 watch.getNewValue 方式调用，this 指向 watch
+    return _scope[this.name]; //  getNewValue 通过 watch.getNewValue 方式调用，this 指向 watch
   },
   function(newValue, oldValue) {
-    scope.second++
-    console.log('first:      newValue:' + newValue + '-----' + 'oldValue:' + oldValue)
+    scope.second++;
+    console.log('first:      newValue:' + newValue + '-----' + 'oldValue:' + oldValue);
   }
-)
+);
 
 scope.$watch(
   'second',
   function(_scope) {
-    return _scope[this.name]
+    return _scope[this.name];
   },
   function(newValue, oldValue) {
-    scope.first++
-    console.log('second:     newValue:' + newValue + '-----' + 'oldValue:' + oldValue)
+    scope.first++;
+    console.log('second:     newValue:' + newValue + '-----' + 'oldValue:' + oldValue);
   }
-)
+);
 
-scope.$digest()
+scope.$digest();
 ```
 
 - [如何衡量一个人的 AngularJS 水平？](https://www.zhihu.com/question/36040694/answer/65624196)
@@ -2447,141 +2498,141 @@ scope.$digest()
 
 module.exports = class Application extends Emitter {
   constructor() {
-    super()
-    this.proxy = false
-    this.middleware = []
-    this.env = process.env.NODE_ENV || 'development'
-    this.context = Object.create(context)
-    this.request = Object.create(request)
-    this.response = Object.create(response)
+    super();
+    this.proxy = false;
+    this.middleware = [];
+    this.env = process.env.NODE_ENV || 'development';
+    this.context = Object.create(context);
+    this.request = Object.create(request);
+    this.response = Object.create(response);
   }
 
   listen(...args) {
-    const server = http.createServer(this.callback())
-    server.listen(...args)
+    const server = http.createServer(this.callback());
+    server.listen(...args);
   }
 
   use(fn) {
-    if (typeof fn !== 'function') throw new TypeError('')
+    if (typeof fn !== 'function') throw new TypeError('');
     if (isGeneratorFunction(fn)) {
-      console.warn('')
-      fn = convert(fn)
+      console.warn('');
+      fn = convert(fn);
     }
-    this.middleware.push(fn)
-    return this
+    this.middleware.push(fn);
+    return this;
   }
 
   callback() {
     // 生成 handle fn
-    fn = compose(this.middleware)
+    fn = compose(this.middleware);
 
     // 添加默认的 error handle
-    if (!this.listenCounter('error')) this.on('error', this.onerror)
+    if (!this.listenCounter('error')) this.on('error', this.onerror);
 
     return (req, res) => {
       // 生成 ctx
-      const ctx = this.createContext(req, res)
-      return this.handleRequest(ctx, fn)
-    }
+      const ctx = this.createContext(req, res);
+      return this.handleRequest(ctx, fn);
+    };
   }
 
   handleRequest(ctx, fnMiddleware) {
-    const res = ctx.res
-    res.statusCode = 404
-    const onerror = err => ctx.onerror(err)
-    const handleResponse = () => respond(ctx)
-    onFinished(res, onerror)
+    const res = ctx.res;
+    res.statusCode = 404;
+    const onerror = err => ctx.onerror(err);
+    const handleResponse = () => respond(ctx);
+    onFinished(res, onerror);
     fnMiddleware(ctx)
       .then(handleResponse)
-      .catch(error => onerror)
+      .catch(error => onerror);
   }
 
   createContext(req, res) {
-    const context = Object.create(this.context)
-    const request = (context.request = Object.create(this.request))
-    const response = (context.response = Object.create(this.response))
-    context.app = request.app = response.app = this
-    context.req = request.req = response.req = req
-    context.res = request.res = response.res = res
-    request.ctx = response.ctx = context
-    request.response = response
-    response.request = request
-    context.originalUrl = request.originalUrl = req.url
-    context.state = {}
-    return context
+    const context = Object.create(this.context);
+    const request = (context.request = Object.create(this.request));
+    const response = (context.response = Object.create(this.response));
+    context.app = request.app = response.app = this;
+    context.req = request.req = response.req = req;
+    context.res = request.res = response.res = res;
+    request.ctx = response.ctx = context;
+    request.response = response;
+    response.request = request;
+    context.originalUrl = request.originalUrl = req.url;
+    context.state = {};
+    return context;
   }
 
   onerror(err) {
-    if (!(err instanceof Error)) throw new TypeError(util.format('non-error thrown: %j', err))
+    if (!(err instanceof Error)) throw new TypeError(util.format('non-error thrown: %j', err));
 
-    if (404 == err.status || err.expose) return
-    if (this.silent) return
+    if (404 == err.status || err.expose) return;
+    if (this.silent) return;
 
-    const msg = err.stack || err.toString()
-    console.error()
-    console.error(msg.replace(/^/gm, '  '))
-    console.error()
+    const msg = err.stack || err.toString();
+    console.error();
+    console.error(msg.replace(/^/gm, '  '));
+    console.error();
   }
-}
+};
 
 function respond(ctx) {
   // allow bypassing koa
-  if (false === ctx.respond) return
+  if (false === ctx.respond) return;
 
-  const res = ctx.res
-  if (!ctx.writable) return
+  const res = ctx.res;
+  if (!ctx.writable) return;
 
-  let body = ctx.body
-  const code = ctx.status
+  let body = ctx.body;
+  const code = ctx.status;
 
   // ignore body
   if (statuses.empty[code]) {
     // strip headers
-    ctx.body = null
-    return res.end()
+    ctx.body = null;
+    return res.end();
   }
 
   if ('HEAD' == ctx.method) {
     if (!res.headersSent && isJSON(body)) {
-      ctx.length = Buffer.byteLength(JSON.stringify(body))
+      ctx.length = Buffer.byteLength(JSON.stringify(body));
     }
-    return res.end()
+    return res.end();
   }
 
   // status body
   if (null == body) {
     if (ctx.req.httpVersionMajor >= 2) {
-      body = String(code)
+      body = String(code);
     } else {
-      body = ctx.message || String(code)
+      body = ctx.message || String(code);
     }
     if (!res.headersSent) {
-      ctx.type = 'text'
-      ctx.length = Buffer.byteLength(body)
+      ctx.type = 'text';
+      ctx.length = Buffer.byteLength(body);
     }
-    return res.end(body)
+    return res.end(body);
   }
 
   // responses
-  if (Buffer.isBuffer(body)) return res.end(body)
-  if ('string' == typeof body) return res.end(body)
-  if (body instanceof Stream) return body.pipe(res)
+  if (Buffer.isBuffer(body)) return res.end(body);
+  if ('string' == typeof body) return res.end(body);
+  if (body instanceof Stream) return body.pipe(res);
 
   // body: json
-  body = JSON.stringify(body)
+  body = JSON.stringify(body);
   if (!res.headersSent) {
-    ctx.length = Buffer.byteLength(body)
+    ctx.length = Buffer.byteLength(body);
   }
-  res.end(body)
+  res.end(body);
 }
 ```
 
 ```js
 // koajs/compose  洋葱模型
 function compose(middleware) {
-  if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
+  if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!');
   for (const fn of middleware) {
-    if (typeof fn !== 'function') throw new TypeError('Middleware must be composed of functions!')
+    if (typeof fn !== 'function') throw new TypeError('Middleware must be composed of functions!');
   }
 
   /**
@@ -2592,21 +2643,21 @@ function compose(middleware) {
 
   return function(context, next) {
     // last called middleware #
-    let index = -1
-    return dispatch(0)
+    let index = -1;
+    return dispatch(0);
     function dispatch(i) {
-      if (i <= index) return Promise.reject(new Error('next() called multiple times'))
-      index = i
-      let fn = middleware[i]
-      if (i === middleware.length) fn = next
-      if (!fn) return Promise.resolve()
+      if (i <= index) return Promise.reject(new Error('next() called multiple times'));
+      index = i;
+      let fn = middleware[i];
+      if (i === middleware.length) fn = next;
+      if (!fn) return Promise.resolve();
       try {
-        return Promise.resolve(fn(context, dispatch.bind(null, i + 1)))
+        return Promise.resolve(fn(context, dispatch.bind(null, i + 1)));
       } catch (err) {
-        return Promise.reject(err)
+        return Promise.reject(err);
       }
     }
-  }
+  };
 }
 ```
 
@@ -2622,170 +2673,169 @@ function compose(middleware) {
 
   1. 初始化阶段
 
-      | 事件            | 描述                                                                                                                                           |
-      | :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- |
-      | 初始化参数      | 从配置文件和shell 中读取和合并参数，得出最终的参数，这个过程还会执行配置文件中插件的实例化语句 new Plugin()                                    |
-      | 实例化 Compiler | 根据得到的配置文件，实例化Compiler，Compiler 负责文件监听和启动编译。在Compiler 实例中包含了完整的 webpack 配置，全局只有一个 Compiler 实例    |
-      | 加载插件        | 依次调用插件的 apply 方法，让插件可以监听后续的所有事件节点。同时向插件中传入 compiler 实例的引用，以方便插件通过 compiler 调用 webpack 的 api |
-      | environment     | 开始应用node.js风格的文件系统到compiler 对象，以方便后续的文件寻找和读取                                                                       |
-      | Entry-option    | 读取配置的Entrys,为每个Entry实例化一个对应的EntryPlugin,为后面该Entry的递归解析工作做准备                                                      |
-      | After-plugins   | 调用完所有内置的和配置的插件的apply方法                                                                                                        |
-      | After-resolvers | 根据配置初始化resolver,resolver负责在文件系统中寻找指定路径的文件                                                                              |
+     | 事件            | 描述                                                                                                                                           |
+     | :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- |
+     | 初始化参数      | 从配置文件和 shell 中读取和合并参数，得出最终的参数，这个过程还会执行配置文件中插件的实例化语句 new Plugin()                                   |
+     | 实例化 Compiler | 根据得到的配置文件，实例化 Compiler，Compiler 负责文件监听和启动编译。在 Compiler 实例中包含了完整的 webpack 配置，全局只有一个 Compiler 实例  |
+     | 加载插件        | 依次调用插件的 apply 方法，让插件可以监听后续的所有事件节点。同时向插件中传入 compiler 实例的引用，以方便插件通过 compiler 调用 webpack 的 api |
+     | environment     | 开始应用 node.js 风格的文件系统到 compiler 对象，以方便后续的文件寻找和读取                                                                    |
+     | Entry-option    | 读取配置的 Entrys,为每个 Entry 实例化一个对应的 EntryPlugin,为后面该 Entry 的递归解析工作做准备                                                |
+     | After-plugins   | 调用完所有内置的和配置的插件的 apply 方法                                                                                                      |
+     | After-resolvers | 根据配置初始化 resolver,resolver 负责在文件系统中寻找指定路径的文件                                                                            |
+
   2. 编译阶段
 
-      | 事件          | 描述                                                                                                                                                                                                   |
-      | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-      | run           | 启动一次编译                                                                                                                                                                                           |
-      | watch-run     | 在监听模式下启动编译，文件发生变化会重新编译                                                                                                                                                           |
-      | compile       | 告诉插件一次新的编译将要启动，同时会给插件带上 compiler 对象                                                                                                                                           |
-      | compilation   | 当webpack以开发模式运行时，每当检测到文件的变化，便有一次新的compilation被创建。一个Compilation对象包含了当前的模块资源、编译生成资源、变化的文件等。compilation对象也提供了很多事件回调给插件进行拓展 |
-      | make          | 一个新的compilation对象创建完毕,即将从entry开始读取文件,根据文件类型和编译的loader对文件进行 ==编译== ,编译完后再找出该文件依赖的文件,递归地编译和解析                                                 |
-      | after-compile | 一次compilation执行完成                                                                                                                                                                                |
-      | invalid       | 当遇到错误会触发改事件,该事件不会导致webpack退出                                                                                                                                                       |
+     | 事件          | 描述                                                                                                                                                                                                          |
+     | :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+     | run           | 启动一次编译                                                                                                                                                                                                  |
+     | watch-run     | 在监听模式下启动编译，文件发生变化会重新编译                                                                                                                                                                  |
+     | compile       | 告诉插件一次新的编译将要启动，同时会给插件带上 compiler 对象                                                                                                                                                  |
+     | compilation   | 当 webpack 以开发模式运行时，每当检测到文件的变化，便有一次新的 compilation 被创建。一个 Compilation 对象包含了当前的模块资源、编译生成资源、变化的文件等。compilation 对象也提供了很多事件回调给插件进行拓展 |
+     | make          | 一个新的 compilation 对象创建完毕,即将从 entry 开始读取文件,根据文件类型和编译的 loader 对文件进行 ==编译== ,编译完后再找出该文件依赖的文件,递归地编译和解析                                                  |
+     | after-compile | 一次 compilation 执行完成                                                                                                                                                                                     |
+     | invalid       | 当遇到错误会触发改事件,该事件不会导致 webpack 退出                                                                                                                                                            |
+
   3. 输出阶段
 
-      | 事件        | 描述                                                                                                 |
-      | :---------- | :--------------------------------------------------------------------------------------------------- |
-      | should-emit | 所有需要输出的文件已经生成,询问插件有哪些文件需要输出,有哪些不需要输出                               |
-      | emit        | 确定好要输出哪些文件后,执行文件输出, ==可以在这里获取和修改输出的内容==                              |
-      | after-emit  | 文件输出完毕                                                                                         |
-      | done        | 成功完成一次完整的编译和输出流程                                                                     |
-      | failed      | 如果在编译和输出中出现错误,导致webpack退出,就会直接跳转到本步骤,插件可以在本事件中获取具体的错误原因 |
+     | 事件        | 描述                                                                                                   |
+     | :---------- | :----------------------------------------------------------------------------------------------------- |
+     | should-emit | 所有需要输出的文件已经生成,询问插件有哪些文件需要输出,有哪些不需要输出                                 |
+     | emit        | 确定好要输出哪些文件后,执行文件输出, ==可以在这里获取和修改输出的内容==                                |
+     | after-emit  | 文件输出完毕                                                                                           |
+     | done        | 成功完成一次完整的编译和输出流程                                                                       |
+     | failed      | 如果在编译和输出中出现错误,导致 webpack 退出,就会直接跳转到本步骤,插件可以在本事件中获取具体的错误原因 |
 
   ```js
-    //以下代码用来包含webpack运行过程中的每个阶段
-    //file:webpack.config.js
+  //以下代码用来包含webpack运行过程中的每个阶段
+  //file:webpack.config.js
 
-    const path = require('path');
-    //插件监听事件并执行相应的逻辑
-    class TestPlugin {
-      constructor() {
-        console.log('@plugin constructor');
-      }
-
-      apply(compiler) {
-        console.log('@plugin apply');
-
-        compiler.plugin('environment', (options) => {
-          console.log('@environment');
-        });
-
-        compiler.plugin('after-environment', (options) => {
-          console.log('@after-environment');
-        });
-
-        compiler.plugin('entry-option', (options) => {
-          console.log('@entry-option');
-        });
-
-        compiler.plugin('after-plugins', (options) => {
-          console.log('@after-plugins');
-        });
-
-        compiler.plugin('after-resolvers', (options) => {
-          console.log('@after-resolvers');
-        });
-
-        compiler.plugin('before-run', (options, callback) => {
-          console.log('@before-run');
-          callback();
-        });
-
-        compiler.plugin('run', (options, callback) => {
-          console.log('@run');
-          callback();
-        });
-
-        compiler.plugin('watch-run', (options, callback) => {
-          console.log('@watch-run');
-          callback();
-        });
-
-        compiler.plugin('normal-module-factory', (options) => {
-          console.log('@normal-module-factory');
-        });
-
-        compiler.plugin('context-module-factory', (options) => {
-          console.log('@context-module-factory');
-        });
-
-        compiler.plugin('before-compile', (options, callback) => {
-          console.log('@before-compile');
-          callback();
-        });
-
-        compiler.plugin('compile', (options) => {
-          console.log('@compile');
-        });
-
-        compiler.plugin('this-compilation', (options) => {
-          console.log('@this-compilation');
-        });
-
-        compiler.plugin('compilation', (options) => {
-          console.log('@compilation');
-        });
-
-        compiler.plugin('make', (options, callback) => {
-          console.log('@make');
-          callback();
-        });
-
-        compiler.plugin('compilation', (compilation) => {
-
-          compilation.plugin('build-module', (options) => {
-            console.log('@build-module');
-          });
-
-          compilation.plugin('normal-module-loader', (options) => {
-            console.log('@normal-module-loader');
-          });
-
-          compilation.plugin('program', (options, callback) => {
-            console.log('@program');
-            callback();
-          });
-
-          compilation.plugin('seal', (options) => {
-            console.log('@seal');
-          });
-        });
-
-        compiler.plugin('after-compile', (options, callback) => {
-          console.log('@after-compile');
-          callback();
-        });
-
-        compiler.plugin('should-emit', (options) => {
-          console.log('@should-emit');
-        });
-
-        compiler.plugin('emit', (options, callback) => {
-          console.log('@emit');
-          callback();
-        });
-
-        compiler.plugin('after-emit', (options, callback) => {
-          console.log('@after-emit');
-          callback();
-        });
-
-        compiler.plugin('done', (options) => {
-          console.log('@done');
-        });
-
-        compiler.plugin('failed', (options, callback) => {
-          console.log('@failed');
-          callback();
-        });
-
-        compiler.plugin('invalid', (options) => {
-          console.log('@invalid');
-        });
-
-      }
+  const path = require('path');
+  //插件监听事件并执行相应的逻辑
+  class TestPlugin {
+    constructor() {
+      console.log('@plugin constructor');
     }
 
+    apply(compiler) {
+      console.log('@plugin apply');
+
+      compiler.plugin('environment', options => {
+        console.log('@environment');
+      });
+
+      compiler.plugin('after-environment', options => {
+        console.log('@after-environment');
+      });
+
+      compiler.plugin('entry-option', options => {
+        console.log('@entry-option');
+      });
+
+      compiler.plugin('after-plugins', options => {
+        console.log('@after-plugins');
+      });
+
+      compiler.plugin('after-resolvers', options => {
+        console.log('@after-resolvers');
+      });
+
+      compiler.plugin('before-run', (options, callback) => {
+        console.log('@before-run');
+        callback();
+      });
+
+      compiler.plugin('run', (options, callback) => {
+        console.log('@run');
+        callback();
+      });
+
+      compiler.plugin('watch-run', (options, callback) => {
+        console.log('@watch-run');
+        callback();
+      });
+
+      compiler.plugin('normal-module-factory', options => {
+        console.log('@normal-module-factory');
+      });
+
+      compiler.plugin('context-module-factory', options => {
+        console.log('@context-module-factory');
+      });
+
+      compiler.plugin('before-compile', (options, callback) => {
+        console.log('@before-compile');
+        callback();
+      });
+
+      compiler.plugin('compile', options => {
+        console.log('@compile');
+      });
+
+      compiler.plugin('this-compilation', options => {
+        console.log('@this-compilation');
+      });
+
+      compiler.plugin('compilation', options => {
+        console.log('@compilation');
+      });
+
+      compiler.plugin('make', (options, callback) => {
+        console.log('@make');
+        callback();
+      });
+
+      compiler.plugin('compilation', compilation => {
+        compilation.plugin('build-module', options => {
+          console.log('@build-module');
+        });
+
+        compilation.plugin('normal-module-loader', options => {
+          console.log('@normal-module-loader');
+        });
+
+        compilation.plugin('program', (options, callback) => {
+          console.log('@program');
+          callback();
+        });
+
+        compilation.plugin('seal', options => {
+          console.log('@seal');
+        });
+      });
+
+      compiler.plugin('after-compile', (options, callback) => {
+        console.log('@after-compile');
+        callback();
+      });
+
+      compiler.plugin('should-emit', options => {
+        console.log('@should-emit');
+      });
+
+      compiler.plugin('emit', (options, callback) => {
+        console.log('@emit');
+        callback();
+      });
+
+      compiler.plugin('after-emit', (options, callback) => {
+        console.log('@after-emit');
+        callback();
+      });
+
+      compiler.plugin('done', options => {
+        console.log('@done');
+      });
+
+      compiler.plugin('failed', (options, callback) => {
+        console.log('@failed');
+        callback();
+      });
+
+      compiler.plugin('invalid', options => {
+        console.log('@invalid');
+      });
+    }
+  }
   ```
 
   ```
@@ -2836,7 +2886,7 @@ function compose(middleware) {
 
 数据监控，顾名思义就是监听用户的行为。常见的数据监控包括：
 
-- PV/UV:PV(page view)，即页面浏览量或点击量。UV:指访问某个站点或点击某条新闻的不同IP地址的人数
+- PV/UV:PV(page view)，即页面浏览量或点击量。UV:指访问某个站点或点击某条新闻的不同 IP 地址的人数
 - 用户在每一个页面的停留时间
 - 用户通过什么入口来访问该网页
 - 用户在相应的页面中触发的行为
@@ -2849,7 +2899,7 @@ function compose(middleware) {
 
 - 不同用户，不同机型和不同系统下的首屏加载时间
 - 白屏时间
-- http等请求的响应时间
+- http 等请求的响应时间
 - 静态资源整体下载时间
 - 页面渲染时间
 - 页面交互动画完成时间
@@ -2858,11 +2908,12 @@ function compose(middleware) {
 
 ## 前端异常监控
 
-[前端异常监控、上报及js压缩代码定位](https://juejin.im/post/5b55c3495188251acb0cf907)
+[前端异常监控、上报及 js 压缩代码定位](https://juejin.im/post/5b55c3495188251acb0cf907)
 
 ## 异常处理几种方式
 
 - try-catch
+
   > 处理异常的能力有限，只能捕获捉到**运行时**的**非异步错误**，对于**语法错误**和**异步错误**就显得无能为力，捕捉不到
 
   ```js
@@ -2886,6 +2937,7 @@ function compose(middleware) {
   ```
 
 - window.onerror
+
   > 无论是异步还是非异步错误，onerror 都能捕获到运行时错误。
 
   > 对于语法错误还是无能为力
@@ -2893,53 +2945,57 @@ function compose(middleware) {
   > **window.onerror 函数只有在返回 true 的时候，异常才不会向上抛出，否则即使是知道异常的发生控制台还是会显示**
 
   > **onerror 是无法捕获到网络异常的错误**
-    由于网络请求异常不会事件冒泡，因此必须在捕获阶段将其捕捉到才行，但是这种方式虽然可以捕捉到网络请求的异常，但是无法判断 HTTP 的状态是 404 还是其他比如 500 等等，所以还需要配合服务端日志才进行排查分析才可以。
+  > 由于网络请求异常不会事件冒泡，因此必须在捕获阶段将其捕捉到才行，但是这种方式虽然可以捕捉到网络请求的异常，但是无法判断 HTTP 的状态是 404 还是其他比如 500 等等，所以还需要配合服务端日志才进行排查分析才可以。
 
   ```js
-    /**
-      * @param {String}  msg    错误信息
-      * @param {String}  url    出错文件
-      * @param {Number}  row    行号
-      * @param {Number}  col    列号
-      * @param {Object}  error  错误详细信息
-      */
-    window.onerror = function (msg, url, row, col, error) {
-      console.log('我知道错误了');
-      console.log({ msg,  url,  row, col, error})
-      return true
-    }
+  /**
+   * @param {String}  msg    错误信息
+   * @param {String}  url    出错文件
+   * @param {Number}  row    行号
+   * @param {Number}  col    列号
+   * @param {Object}  error  错误详细信息
+   */
+  window.onerror = function(msg, url, row, col, error) {
+    console.log('我知道错误了');
+    console.log({ msg, url, row, col, error });
+    return true;
+  };
 
-    // 异步错误
-    window.onerror = function (msg, url, row, col, error) {
-      console.log('我知道异步错误了');
-      console.log({
-        msg,  url,  row, col, error
-      })
-      return true;
-    };
-    setTimeout(() => {
-      error;
+  // 异步错误
+  window.onerror = function(msg, url, row, col, error) {
+    console.log('我知道异步错误了');
+    console.log({
+      msg,
+      url,
+      row,
+      col,
+      error
     });
+    return true;
+  };
+  setTimeout(() => {
+    error;
+  });
 
-    // 网络异常捕获
-    window.addEventListener('error', (...msg) => {
+  // 网络异常捕获
+  window.addEventListener(
+    'error',
+    (...msg) => {
       console.log('我知道 404 错误了');
-      console.log(
-        msg, url, row, col, error
-      );
+      console.log(msg, url, row, col, error);
       return true;
-    }, true); // 捕获阶段
+    },
+    true
+  ); // 捕获阶段
   ```
 
-
-
-- Promise 错误
+* Promise 错误
   > 添加一个 Promise 全局异常捕获事件 unhandledrejection。
   ```js
-    window.addEventListener('unhandledrejection', function(e) {
-      e.preventDefault();
-      console.log(e.reason)
-    })
+  window.addEventListener('unhandledrejection', function(e) {
+    e.preventDefault();
+    console.log(e.reason);
+  });
   ```
 
 ## 异常上报方式
@@ -2947,51 +3003,60 @@ function compose(middleware) {
 1. 通过 Ajax 发送数据
 2. 动态创建 img 标签的形式
    ```js
-    function report(error) {
-      let reportUrl = 'http://xxx.com/report'
-      new Image().src = reportUrl+'?error='+error
-    }
+   function report(error) {
+     let reportUrl = 'http://xxx.com/report';
+     new Image().src = reportUrl + '?error=' + error;
+   }
    ```
 3. JSONP
 
 ## 异常上报问题
-1. 跨域无法获取到script错误信息，添加 crossOrigin
+
+1. 跨域无法获取到 script 错误信息，添加 crossOrigin
 
    ```js
-    const script = document.createElement('script')
-    script.crossOrigin = 'anonymous'
-    script.src = url
-    document.body.appendChild(script)
+   const script = document.createElement('script');
+   script.crossOrigin = 'anonymous';
+   script.src = url;
+   document.body.appendChild(script);
    ```
 
    ```html
-    <script src='xxx/com/xxx' crossOrigin></script>
+   <script src="xxx/com/xxx" crossorigin></script>
    ```
 
-    > 增加 crossorigin 属性后，浏览器将自动在请求头中添加一个 Origin 字段，发起一个 跨域资源共享 请求。Origin 向服务端表明了请求来源，服务端将根据来源判断是否正常响应。
+   > 增加 crossorigin 属性后，浏览器将自动在请求头中添加一个 Origin 字段，发起一个 跨域资源共享 请求。Origin 向服务端表明了请求来源，服务端将根据来源判断是否正常响应。
 
-    > **指定域名的 Access-Control-Allow-Origin 的响应头中需带上Vary:Origin**
-    Vary 字段的作用在于为缓存服务器提供缓存规则及缓存筛选的依据。当增加 Vary:Origin 响应头后，缓存服务器将会按照 Origin 字段的内容，缓存不同版本，在请求响应时根据请求头中的 Origin 决定是否能够使用缓存响应。
+   > **指定域名的 Access-Control-Allow-Origin 的响应头中需带上 Vary:Origin**
+   > Vary 字段的作用在于为缓存服务器提供缓存规则及缓存筛选的依据。当增加 Vary:Origin 响应头后，缓存服务器将会按照 Origin 字段的内容，缓存不同版本，在请求响应时根据请求头中的 Origin 决定是否能够使用缓存响应。
 
 2. window.onerror 能否捕获 iframe 的错误
-    1. 如果你的 iframe 页面和你的主站是同域名的话，直接给 iframe 添加 onerror 事件即可
-      ```html
-      <iframe src="./iframe.html" frameborder="0"></iframe>
-      <script>
-        window.frames[0].onerror = function (msg, url, row, col, error) {
-          console.log('我知道 iframe 的错误了，也知道错误信息');
-          console.log({
-            msg,  url,  row, col, error
-          })
-          return true;
-        };
-      </script>
-      ```
-    2. 非同域，可以通过与 iframe 通信的方式将异常信息抛给主站接收
+
+   1. 如果你的 iframe 页面和你的主站是同域名的话，直接给 iframe 添加 onerror 事件即可
+
+   ```html
+   <iframe src="./iframe.html" frameborder="0"></iframe>
+   <script>
+     window.frames[0].onerror = function(msg, url, row, col, error) {
+       console.log('我知道 iframe 的错误了，也知道错误信息');
+       console.log({
+         msg,
+         url,
+         row,
+         col,
+         error
+       });
+       return true;
+     };
+   </script>
+   ```
+
+   2. 非同域，可以通过与 iframe 通信的方式将异常信息抛给主站接收
 
 3. 压缩代码如何定位到脚本异常位置（sourceMap)
 
 ## 异常信息采集内容
+
 1. 用户信息
 2. 行为信息
 3. 异常信息
@@ -3001,7 +3066,7 @@ function compose(middleware) {
 
 # Nginx
 
-## [分享阿里前端p7架构图谱](https://juejin.im/post/5cf5f358e51d45778f076ce5)
+## [分享阿里前端 p7 架构图谱](https://juejin.im/post/5cf5f358e51d45778f076ce5)
 
 - 长列表优化，内存
 - 有哪些操作 css 的方法
