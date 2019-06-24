@@ -342,191 +342,227 @@
     }
     ```
 
-  - 数组去重
+- 数组去重
 
-    ```js
-    function unique(arr) {
-      return [...new Set(arr)];
-    }
-    ```
+  ```js
+  function unique(arr) {
+    return [...new Set(arr)];
+  }
+  ```
 
-    ```js
-    function unique(arr) {
-      return arr.filter((item, index) => arr.indexOf(item) === index);
-    }
-    ```
+  ```js
+  function unique(arr) {
+    return arr.filter((item, index) => arr.indexOf(item) === index);
+  }
+  ```
 
-    ```js
-    function unique(arr) {
-      let obj = {};
-      return arr.filter(item => {
-        if (obj[item]) {
-          return false;
-        }
-
-        return (obj[item] = true);
-      });
-    }
-    ```
-
-  - 字符串去重
-
-    ```js
-    function unique(str) {
-      return [...new Set(str)].join('');
-    }
-    ```
-
-  - 输入 `携程C2t0r1i8p2020校招`, 输出 `2018Ctrip`
-
-    ```js
-    function handleStr(str) {
-      let nums = str.match(/\d/g).join('');
-      let words = str.match(/[a-zA-Z]/g).join('');
-
-      return uniqueStr(nums) + words;
-    }
-
-    function uniqueStr(str) {
-      const arr = str.split('');
-      return arr.filter((item, index) => arr.indexOf(item) === index).join('');
-    }
-    ```
-
-  - 对一维数组，根据 type 类型分组成二维数组
-
-    ```js
-    // var input = [null, 2, "test", undefined, {
-    //        "type": "product",
-    //        "content": "product1"
-    //      }, {
-    //        "type": "product",
-    //        "content": "product2"
-    //      }, {
-    //        "type": "tag",
-    //        "content": "tag1"
-    //      }, {
-    //        "type": "product",
-    //        "content": "product3"
-    //      }, {
-    //        "type": "tag",
-    //        "content": "tag2"
-    //      }];
-
-    // output = [{"type":"product","contents":["product1","product2","product3"]},{"type":"tag","contents":["tag1","tag2"]}]
-
-    function groupList(arr) {
-      if (!Array.isArray(arr) || arr.length === 0) {
-        return [];
+  ```js
+  function unique(arr) {
+    let obj = {};
+    return arr.filter(item => {
+      if (obj[item]) {
+        return false;
       }
 
-      const validItems = getValidItems(arr);
-      const result = {};
+      return (obj[item] = true);
+    });
+  }
+  ```
 
-      validItems.forEach(item => {
-        result[item.type] ? result[item.type].push(item) : (result[item.type] = [item]);
-        // if(result.hasOwnProperty(item.type)) {
-        //  result[item.type].push(item)
-        // } else {
-        //  result[item.type] = [];
-        //  result[item.type].push(item)
-        // }
-      });
+- 字符串去重
 
-      return resultFormat(result);
+  ```js
+  function unique(str) {
+    return [...new Set(str)].join('');
+  }
+  ```
+
+- 输入 `携程C2t0r1i8p2020校招`, 输出 `2018Ctrip`
+
+  ```js
+  function handleStr(str) {
+    let nums = str.match(/\d/g).join('');
+    let words = str.match(/[a-zA-Z]/g).join('');
+
+    return uniqueStr(nums) + words;
+  }
+
+  function uniqueStr(str) {
+    const arr = str.split('');
+    return arr.filter((item, index) => arr.indexOf(item) === index).join('');
+  }
+  ```
+
+- 对一维数组，根据 type 类型分组成二维数组
+
+  ```js
+  // var input = [null, 2, "test", undefined, {
+  //        "type": "product",
+  //        "content": "product1"
+  //      }, {
+  //        "type": "product",
+  //        "content": "product2"
+  //      }, {
+  //        "type": "tag",
+  //        "content": "tag1"
+  //      }, {
+  //        "type": "product",
+  //        "content": "product3"
+  //      }, {
+  //        "type": "tag",
+  //        "content": "tag2"
+  //      }];
+
+  // output = [{"type":"product","contents":["product1","product2","product3"]},{"type":"tag","contents":["tag1","tag2"]}]
+
+  function groupList(arr) {
+    if (!Array.isArray(arr) || arr.length === 0) {
+      return [];
     }
 
-    function getValidItems(arr) {
-      return arr.filter(item => isPureObject(item) && item.type && item.content);
-    }
+    const validItems = getValidItems(arr);
+    const result = {};
 
-    function isPureObject(obj) {
-      return Object.prototype.toString.call(obj).slice(8, -1) === 'Object';
-    }
-
-    function resultFormat(obj) {
-      return Object.keys(obj).map(type => {
-        return { type, contents: obj[type] };
-      });
-    }
-    ```
-
-  - 计算目录 `/a/b/c/d/e.js` 和 `/a/b/f/g.js` 的相对目录
-
-    ```js
-    function calculateRoute(path1, path2) {
-      let pathArr1 = path1.split('/'),
-        pathArr2 = path2.split('/'),
-        routeArr = [],
-        fileArr = [],
-        diff = false;
-
-      for (let i = 1, len = pathArr1.length; i < len; i++) {
-        if (pathArr1[i] !== pathArr2[i] || diff) {
-          if (pathArr1[i]) {
-            routeArr.push('..');
-          }
-          if (pathArr2[i]) {
-            fileArr.push(pathArr2[i]);
-          }
-          diff = true;
-        } else {
-          diff = false;
-        }
-      }
-
-      return `${routeArr.join('/')}/${fileArr.join('/')}`;
-    }
-
-    let path = caculateRoute('/a/b/c/d/e.js', '/a/b/f/g.js');
-    ```
-
-  - 使用 promise 4 秒后打印’A’，然后经过 3 秒打印’B’，再经过 2 秒打印’C’，再经过一秒打印’D’。
-
-    ```js
-    let promise = new Promise(resolve => {
-      setTimeout(() => {
-        console.log('A');
-        resolve();
-      }, 4000);
+    validItems.forEach(item => {
+      result[item.type] ? result[item.type].push(item) : (result[item.type] = [item]);
+      // if(result.hasOwnProperty(item.type)) {
+      //  result[item.type].push(item)
+      // } else {
+      //  result[item.type] = [];
+      //  result[item.type].push(item)
+      // }
     });
 
-    promise
-      .then(() => {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            console.log('B');
-            resolve();
-          }, 3000);
-        });
-      })
-      .then(() => {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            console.log('C');
-            resolve();
-          }, 2000);
-        });
-      })
-      .then(() => {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            console.log('D');
-            resolve();
-          }, 1000);
-        });
-      });
-    ```
+    return resultFormat(result);
+  }
 
-  - 实现一个数组中删除一个子数组的函数，要求函数中不 return 返回新的数组。
+  function getValidItems(arr) {
+    return arr.filter(item => isPureObject(item) && item.type && item.content);
+  }
 
-    ```js
-    function removeSubArray(main, sub) {
-      for (let i = 0; i < main.length; i++) {
-        if (sub.includes(main[i])) {
-          main.splice(i, 1);
-          i--;
+  function isPureObject(obj) {
+    return Object.prototype.toString.call(obj).slice(8, -1) === 'Object';
+  }
+
+  function resultFormat(obj) {
+    return Object.keys(obj).map(type => {
+      return { type, contents: obj[type] };
+    });
+  }
+  ```
+
+- 计算目录 `/a/b/c/d/e.js` 和 `/a/b/f/g.js` 的相对目录
+
+  ```js
+  function calculateRoute(path1, path2) {
+    let pathArr1 = path1.split('/'),
+      pathArr2 = path2.split('/'),
+      routeArr = [],
+      fileArr = [],
+      diff = false;
+
+    for (let i = 1, len = pathArr1.length; i < len; i++) {
+      if (pathArr1[i] !== pathArr2[i] || diff) {
+        if (pathArr1[i]) {
+          routeArr.push('..');
         }
+        if (pathArr2[i]) {
+          fileArr.push(pathArr2[i]);
+        }
+        diff = true;
+      } else {
+        diff = false;
       }
     }
-    ```
+
+    return `${routeArr.join('/')}/${fileArr.join('/')}`;
+  }
+
+  let path = caculateRoute('/a/b/c/d/e.js', '/a/b/f/g.js');
+  ```
+
+- 实现一个数组中删除一个子数组的函数，要求函数中不 return 返回新的数组。
+
+  ```js
+  function removeSubArray(main, sub) {
+    for (let i = 0; i < main.length; i++) {
+      if (sub.includes(main[i])) {
+        main.splice(i, 1);
+        i--;
+      }
+    }
+  }
+  ```
+
+- 使用 promise 4 秒后打印’A’，然后经过 3 秒打印’B’，再经过 2 秒打印’C’，再经过一秒打印’D’。
+
+  ```js
+  let promise = new Promise(resolve => {
+    setTimeout(() => {
+      console.log('A');
+      resolve();
+    }, 4000);
+  });
+
+  promise
+    .then(() => {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          console.log('B');
+          resolve();
+        }, 3000);
+      });
+    })
+    .then(() => {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          console.log('C');
+          resolve();
+        }, 2000);
+      });
+    })
+    .then(() => {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          console.log('D');
+          resolve();
+        }, 1000);
+      });
+    });
+  ```
+
+- 数组中的 Promise 顺序执行
+
+```js
+function sequenceTasks(arr) {
+  return arr.reduce(function(prevPromise, promiseFn, index) {
+    return prevPromise.then(function() {
+      return promiseFn();
+    });
+  }, Promise.resolve());
+}
+```
+
+```js
+function sequenceTasks(arr) {
+  let p = Promise.resolve();
+  arr.forEach(promiseFn => {
+    p = p.then(function() {
+      return promiseFn();
+    });
+  });
+  return p;
+}
+```
+
+```js
+function sequenceTasks(arr) {
+  async function run() {
+    for (let promiseFn of arr) {
+      await promiseFn();
+    }
+  }
+
+  return run();
+}
+```
