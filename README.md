@@ -2178,49 +2178,409 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 
 ## react-router 内部实现机制
 
+```js
+/**
+ * hash router 简单实现
+ */
+function Router() {
+  this.routes = {};
+  this.currentUrl = '';
+}
+Router.prototype.route = function(path, callback) {
+  this.routes[path] = callback || function() {};
+};
+Router.prototype.refresh = function() {
+  this.currentUrl = location.hash.slice(1) || '/';
+  console.log('refresh', 'currentUrl: ', this.currentUrl);
+  this.routes[this.currentUrl]();
+};
+Router.prototype.init = function() {
+  window.addEventListener('load', this.refresh.bind(this), false);
+  window.addEventListener('hashchange', this.refresh.bind(this), false);
+};
+
+window.Router = new Router();
+window.Router.init();
+
+let content = document.querySelector('body');
+function changeBackgroundColor(color) {
+  content.style.backgroundColor = color;
+}
+
+Router.route('/', function() {
+  changeBackgroundColor('white');
+});
+Router.route('/blue', function() {
+  changeBackgroundColor('blue');
+});
+Router.route('/green', function() {
+  changeBackgroundColor('green');
+});
+```
+
 - [前端路由实现与 react-router 源码分析](https://github.com/joeyguo/blog/issues/2)
-
-  ```js
-  /**
-    * hash router 简单实现
-    */
-  function Router() {
-    this.routes = {};
-    this.currentUrl = '';
-  }
-  Router.prototype.route = function(path, callback) {
-    this.routes[path] = callback || function() {};
-  };
-  Router.prototype.refresh = function() {
-    this.currentUrl = location.hash.slice(1) || '/';
-    console.log('refresh', 'currentUrl: ', this.currentUrl);
-    this.routes[this.currentUrl]();
-  };
-  Router.prototype.init = function() {
-    window.addEventListener('load', this.refresh.bind(this), false);
-    window.addEventListener('hashchange', this.refresh.bind(this), false);
-  };
-
-  window.Router = new Router();
-  window.Router.init();
-
-  let content = document.querySelector('body');
-  function changeBackgroundColor(color) {
-    content.style.backgroundColor = color;
-  }
-
-  Router.route('/', function() {
-    changeBackgroundColor('white');
-  });
-  Router.route('/blue', function() {
-    changeBackgroundColor('blue');
-  });
-  Router.route('/green', function() {
-    changeBackgroundColor('green');
-  });
-  ```
-
 - [单页面应用路由实现原理：以 React-Router 为例](https://github.com/youngwind/blog/issues/109)
+
+- React-Router 路由实现
+
+```js
+/**
+ * history 实现，发布订阅模式
+ */
+
+function createTransitionManage() {
+  let prompt = null;
+
+  function setPrompt(nextPrompt) {
+    warning(prompt == null, 'A history supports only one prompt at a time');
+    prompt = nextPrompt;
+    return () => {
+      if (prompt === nextPrompt) prompt = null;
+    };
+  }
+
+  function confirmTransitionTo(location, action, getUserConfirmation, callback) {
+    if (prompt != null) {
+      const result = typeof prompt === 'function' ? prompt(location, action) : prompt;
+
+      if (typeof result === 'string') {
+        if (typeof getUserConfirmation === 'function') {
+          getUserConfirmation(result, callback);
+        } else {
+          warning(false, 'A history needs a getUserConfirmation function in order to use a prompt message');
+          callback(true);
+        }
+      } else {
+        callback(result !== false);
+      }
+    } else {
+      callback(true);
+    }
+  }
+
+  let listeners = [];
+
+  function appendListener(fn) {
+    let isActive = true;
+
+    function listener(...args) {
+      if (isActive) fn(...args);
+    }
+
+    listeners.push(listener);
+
+    return () => {
+      isActive = false;
+      listeners = listeners.filter(item => item !== listener);
+    };
+  }
+
+  function notifyListeners(...args) {
+    listeners.forEach(listener => listener(...args));
+  }
+
+  return {
+    setPrompt,
+    confirmTransitionTo,
+    appendListener,
+    notifyListeners
+  };
+}
+
+function createBrowserHistory(props = {}) {
+  const globalHistory = window.history;
+
+  ...
+
+  const transitionManager = createTransitionManager();
+
+  function setState(nextState) {
+    Object.assign(history, nextState);
+    history.length = globalHistory.length;
+    transitionManager.notifyListeners(history.location, history.action);
+  }
+
+  function handlePop(location) {
+    if(forceNextPop) {
+      forceNextPop = false;
+      setState();
+    } else {
+      const action = 'POP';
+
+      transitionManager.confirmTransitionTo(
+        location, action, getUserConfirmation,
+        ok => {
+          if(ok) {
+            setState({
+              action, location
+            });
+          } else  {
+            revertPop(location);
+          }
+        }
+      );
+    }
+  }
+
+  function push(path, state) {
+    warning(
+      !(
+        typeof path === 'object' &&
+        path.state !== undefined &&
+        state !== undefined
+      ),
+      'You should avoid providing a 2nd state argument to push when the 1st ' +
+        'argument is a location-like object that already has state; it is ignored'
+    );
+
+    const action = 'PUSH';
+    const location = createLocation(path, state, createKey(), history.location);
+
+    transitionManager.confirmTransitionTo(
+      location, action, getUserConfirmation, ok => {
+        if(!ok) return ;
+
+        const href = createHref(location);
+        const {key, state} = location;
+
+        if(canUseHistory) {
+          globalHistory.pushState({key, state}, null, href);
+
+          if(forceRefresh) {
+            window.location.href = href;
+          } else {
+            const prevIndex = allKeys.indexOf(history.location.key);
+            const nextKeys = allKeys.slice(0, prevIndex === -1 ? 0 : prevIndex+1);
+
+            nextKeys.push(location.key);
+            allKeys = nextKeys;
+
+            setState({action, location});
+          }
+        } else {
+          warning(
+            state === undefined,
+            'Browser history cannot push state in browsers that do not support HTML5 history'
+          );
+          window.location.href = href;
+        }
+      }
+    )
+  }
+
+  function replace(path, state) {
+       warning(
+      !(
+        typeof path === 'object' &&
+        path.state !== undefined &&
+        state !== undefined
+      ),
+      'You should avoid providing a 2nd state argument to replace when the 1st ' +
+        'argument is a location-like object that already has state; it is ignored'
+    );
+
+    const action = 'REPLACE';
+    const location = createLocation(path, state, createKey(), history.location);
+
+    transitionManager.confirmTransitionTo(
+      location,
+      action,
+      getUserConfirmation,
+      ok => {
+        if(!ok) return;
+
+        const href = createHref(location);
+        const {key, state} = location;
+
+        if(canUseHistory) {
+          globalHistory.replaceState({key, state}, null, href);
+
+          if(forceRefresh) {
+            window.location.replace(href);
+          } else {
+            const prevIndex = allKeys.indexOf(history.location.key);
+
+            if(prevIndex !== -1)  allKeys[prevIndex] = location.key;
+
+            setState({action, location});
+          }
+        } else {
+          warning(
+            state === undefined,
+            'Browser history cannot replace state in browsers that do not support HTML5 history'
+          );
+
+          window.location.replace(href);
+        }
+      }
+    )
+  }
+
+  function go(n) {
+    globalHistory.go(n);
+  }
+
+  function goBack() {
+    go(-1);
+  }
+
+  function goForward() {
+    go(1);
+  }
+
+  function listen(listener) {
+    const unlisten = transitionManager.appendListener(listener);
+    checkDOMListeners(1);
+
+    return () => {
+      checkDOMListeners(-1);
+      unlisten();
+    }
+  }
+
+  const history = {
+    length: globalHistory.length,
+    action: 'POP',
+    location: initialLocation,
+    createHref,
+    push,
+    replace,
+    go,
+    goBack,
+    goForward,
+    block,
+    listen,
+  }
+
+  return history
+}
+```
+
+```jsx
+/**
+ * React-Router 实现，RouterContext.Provider / RouterContext.Consumer
+ */
+class BrowserRouter extends React.Component {
+  history = createHistory(this.props);
+
+  render() {
+    return <Router history={this.history} children={this.props.children} />;
+  }
+}
+
+if (__DEV__) {
+  BrowserRouter.prototype.componentDidMount = function() {
+    warning(
+      !this.props.history,
+      '<BrowserRouter> ignores the history prop. To use a custom history, ' +
+        'use `import { Router }` instead of `import { BrowserRouter as Router }`.'
+    );
+  };
+}
+
+function Link({ component = LinkAnchor, replace, to, ...rest }) {
+  return (
+    <RouterContext.Consumer>
+      {context => {
+        return React.createElement(component, {
+          ...rest,
+          href,
+          navigate() {
+            const location = resolveToLocation(to, context.location);
+            const method = replace ? history.replace : history.push;
+
+            method(location);
+          }
+        });
+      }}
+    </RouterContext.Consumer>
+  );
+}
+
+class Router extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      location: props.history.location
+    };
+
+    this._isMounted = false;
+    this._pendingLocation = null;
+
+    if (!props.staticContext) {
+      this.unlisten = props.history.listen(location => {
+        if (this._isMounted) {
+          this.setState({ location });
+        } else {
+          this._pendingLocation = location;
+        }
+      });
+    }
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+
+    if (this._pendingLocation) {
+      this.setState({ location: this._pendingLocation });
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.unlisten) this.unlisten();
+  }
+
+  render() {
+    return (
+      <RouterContext.Provider
+        children={this.props.children || null}
+        value={{
+          history: this.props.history,
+          location: this.state.location,
+          match: Router.computeRootMatch(this.state.location.pathname),
+          staticContext: this.props.staticContext
+        }}
+      />
+    );
+  }
+}
+
+class Route extends React.Component {
+  render() {
+    return (
+      <RouterContext.Consumer>
+        {context => {
+          const location = this.props.location || context.location;
+          const match = this.props.computedMatch
+            ? this.props.computedMatch
+            : this.props.path
+            ? matchPath(location.pathname, this.props)
+            : context.match;
+
+          const props  = {..context, location, match};
+
+          return (
+            <RouterContext.Provider value={props}>
+              {
+                children && !isEmptyChildren(children)
+                  ? children
+                  : props.match
+                    ? component
+                      ? React.createElement(component, props)
+                      : render
+                        ? render(props)
+                        : null
+                    : null
+              }
+            </RouterContext.Provider>
+          )
+        }}
+      </RouterContext.Consumer>
+    );
+  }
+}
+```
 
 ## react-redux
 
