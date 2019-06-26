@@ -560,15 +560,13 @@ bind()方法创建一个新的函数，在调用时设置 this 关键字为提�
 
 ```js
 if (!Function.prototype.bind) {
-  Function.prototype.bind = function(oThis) {
+  Function.prototype.bind = function(oThis, ...args) {
     if (typeof this !== 'function') {
       throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
     }
 
-    var args = Array.prototype.slice.call(arguments, 1),
-      functionToBind = this,
-      functionBound = function() {
-        var bindArgs = Array.prototype.slice.call(arguments);
+    var functionToBind = this,
+      functionBound = function(...bindArgs) {
         // this instanceof fBound === true时,说明返回的fBound被当做new的构造函数调用
         return functionToBind.apply(
           this instanceof functionBound ? this : oThis,
