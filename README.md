@@ -627,7 +627,7 @@ function partial(fn, ...args) {
     while (position < arg.length) {
       args.push(arg[position++]);
     }
-    
+
     return fn.apply(this, args);
   };
 }
