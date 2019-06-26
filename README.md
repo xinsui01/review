@@ -633,6 +633,42 @@ function partial(fn, ...args) {
 }
 ```
 
+## 如何让 (a == 1 && a == 2 && a == 3) 的值为 true
+
+- 利用隐式类型转换
+  `a == 1 && a == 2 && a == 3` 的值意味着其不可能是基本数据类型。因为如果 a 是 null 或者是 undefined、bool 类型，都不可能返回 true。
+
+  因此可以推测 a 是复杂数据类型，JS 中复杂数据类型只有 object。
+
+  Object 转换为原始类型
+
+  - 如果部署了 `[Symbol.toPrimitive]` 接口，那么调用此接口，若返回的不是基本数据类型，抛出错误。
+    > 该函数由字符串参数 hint 调用，目的是指定原始值转换结果的首选类型。 hint 参数可以是 "number"、"string" 和 "default" 中的一种。
+  - 如果没有部署 `[Symbol.toPrimitive]` 接口，那么根据要转换的类型，先调用 valueOf / toString
+    - 非 Date 类型对象，hint 是 default 时，调用顺序为：valueOf >>> toString，即 valueOf 返回的不是基本数据类型，才会继续调用 toString，如果 toString 返回的还不是基本数据类型，那么抛出错误。
+    - 如果 hint 是 string(Date 对象的 hint 默认是 string) ，调用顺序为：toString >>> valueOf，即 toString 返回的不是基本数据类型，才会继续调用 valueOf，如果 valueOf 返回的还不是基本数据类型，那么抛出错误。
+    - 如果 hint 是 number，调用顺序为： valueOf >>> toString
+
+- 利用数据劫持(Proxy/Object.definedProperty)
+
+```js
+let a = new Proxy(
+  {},
+  {
+    i: 1,
+    get: function() {
+      return () => this.i++;
+    }
+  }
+);
+```
+
+- 数组的 toString 接口默认调用数组的 join 方法，重新 join 方法
+```js
+let a = [1,2,3];
+a.join = a.shift;
+```
+
 ## [JavaScript 中的对象拷贝](https://juejin.im/entry/5a28ec86f265da43163cf720)
 
 - 浅拷贝
