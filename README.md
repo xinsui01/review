@@ -679,14 +679,19 @@ if (!Function.prototype.bind) {
 ## [深入理解 new 操作符](https://www.cnblogs.com/onepixel/p/5043523.html)
 
 ```js
-  new Animal() {
-    const obj = {};
-    obj.__proto__ = Animal.prototype;
+function _new() {
+  const obj = {};
 
-    const result = Animal.apply(obj, arguments);
-    return result!==null && typeof result === 'object' ? result : obj; // 忽略 null
+  const [constructor, ...args] = [...arguments];
 
-  }
+  _new.target = constructor;
+
+  obj.__proto__ = constructor.prototype;
+
+  const result = constructor.apply(obj, args);
+  const isObject = result !== null && typeof result === 'object';
+  return isObject ? result : obj; // 忽略 null
+}
 ```
 
 ## for...in 迭代和 for...of 有什么区别
@@ -1139,7 +1144,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 - window.cancelAnimationFrame(id)
 
-## [JavaScript中的高精度计时](http://jimliu.net/2014/03/16/hrt-in-js/)
+## [JavaScript 中的高精度计时](http://jimliu.net/2014/03/16/hrt-in-js/)
 
 # 浏览器
 
