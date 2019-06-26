@@ -352,6 +352,15 @@
 
 <iframe src="http://es6.ruanyifeng.com/#docs/class-extends#%E7%B1%BB%E7%9A%84-prototype-%E5%B1%9E%E6%80%A7%E5%92%8C__proto__%E5%B1%9E%E6%80%A7" width="100%" frameborder="0" height="500px" ></iframe>
 
+```js
+class A {}
+
+class B extends A {}
+
+B.__proto__ === A; // 静态方法
+B.prototype.__proto__ === A.prototype; // 原型继承
+```
+
 ## instanceof
 
 > `instanceof` 运算符用于测试构造函数的 `prototype` 属性是否出现在对象的原型链中的任何位置.  
@@ -664,8 +673,9 @@ let a = new Proxy(
 ```
 
 - 数组的 toString 接口默认调用数组的 join 方法，重新 join 方法
+
 ```js
-let a = [1,2,3];
+let a = [1, 2, 3];
 a.join = a.shift;
 ```
 
@@ -997,6 +1007,47 @@ function _new() {
     });
     return dfd;
   };
+
+  Promise.prototype.all = function(promises) {
+    return new Promise((resolve, reject) => {
+      promises = Array.from(promises);
+      const len = promises.length;
+      if (len === 0) {
+        resolve([]);
+      } else {
+        let result = [];
+        let resolvedCount = 0;
+        for (let i = 0; i < len; i++) {
+          Promise.resolve(promises[i]).then(
+            data => {
+              result[i] = data;
+              resolvedCount++;
+              if (resolvedCount === len) {
+                resolve(result);
+              }
+            },
+            err => {
+              return reject(err);
+            }
+          );
+        }
+      }
+    });
+  };
+
+  Promise.prototype.race = function(promises) {
+    return new Promise((resolve, reject) => {
+      promises = Array.from(promises);
+      const len = promises.length;
+      if(len === 0) {
+        resolve();
+      } else {
+        for(let i=0; i<len; i++) {
+          Promise.resolve(promises[i]).then(resolve, reject)
+        }
+      }
+    })
+  }
   ```
 
 ### generator
