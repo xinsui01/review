@@ -592,6 +592,47 @@ if (!Function.prototype.bind) {
 }
 ```
 
+## 柯里化函数实现
+
+> 柯里化是一种将使用多个参数的一个函数转换成一系列使用一个参数的函数的技术。
+
+```js
+const curry = fn =>
+  (judge = (...args) => (args.length === fn.length ? fn(...args) : (...arg) => judge(...args, ...arg)));
+```
+
+## 偏函数
+
+> 指固定一个函数的一些参数，然后产生另一个更小元的函数。
+
+```js
+function partial(func, ...args) {
+  return function(...arg) {
+    return func.call(this, ...args, ...arg);
+  };
+}
+/**
+ *  占位符版
+ */
+function partial(fn, ...args) {
+  return function(...arg) {
+    let position = 0,
+      len = args.length;
+
+    // 处理参数中的占位符
+    for (let i = 0; i < len; i++) {
+      args[i] = args[i] === _ ? arg[position++] : args[i];
+    }
+    // 两次参数拼接到一起
+    while (position < arg.length) {
+      args.push(arg[position++]);
+    }
+    
+    return fn.apply(this, args);
+  };
+}
+```
+
 ## [JavaScript 中的对象拷贝](https://juejin.im/entry/5a28ec86f265da43163cf720)
 
 - 浅拷贝
