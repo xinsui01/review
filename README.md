@@ -521,6 +521,29 @@ function type(obj) {
   - match\exec 捕获组， 如果匹配，返回数组，未匹配返回 null
     - 返回数组第一项为正则匹配的整个字符串，后面为括号对应的捕获组，index 是整个匹配从零开始的索引，Input 为被解析的原始字符串
 
+## call/apply 实现
+
+```js
+function Function.prototype.call = function(thisArg,...args){
+  thisArg = thisArg || typeof window === 'undefined' ? global : window;
+  thisArg.func = this;
+
+  const result = thisArg.func(...args);
+  delete thisArg.func; // thisArg 上并没有 func 属性，需要移除
+  return result;
+}
+
+function Function.prototype.apply = function(thisArg, args = []) {
+  thisArg = thisArg || typeof window === 'undefined' ? global : window;
+
+  thisArg.func = this;
+  const result = thisArg.func(...args);
+
+  delete thisArg.func
+  return result;
+}
+```
+
 ## 实现一个 bind 函数
 
 bind()方法创建一个新的函数，在调用时设置 this 关键字为提供的值。并在调用新函数时，将给定参数列表作为原函数的参数序列的前若干项。
