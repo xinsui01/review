@@ -287,7 +287,7 @@
       }
       ```
 
-      可能有些代码有添加::before,且 display：table
+      可能有些代码有添加 `::before` ，且 `display: table`
 
       ```css
       .container::before,
@@ -301,7 +301,11 @@
       }
       ```
 
-      实际上添加的部分跟浮动并没有关系，他们的作用是防止子元素的 margin-top 发生重叠。但添加::before 就必须将 display 设置为 table。主要原理：display 设置为 table 时会出现一个匿名表格单元格（anonymous table-cell），从而创建一个新的 BFC（下文会提及），根据 BFC 的布局规则，会使 margin-top 不重叠。这里只是解释说明有些代码出现这种写法的原因，如果没有防止重叠的需求，完全可以精简代码，使用上一种写法。
+      实际上添加的部分跟浮动并没有关系，他们的作用是防止子元素的 margin-top 发生重叠。
+
+      但添加::before 就必须将 display 设置为 table。
+
+      主要原理：display 设置为 table 时会出现一个匿名表格单元格（anonymous table-cell），从而创建一个新的 BFC（下文会提及），根据 BFC 的布局规则，会使 margin-top 不重叠。这里只是解释说明有些代码出现这种写法的原因，如果没有防止重叠的需求，完全可以精简代码，使用上一种写法。
 
       ```css
       .clearfix::after {
@@ -418,9 +422,85 @@
     ```
   - flex 布局
 - 水平垂直居中
+
   - flex 布局
   - grid 布局
-  - 结合以上方案
+  - 绝对定位
+
+    ```css
+    /*已知高度*/
+    .container {
+      position: relative;
+      width: 600px;
+      height: 400px;
+      background: #ccc;
+    }
+    .child {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 100px;
+      margin-left: -100px;
+      margin-top: -50px;
+      background: red;
+    }
+    ```
+
+    ```css
+    /*未知高度*/
+    .container1 {
+      position: relative;
+      width: 600px;
+      height: 400px;
+      background: #ccc;
+    }
+    .child1 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: red;
+    }
+    ```
+
+## [transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform)
+
+```css
+/* Keyword values */
+transform: none;
+
+/* Function values */
+transform: matrix(1, 2, 3, 4, 5, 6);
+transform: translate(12px, 50%);
+transform: translateX(2em);
+transform: translateY(3in);
+transform: scale(2, 0.5);
+transform: scaleX(2);
+transform: scaleY(0.5);
+transform: rotate(0.5turn);
+transform: skew(30deg, 20deg);
+transform: skewX(30deg);
+transform: skewY(1.07rad);
+transform: matrix3d(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+transform: translate3d(12px, 50%, 3em);
+transform: translateZ(2px);
+transform: scale3d(2.5, 1.2, 0.3);
+transform: scaleZ(0.3);
+transform: rotate3d(1, 2, 3, 10deg);
+transform: rotateX(10deg);
+transform: rotateY(10deg);
+transform: rotateZ(10deg);
+transform: perspective(17px);
+
+/* Multiple function values */
+transform: translateX(10px) rotate(10deg) translateY(5px);
+
+/* Global values */
+transform: inherit;
+transform: initial;
+transform: unset;
+```
 
 ## [小 tips:了解 CSS/CSS3 原生变量 var](https://www.zhangxinxu.com/wordpress/2016/11/css-css3-variables-var/)
 
@@ -454,31 +534,51 @@
   <div style="border: 1px solid; width: 30%; overflow: hidden;"></div>
   ```
 
-- [CSS3 技巧之形状（椭圆）（border-raduis）](https://www.jianshu.com/p/f13122a9651c)
+- [CSS3 技巧之形状（椭圆）](https://www.jianshu.com/p/f13122a9651c)
 
-  ```html
-  <div style="width: 200px; height: 100px; border-raduis: 100px 50px; border: 1px solid;"></div>
-  ```
+  - [border-raduis](https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-radius)
+
+    ```html
+    <!-- 椭圆 -->
+    <div style="width: 200px; height: 100px; border-radius: 100px/50px; border: 1px solid orange;"></div>
+    ```
+
+    <div style="width: 200px; height: 100px; border-radius: 100px/50px; border: 1px solid orange;"></div>
 
 - 三角形实现
 
-  <div
-    style="box-size:border-box; width: 0px;border-left: 10px solid red; border-top: 10px solid transparent; border-bottom: 10px solid transparent;border-right: 10px solid red"
-  ></div>
-
   ```html
-  <div
-    style="border-left: 10px solid red; border-top: 10px solid transparent; border-bottom: 10px solid transparent;border-right: 10px solid transparent"
-  ></div>
+  <style>
+    <style > .caret {
+      display: inline-block;
+      border-top: 10px solid red;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 0;
+    }
+  </style>
+  <div class="caret"></div>
   ```
 
-  <div style="width: 10px; height: 10px; border-left: 10px solid red; border-top: 10px solid blue; border-bottom: 10px solid green;border-right: 10px solid yellow"></div>
+  <style>
+    .caret {
+      display: inline-block;
+      border-top: 10px solid red;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 0;
+    }
+  </style>
+
+  <div class="caret"></div>
 
   ```html
   <div
     style="width: 10px; height: 10px; border-left: 10px solid red; border-top: 10px solid blue; border-bottom: 10px solid green;border-right: 10px solid yellow"
   ></div>
   ```
+
+  <div style="width: 10px; height: 10px; border-left: 10px solid red; border-top: 10px solid blue; border-bottom: 10px solid green;border-right: 10px solid yellow"></div>
 
 ## <a href="./index.html" target="_blank">css 布局</a>
 
@@ -488,11 +588,13 @@
 ## CSS 实现单行、多行文本溢出显示省略号
 
 - 单行文本溢出显示省略号
+
   ```css
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   ```
+
 - 多行文本溢出显示省略号
 
   ```css
@@ -503,7 +605,7 @@
   -webkit-box-orient: vertical;
   ```
 
-  // 比较靠谱简单的做法就是设置相对定位的容器高度，用包含省略号（...）的元素模拟实现
+  > 比较靠谱简单的做法就是设置相对定位的容器高度，用包含省略号（...）的元素模拟实现
 
   ```css
   p {
@@ -523,3 +625,178 @@
     background: #fff;
   }
   ```
+
+  <style>
+  p.elliapse {
+    position: relative;
+    width: 200px;
+    line-height: 1.4em;
+    /*设置容器高度为3倍行高就是显示3行*/
+    height: 4.2em;
+    overflow: hidden;
+    color: black;
+    background: #fff;
+  }
+  p.elliapse::after {
+    content: '...';
+    font-weight: bold;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 0 10px 1px 10px;
+    background: #fff;
+  }
+  </style>
+  <p class="elliapse">多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 多行文本溢出 </p>
+
+## 开关 switch 实现
+
+```html
+<!-- html css 实现开关 -->
+<style>
+  .switch {
+    display: inline-flex;
+    --height: 30px;
+    --radius: calc(var(--height) - 4px);
+    user-select: none;
+  }
+
+  #switch + label {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    width: 80px;
+    height: var(--height);
+    border-radius: calc(var(--height) / 2) / 50%;
+    box-shadow: 0 0 2px black;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+  }
+
+  #switch + label .text,
+  #switch + label .circle {
+    display: inline-flex;
+  }
+
+  #switch + label .on {
+    margin-left: 5px;
+    visibility: hidden;
+  }
+
+  #switch + label .off {
+    margin-right: 5px;
+    visibility: visible;
+  }
+
+  #switch + label .circle {
+    position: absolute;
+    left: 2px;
+    width: var(--radius);
+    height: var(--radius);
+    border-radius: 50%;
+    border: 2px solid #333;
+    background-color: #eee;
+    transition: left 0.3s ease;
+  }
+
+  #switch:checked + label {
+    background-color: #0f0;
+  }
+
+  #switch:checked + label .circle {
+    left: calc(100% - var(--radius) - 2px);
+  }
+
+  #switch:checked + label .on {
+    visibility: visible;
+  }
+
+  #switch:checked + label .off {
+    visibility: hidden;
+  }
+</style>
+
+<div class="switch">
+  <input type="checkbox" name="switch" id="switch" hidden />
+  <label for="switch">
+    <span class="circle"></span>
+    <span class="text on">ON</span>
+    <span class="text off">OFF</span>
+  </label>
+</div>
+```
+
+<!-- html css 实现开关 -->
+<style>
+  .switch {
+    display: inline-flex;
+    --height: 30px;
+    --radius: calc(var(--height) - 4px);
+    user-select: none;
+  }
+
+  #switch + label {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    width: 80px;
+    height: var(--height);
+    border-radius: calc(var(--height) / 2) / 50%;
+    box-shadow: 0 0 2px black;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+  }
+
+  #switch + label .text,
+  #switch + label .circle {
+    display: inline-flex;
+  }
+
+  #switch + label .on {
+    margin-left: 5px;
+    visibility: hidden;
+  }
+
+  #switch + label .off {
+    margin-right: 5px;
+    visibility: visible;
+  }
+
+  #switch + label .circle {
+    position: absolute;
+    left: 2px;
+    width: var(--radius);
+    height: var(--radius);
+    border-radius: 50%;
+    border: 2px solid #333;
+    background-color: #eee;
+    transition: left 0.3s ease;
+  }
+
+  #switch:checked + label {
+    background-color: #0f0;
+  }
+
+  #switch:checked + label .circle {
+    left: calc(100% - var(--radius) - 2px);
+  }
+
+  #switch:checked + label .on {
+    visibility: visible;
+  }
+
+  #switch:checked + label .off {
+    visibility: hidden;
+  }
+</style>
+
+<div class="switch">
+  <input type="checkbox" name="switch" id="switch" hidden />
+  <label for="switch">
+    <span class="circle"></span>
+    <span class="text on">ON</span>
+    <span class="text off">OFF</span>
+  </label>
+</div>
