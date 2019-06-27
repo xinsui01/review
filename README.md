@@ -6,21 +6,6 @@
 
 # JavaScript
 
-## 时间精度问题
-
-- performance.now()
-
-> 和 JavaScript 中其他可用的时间类函数（比如 Date.now ）不同的是，window.performance.now() 返回的时间戳没有被限制在一毫秒的精确度内，而它使用了一个浮点数来达到微秒级别的精确度。
-
-> 另外一个不同点是，window.performance.now() 是以一个恒定的速率慢慢增加的，它不会受到系统时间的影响（可能被其他软件调整）。另外，performance.timing.navigationStart + performance.now() 约等于 Date.now()。
-
-```js
-let t0 = window.performance.now();
-doSomething();
-let t1 = window.performance.now();
-console.log('doSomething 函数执行了' + (t1 -t0) + '毫秒。');
-```
-
 ## var, let 区别
 
 - 顶级作用域 var 声明变量是 window 的属性，let\const 声明变量不是 window 的属性，变量都可以在控制台访问。
@@ -444,7 +429,8 @@ Object.prototype.toString.call(Symbol(1)); // "[object Symbol]"
 ```
 
 ```js
-let class2Type = {}[('Array', 'Date', 'RegExp', 'Error', 'Object')].forEach(
+let class2Type = {};
+[('Array', 'Date', 'RegExp', 'Error', 'Object')].forEach(
   type => (class2Type[`[object ${type}]`] = type.toLowerCase())
 );
 
@@ -1054,15 +1040,15 @@ function _new() {
     return new Promise((resolve, reject) => {
       promises = Array.from(promises);
       const len = promises.length;
-      if(len === 0) {
+      if (len === 0) {
         resolve();
       } else {
-        for(let i=0; i<len; i++) {
-          Promise.resolve(promises[i]).then(resolve, reject)
+        for (let i = 0; i < len; i++) {
+          Promise.resolve(promises[i]).then(resolve, reject);
         }
       }
-    })
-  }
+    });
+  };
   ```
 
 ### generator
@@ -1299,6 +1285,8 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 - 语法：`let handle = window.requestIdleCallBack(callback[,options])`
   - 返回值：无符号长整数，可以传入`window.cancelIdleCallback()`结束回调
+  - callback
+    - 一个在事件循环空闲时即将被调用的函数的引用。函数会接受到一个名为 IdleDeadline 的参数，这个参数可以获取当前空闲时间以及回调是否在超时时间前已经执行的状态。
   - options
     - timeout: timeout 值被指定为正数时，当做浏览器调用 callback 的最后期限。它的单位是毫秒。当指定的时间过去后回调还没有被执行，那么回调会在下一次空闲时期被强制执行，尽管可能会对性能造成负面影响。
 
@@ -1308,7 +1296,22 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 - window.cancelAnimationFrame(id)
 
-## [JavaScript 中的高精度计时](http://jimliu.net/2014/03/16/hrt-in-js/)
+## 时间精度问题
+
+- [JavaScript 中的高精度计时](http://jimliu.net/2014/03/16/hrt-in-js/)
+
+- performance.now()
+
+> 和 JavaScript 中其他可用的时间类函数（比如 Date.now ）不同的是，window.performance.now() 返回的时间戳没有被限制在一毫秒的精确度内，而它使用了一个浮点数来达到微秒级别的精确度。
+
+> 另外一个不同点是，window.performance.now() 是以一个恒定的速率慢慢增加的，它不会受到系统时间的影响（可能被其他软件调整）。另外，performance.timing.navigationStart + performance.now() 约等于 Date.now()。
+
+```js
+let t0 = window.performance.now();
+doSomething();
+let t1 = window.performance.now();
+console.log('doSomething 函数执行了' + (t1 -t0) + '毫秒。');
+```
 
 # 浏览器
 
@@ -2108,7 +2111,7 @@ css 引入伪类和伪元素概念是为了格式化文档树以外的信息
 
 # React
 
-- [Deep In React之浅谈 React Fiber 架构(一)](https://juejin.im/post/5d12c907f265da1b6d4033c5)
+- [Deep In React 之浅谈 React Fiber 架构(一)](https://juejin.im/post/5d12c907f265da1b6d4033c5)
 - [requestAnimationFrame Scheduling For Nerds](https://medium.com/@paul_irish/requestanimationframe-scheduling-for-nerds-9c57f7438ef4)
 
 - React 基础模块
