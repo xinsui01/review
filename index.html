@@ -101,6 +101,11 @@
         background-color: orange;
       }
     </style>
+    <style>
+      :target {
+        color: red;
+      }
+    </style>
   </head>
   <body>
     <div class="container"><div class="inner">123123</div></div>
@@ -159,5 +164,16 @@
         console.log('hashchange: ', location.hash);
       });
     </script>
+
+    <h4 id="one">...</h4>
+    <p id="two">...</p>
+    <div id="three">...</div>
+    <a id="four">...</a> <em id="five">...</em>
+
+    <a href="#one">First</a>
+    <a href="#two">Second</a>
+    <a href="#three">Third</a>
+    <a href="#four">Fourth</a>
+    <a href="#five">Fifth</a>
   </body>
 </html>
