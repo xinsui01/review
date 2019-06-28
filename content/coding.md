@@ -369,6 +369,77 @@
     }
     ```
 
+- 二分查找
+
+```js
+/**
+ * 递归
+ */
+function binarySearch(arr, target, start = 0, end = arr.length) {
+  if (start > end) {
+    return -1;
+  }
+  let midIndex = Math.floor((start + end) / 2);
+  let mid = arr[midIndex];
+
+  if (target === mid) {
+    return midIndex;
+  }
+
+  if (target < mid) {
+    return binarySearch(arr, target, 0, midIndex - 1);
+  }
+
+  if (target > mid) {
+    return binarySearch(arr, target, midIndex + 1, end);
+  }
+
+  return -1;
+}
+```
+
+```js
+/**
+ * 非递归
+ */
+function binarySearch(arr, target) {
+  let min = 0;
+  let max = arr.length - 1;
+
+  while (min <= max) {
+    let mid = Math.floor((min + max) / 2);
+    if (target < arr[mid]) {
+      max = mid - 1;
+    } else if (target > arr[mid]) {
+      min = mid + 1;
+    } else {
+      return mid;
+    }
+  }
+  return -1;
+}
+```
+
+- 二维数组查找
+
+```js
+function binarySearch(arr, target) {
+  let i = 0;
+  let j = arr[i].length - 1;
+
+  while (i < arr.length && j >= 0) {
+    if (target < arr[i][j]) {
+      j--;
+    } else if (target > arr[i][j]) {
+      i++;
+    } else {
+      return [i, j];
+    }
+  }
+  return -1;
+}
+```
+
 - 数组去重
 
   ```js
@@ -403,6 +474,14 @@
     return [...new Set(str)].join('');
   }
   ```
+
+- 字符串去除相邻的重复项
+
+```js
+function unique(str) {
+  return str.replace(/(.)(?=\1+)/g, '');
+}
+```
 
 - 输入 `携程C2t0r1i8p2020校招`, 输出 `2018Ctrip`
 
@@ -709,4 +788,66 @@ String.prototype.repeat = function(count) {
   };
   ```
 
-- 二分查找
+## 如何让 (a == 1 && a == 2 && a == 3) 的值为 true
+
+- 利用隐式类型转换
+  `a == 1 && a == 2 && a == 3` 的值意味着其不可能是基本数据类型。因为如果 a 是 null 或者是 undefined、bool 类型，都不可能返回 true。
+
+  因此可以推测 a 是复杂数据类型，JS 中复杂数据类型只有 object。
+
+  Object 转换为原始类型
+
+  - 如果部署了 `[Symbol.toPrimitive]` 接口，那么调用此接口，若返回的不是基本数据类型，抛出错误。
+    > 该函数由字符串参数 hint 调用，目的是指定原始值转换结果的首选类型。 hint 参数可以是 "number"、"string" 和 "default" 中的一种。
+  - 如果没有部署 `[Symbol.toPrimitive]` 接口，那么根据要转换的类型，先调用 valueOf / toString
+    - 非 Date 类型对象，hint 是 default 时，调用顺序为：valueOf >>> toString，即 valueOf 返回的不是基本数据类型，才会继续调用 toString，如果 toString 返回的还不是基本数据类型，那么抛出错误。
+    - 如果 hint 是 string(Date 对象的 hint 默认是 string) ，调用顺序为：toString >>> valueOf，即 toString 返回的不是基本数据类型，才会继续调用 valueOf，如果 valueOf 返回的还不是基本数据类型，那么抛出错误。
+    - 如果 hint 是 number，调用顺序为： valueOf >>> toString
+
+  ```js
+  let a = {
+    a: 1,
+    valueOf() {
+      return this.a++;
+    }
+  };
+  ```
+
+- 利用数据劫持(Proxy/Object.definedProperty)
+
+```js
+let a = new Proxy(
+  {},
+  {
+    i: 1,
+    get: function() {
+      return () => this.i++;
+    }
+  }
+);
+```
+
+- 数组的 toString 接口默认调用数组的 join 方法，重新 join 方法
+
+```js
+let a = [1, 2, 3];
+a.join = a.shift;
+```
+
+- 检测字符串中括号表达式是否平衡
+
+```js
+function isBalance(str) {
+  function match(a, b) {
+    return (a === '(' && b === ')') || (a === ')' && b === '(') || (a === '[' && b === ']') || (a === ']' && b === '[');
+  }
+  return (
+    [...str].reduce((stack, c) => {
+      match(stack[stack.length - 1], c) ? stack.pop() : stack.push(c);
+      return stack;
+    }, []).length === 0
+  );
+}
+
+console.log(isBalance('[()()()]'));
+```
