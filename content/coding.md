@@ -851,3 +851,16 @@ function isBalance(str) {
 
 console.log(isBalance('[()()()]'));
 ```
+
+- 求相邻两项最大和
+
+```js
+function maxSum(arr) {
+  let sumArr = [];
+  arr.reduce((prev, cur, index) => {
+    sumArr.push(prev + cur);
+    return cur;
+  });
+  return Math.max(...sumArr);
+}
+```
