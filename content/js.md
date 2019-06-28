@@ -1340,3 +1340,29 @@ doSomething();
 let t1 = window.performance.now();
 console.log('doSomething 函数执行了' + (t1 - t0) + '毫秒。');
 ```
+
+- 如何主动中止 Promise 调用链
+
+  - throw Error, 每个 catch 度需要向后抛 Error
+  - return new Promise(function(){})
+    > 状态是 pending, 潜在的内存泄漏
+  - 修改原型链 then 方法
+    > 状态可能是 pending, 潜在的内存泄漏
+
+  ```js
+  (function() {
+    const STOP = {};
+
+    Promise.prototype._then = Promise.prototype.then;
+
+    Promise.prototype.then = function(onResolved, onRejected) {
+      return this._then(result => {
+        if (result === STOP) {
+          return result;
+        } else {
+          return onResolved(result);
+        }
+      }, onRejected);
+    };
+  })();
+  ```
