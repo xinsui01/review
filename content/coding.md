@@ -254,7 +254,7 @@
      * 每次比较相邻两个值
      */
     function bubbleSort(arr) {
-      if (arr === null || arr.length === 0) return;
+      if (arr === null || arr.length === 0) return arr;
 
       const length = arr.length;
 
@@ -295,7 +295,7 @@
 
     ```js
     function selectSort(arr) {
-      if (arr === null || arr.length === 0) return;
+      if (arr === null || arr.length === 0) return arr;
 
       for (let i = 0, len = arr.length - 1; i < len; i++) {
         let minIndex = i;
@@ -321,7 +321,7 @@
 
     ```js
     function insertSort(arr) {
-      if (arr === null || arr.length === 0) return;
+      if (arr === null || arr.length === 0) return arr;
 
       for (let i = 1, len = arr.length; i < len; i++) {
         // 假设第一个数是正确的
@@ -339,6 +339,33 @@
       }
 
       return arr;
+    }
+    ```
+
+  - 快速排序
+
+    ```js
+    /**
+     * 1. 选择一个基准元素
+     * 2. 将所有小于基准值得元素放在基准值的左边，所有大于基准值的元素放在基准值的右边
+     * 3. 对分割后的两个子序列重复上述步骤
+     */
+    function quickSort(arr) {
+      if (arr === null || arr.length === 0) return arr;
+
+      let left = [],
+        right = [],
+        current = arr.splice(0, 1); // 注意splice 后数据的长度少了一个
+
+      for (let i = 0, len = arr.length; i < len; i++) {
+        if (arr[i] < current) {
+          left.push(arr[i]); // 放在左边
+        } else {
+          right.push(arr[i]); // 放在右边
+        }
+      }
+
+      return quickSort(left).concat(current, quickSort(right)); // 递归
     }
     ```
 
@@ -566,3 +593,120 @@ function sequenceTasks(arr) {
   return run();
 }
 ```
+
+- 在一个数组中，找出里面其中两项相加后的和为 num，如果存在就返回两个数的索引位置，否则 false
+
+```js
+function fn(num = 0, arr = []) {
+  for (let i = 0, len = arr.length; i < len; i++) {
+    let diff = num - arr[i];
+    let diffIndex = arr.indexOf(diff);
+    if (diffIndex !== -1) {
+      return [i, diffIndex];
+    }
+  }
+  return false;
+}
+```
+
+- 将两个有序数组合并为一个排好序的大数组
+
+```js
+function mergeArray(arr1 = [], arr2 = []) {
+  const result = [];
+  while (arr1.length && arr2.length) {
+    result.push(arr1[0] <= arr2[0] ? arr1.shift() : arr2.shift());
+  }
+  return result.concat(left, right);
+}
+```
+
+- 在数组中找到三个不同元素 其中两项的和当于第三项 arr[x] + arr[y] = arr[z] 如果数组中存在返回这三个数否则返回 false
+
+```js
+function find(_arr) {
+  let arr = Array.from(_arr).sort((a, b) => a - b);
+  for (let i = 0, len = arr.length - 1; i < len; i++) {
+    let cur = arr[i];
+    for (let j = i + 1; j < arr.length; j++) {
+      let next = arr[j];
+      let sum = cur + next;
+      let idx = arr.indexOf(sum, j + 1); // 开始查找的位置。如果该索引值大于或等于数组长度，意味着不会在数组里查找，返回-1。
+      if (idx > -1) {
+        return [cur, next, sum];
+      }
+    }
+  }
+  return false;
+}
+```
+
+- 字符串 repeat 实现
+
+```js
+String.prototype.repeat = function(count) {
+  return Array(count)
+    .fill(this)
+    .join('');
+};
+
+String.prototype.repeat = function(count) {
+  return Array(count + 1).join(this);
+};
+
+String.prototype.repeat = function(count) {
+  let rpt = '';
+  let str = '' + this;
+  for (;;) {
+    if ((count & 1) == 1) {
+      rpt += str;
+    }
+    count >>>= 1;
+    if (count == 0) {
+      break;
+    }
+    str += str;
+  }
+  return rpt;
+};
+```
+
+- 请实现函数 CodingMan, 此函数可以按照以下方式调用：
+  ![](https://user-gold-cdn.xitu.io/2018/3/21/162468732563a3da?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+  ```js
+  function CodingMan(name) {
+    if (!(this instanceof CodingMan)) return new CodingMan(name); // 检查是否new
+    setTimeout(() => {
+      console.log(`Hi! This is ${name}`);
+    }, 0);
+    return this;
+  }
+
+  CodingMan.prototype.sleep = function(time) {
+    const curTime = new Date();
+    const delay = time * 1000;
+    setTimeout(() => {
+      while (new Date() - curTime < delay) {}
+      console.log(`Wake up after ${time}s`);
+    }, 0);
+    return this;
+  };
+
+  CodingMan.prototype.sleepFirst = function(time) {
+    const curTime = new Date();
+    const delay = time * 1000;
+    while (new Date() - curTime < delay) {}
+    console.log(`Wake up after ${time}s`);
+    return this;
+  };
+
+  CodingMan.prototype.eat = function(food) {
+    setTimeout(() => {
+      console.log(`Eat ${food}~~`);
+    }, 0);
+    return this;
+  };
+  ```
+
+- 二分查找
