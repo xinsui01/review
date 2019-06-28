@@ -546,6 +546,42 @@ function Function.prototype.apply = function(thisArg, args = []) {
 }
 ```
 
+## Array.prototype.reduce 实现
+
+```js
+Array.prototype.reduce = function(callback) {
+  const o = Object(this);
+
+  const len = o.length >>> 0;
+
+  let k = 0;
+  let value;
+
+  if (arguments.length >= 2) {
+    value = arguments[1];
+  } else {
+    while (k < len && !(k in o)) {
+      k++;
+    }
+
+    // If len is 0 and initialValue is not present, throw a TypeError exception.
+    if (k >= len) {
+      throw new TypeError('Reduce of empty array with no initial value');
+    }
+    value = o[k++];
+  }
+
+  // Repeat, while k < len
+  while (k < len) {
+    if (k in o) {
+      value = callback(value, o[k], k, o);
+    }
+    k++;
+  }
+  return value;
+};
+```
+
 ## 实现一个 bind 函数
 
 bind()方法创建一个新的函数，在调用时设置 this 关键字为提供的值。并在调用新函数时，将给定参数列表作为原函数的参数序列的前若干项。
