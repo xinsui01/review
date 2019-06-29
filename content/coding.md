@@ -113,7 +113,7 @@
 
   ```js
   function maxN(str) {
-    // const obj = (''+str).split('').reduce((accu, cur, index) => {
+    // const obj = [...str].reduce((accu, cur, index) => {
     // accu[cur] = (accu[cur] || 0) + 1;
     // return accu
     // },
@@ -121,7 +121,7 @@
     // );
 
     let obj = {};
-    ('' + str).replace(/\w{1}/g, letter => {
+    ('' + str).replace(/./g, letter => {
       obj[letter] = (obj[letter] || 0) + 1;
       return letter;
     });
@@ -759,23 +759,22 @@ String.prototype.repeat = function(count) {
     setTimeout(() => {
       console.log(`Hi! This is ${name}`);
     }, 0);
-    return this;
   }
 
   CodingMan.prototype.sleep = function(time) {
-    const curTime = new Date();
+    const curTime = Date.now();
     const delay = time * 1000;
     setTimeout(() => {
-      while (new Date() - curTime < delay) {}
+      while (Date.now() - curTime < delay) {}
       console.log(`Wake up after ${time}s`);
     }, 0);
     return this;
   };
 
   CodingMan.prototype.sleepFirst = function(time) {
-    const curTime = new Date();
+    const curTime = Date.now();
     const delay = time * 1000;
-    while (new Date() - curTime < delay) {}
+    while (Date.now() - curTime < delay) {}
     console.log(`Wake up after ${time}s`);
     return this;
   };
@@ -813,15 +812,23 @@ String.prototype.repeat = function(count) {
   };
   ```
 
+  ```js
+  let a = {
+    a: 1,
+    [Symbol.toPrimitive]: function() {
+      return this.a++;
+    }
+  };
+  ```
+
 - 利用数据劫持(Proxy/Object.definedProperty)
 
 ```js
 let a = new Proxy(
-  {},
+  { i: 1 },
   {
-    i: 1,
-    get: function() {
-      return () => this.i++;
+    get: function(target) {
+      return () => target.i++;
     }
   }
 );
@@ -842,8 +849,8 @@ function isBalance(str) {
     return (a === '(' && b === ')') || (a === ')' && b === '(') || (a === '[' && b === ']') || (a === ']' && b === '[');
   }
   return (
-    [...str].reduce((stack, c) => {
-      match(stack[stack.length - 1], c) ? stack.pop() : stack.push(c);
+    [...str].reduce((stack, cur) => {
+      match(stack[stack.length - 1], cur) ? stack.pop() : stack.push(cur);
       return stack;
     }, []).length === 0
   );
