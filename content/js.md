@@ -1291,7 +1291,9 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 - [JavaScript 中的高精度计时](http://jimliu.net/2014/03/16/hrt-in-js/)
 
-- performance.now()
+以 Windows 为例，这一类时间戳所使用的系统调用，比如 [GetSystemTime()](https://docs.microsoft.com/en-us/windows/desktop/api/sysinfoapi/nf-sysinfoapi-getsystemtime)、[GetTickCount()](https://docs.microsoft.com/en-us/windows/desktop/api/sysinfoapi/nf-sysinfoapi-gettickcount)，其函数的取值并不是实时的，而是通过硬件的时钟中断被动刷新的，这里的刷新间隔“正好”就是上面那个 16ms。以 GetSystemTime()为例，它返回的是 SYSTEMTIME 结构体，这用来进行时间日期处理的，因为时间日期处理通常根本不需要也不应该用那么高的精度（甚至很多时候只需要秒级别的精度），所以(new Date()).getTime()通过它们实现的确是可以胜任的。
+
+- `webkit` 中提供了 `performance.now()`
 
 > 和 JavaScript 中其他可用的时间类函数（比如 Date.now ）不同的是，window.performance.now() 返回的时间戳没有被限制在一毫秒的精确度内，而它使用了一个浮点数来达到微秒级别的精确度。
 
@@ -1304,28 +1306,32 @@ let t1 = window.performance.now();
 console.log('doSomething 函数执行了' + (t1 - t0) + '毫秒。');
 ```
 
-- 如何主动中止 Promise 调用链
+- node.js 中有 `process.hrtime()`, 返回一个数组 `[seconds, nanoseconds]`
 
-  - throw Error, 每个 catch 度需要向后抛 Error
-  - return new Promise(function(){})
-    > 状态是 pending, 潜在的内存泄漏
-  - 修改原型链 then 方法
-    > 状态可能是 pending, 潜在的内存泄漏
+  > HRT 是用来计算时间差的，不是用来计算现实中时间（挂钟时间）的
 
-  ```js
-  (function() {
-    const STOP = {};
+## 如何主动中止 Promise 调用链
 
-    Promise.prototype._then = Promise.prototype.then;
+- throw Error, 每个 catch 度需要向后抛 Error
+- return new Promise(function(){})
+  > 状态是 pending, 潜在的内存泄漏
+- 修改原型链 then 方法
+  > 状态可能是 pending, 潜在的内存泄漏
 
-    Promise.prototype.then = function(onResolved, onRejected) {
-      return this._then(result => {
-        if (result === STOP) {
-          return result;
-        } else {
-          return onResolved(result);
-        }
-      }, onRejected);
-    };
-  })();
-  ```
+```js
+(function() {
+  const STOP = {};
+
+  Promise.prototype._then = Promise.prototype.then;
+
+  Promise.prototype.then = function(onResolved, onRejected) {
+    return this._then(result => {
+      if (result === STOP) {
+        return result;
+      } else {
+        return onResolved(result);
+      }
+    }, onRejected);
+  };
+})();
+```
