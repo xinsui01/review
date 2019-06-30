@@ -10,8 +10,6 @@
 
 # [浏览器](./content/browser.md)
 
-# [网络层](./content/net.md)
-
 # [React](./conent/react.md)
 
 # [国际化](./content/intl.md)
@@ -21,6 +19,8 @@
 # [前端监控](./content/monit.md)
 
 # [编程](./content/coding.md)
+
+# [网络层](./content/net.md)
 
 # [分享阿里前端 p7 架构图谱](https://juejin.im/post/5cf5f358e51d45778f076ce5)
 
