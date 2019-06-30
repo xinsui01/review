@@ -1106,11 +1106,13 @@ function _new() {
   };
   ```
 
-### generator
+### [generator](http://es6.ruanyifeng.com/#docs/generator)
 
 <iframe src="http://es6.ruanyifeng.com/#docs/generator" width="100%" frameborder="0" height="500px" ></iframe>
 
-### async/await
+### [async/await](http://es6.ruanyifeng.com/#docs/async)
+
+> async 函数的实现原理，就是将 Generator 函数和自动执行器，包装在一个函数里。
 
 ```js
 function spawn(genF) {
@@ -1148,8 +1150,6 @@ function spawn(genF) {
   });
 }
 ```
-
-<iframe src="http://es6.ruanyifeng.com/#docs/async#async-%E5%87%BD%E6%95%B0%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86" width="100%" frameborder="0" height="500px" ></iframe>
 
 ### promise 和 async 区别
 
@@ -1208,6 +1208,11 @@ async...await 是 Generator 函数语法糖。[ co 模块类似实现](#asyncawa
 - [彻底理解 JavaScript 中的 this](https://juejin.im/post/5c049e6de51d45471745eb98)
 
 ## [前端基础进阶：详细图解 JavaScript 内存空间](https://juejin.im/entry/589c29a9b123db16a3c18adf)
+
+在 JS 中，每一个数据都需要一个内存空间。内存空间又被分为两种，栈内存(stock)与堆内存(heap)。
+
+- 基础数据类型，这些值都有固定的大小，往往都保存在栈内存中，由系统自动分配存储空间。可以直接操作保存在栈内存空间的值，因此基础数据类型都是按值访问。
+- 引用数据类型，比如数组 Array，它们值的大小是不固定的。引用数据类型的值是保存在堆内存中的对象。JavaScript 不允许直接访问堆内存中的位置，因此我们不能直接操作对象的堆内存空间。在操作对象时，实际上是在操作对象的引用而不是实际的对象。因此，引用类型的值都是按引用访问的。这里的引用，我们可以粗浅地理解为保存在栈内存中的一个地址，该地址与堆内存的实际值相关联。
 
 ## import 和 require 的区别
 
@@ -1275,13 +1280,16 @@ async...await 是 Generator 函数语法糖。[ co 模块类似实现](#asyncawa
 
 ## [ES6 模块与 CommonJS 模块的差异](http://es6.ruanyifeng.com/#docs/module-loader#ES6-%E6%A8%A1%E5%9D%97%E4%B8%8E-CommonJS-%E6%A8%A1%E5%9D%97%E7%9A%84%E5%B7%AE%E5%BC%82)
 
-<iframe src="http://es6.ruanyifeng.com/#docs/module-loader#ES6-%E6%A8%A1%E5%9D%97%E4%B8%8E-CommonJS-%E6%A8%A1%E5%9D%97%E7%9A%84%E5%B7%AE%E5%BC%82" width="100%" frameborder="0" height="500px" ></iframe>
+- CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。
+- CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。
+  > CommonJS 加载的是一个对象（即 module.exports 属性），该对象只有在脚本运行完才会生成。而 ES6 模块不是对象，它的对外接口只是一种静态定义，在代码静态解析阶段就会生成。
 
 ## script 属性 defer 和 async 区别
 
 defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生成，以及其他脚本执行完成），才会执行；async 一旦下载完，渲染引擎就会中断渲染，执行这个脚本以后，再继续渲染。一句话，defer 是“渲染完再执行”，async 是“下载完就执行”。另外，如果有多个 defer 脚本，会按照它们在页面出现的顺序加载，而多个 async 脚本是不能保证加载顺序的。
 
-“每一个 defer 属性的脚本都是在页面解析完毕之后，按照原本的顺序执行，同时会在 document 的 DOMContentLoaded 之前执行。”--------------HTML5 规范要求脚本执行应该按照脚本出现的先后顺序执行，但实际情况下，延迟脚本不一定按照先后顺序执行！！！
+> “每一个 defer 属性的脚本都是在页面解析完毕之后，按照原本的顺序执行，同时会在 document 的 DOMContentLoaded 之前执行。”
+> HTML5 规范要求脚本执行应该按照脚本出现的先后顺序执行，但实际情况下，延迟脚本不一定按照先后顺序执行！！！
 
 ![](https://segmentfault.com/img/bVWhRl?w=801&h=814)
 
@@ -1355,20 +1363,20 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
 - [JavaScript 中的高精度计时](http://jimliu.net/2014/03/16/hrt-in-js/)
 
-以 Windows 为例，这一类时间戳所使用的系统调用，比如 [GetSystemTime()](https://docs.microsoft.com/en-us/windows/desktop/api/sysinfoapi/nf-sysinfoapi-getsystemtime)、[GetTickCount()](https://docs.microsoft.com/en-us/windows/desktop/api/sysinfoapi/nf-sysinfoapi-gettickcount)，其函数的取值并不是实时的，而是通过硬件的时钟中断被动刷新的，这里的刷新间隔“正好”就是上面那个 16ms。以 GetSystemTime()为例，它返回的是 SYSTEMTIME 结构体，这用来进行时间日期处理的，因为时间日期处理通常根本不需要也不应该用那么高的精度（甚至很多时候只需要秒级别的精度），所以(new Date()).getTime()通过它们实现的确是可以胜任的。
+  以 Windows 为例，这一类时间戳所使用的系统调用，比如 [GetSystemTime()](https://docs.microsoft.com/en-us/windows/desktop/api/sysinfoapi/nf-sysinfoapi-getsystemtime)、[GetTickCount()](https://docs.microsoft.com/en-us/windows/desktop/api/sysinfoapi/nf-sysinfoapi-gettickcount)，其函数的取值并不是实时的，而是通过硬件的时钟中断被动刷新的，这里的刷新间隔“正好”就是上面那个 16ms。以 GetSystemTime()为例，它返回的是 SYSTEMTIME 结构体，这用来进行时间日期处理的，因为时间日期处理通常根本不需要也不应该用那么高的精度（甚至很多时候只需要秒级别的精度），所以(new Date()).getTime()通过它们实现的确是可以胜任的。
 
 - `webkit` 中提供了 `performance.now()`
 
-> 和 JavaScript 中其他可用的时间类函数（比如 Date.now ）不同的是，window.performance.now() 返回的时间戳没有被限制在一毫秒的精确度内，而它使用了一个浮点数来达到微秒级别的精确度。
+  > 和 JavaScript 中其他可用的时间类函数（比如 Date.now ）不同的是，window.performance.now() 返回的时间戳没有被限制在一毫秒的精确度内，而它使用了一个浮点数来达到微秒级别的精确度。
 
-> 另外一个不同点是，window.performance.now() 是以一个恒定的速率慢慢增加的，它不会受到系统时间的影响（可能被其他软件调整）。另外，performance.timing.navigationStart + performance.now() 约等于 Date.now()。
+  > 另外一个不同点是，window.performance.now() 是以一个恒定的速率慢慢增加的，它不会受到系统时间的影响（可能被其他软件调整）。另外，performance.timing.navigationStart + performance.now() 约等于 Date.now()。
 
-```js
-let t0 = window.performance.now();
-doSomething();
-let t1 = window.performance.now();
-console.log('doSomething 函数执行了' + (t1 - t0) + '毫秒。');
-```
+  ```js
+  let t0 = window.performance.now();
+  doSomething();
+  let t1 = window.performance.now();
+  console.log('doSomething 函数执行了' + (t1 - t0) + '毫秒。');
+  ```
 
 - node.js 中有 `process.hrtime()`, 返回一个数组 `[seconds, nanoseconds]`
 
