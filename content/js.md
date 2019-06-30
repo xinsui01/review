@@ -37,7 +37,38 @@
 
 - [AbortController](https://developer.mozilla.org/zh-CN/docs/Web/API/FetchController)
 
+  > AbortController 接口代表一个控制器对象，允许你在需要时终止一个或多个 DOM 请求。
+
 - [Abortable fetch](https://developers.google.com/web/updates/2017/09/abortable-fetch)
+
+  ```js
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const downloadBtn = document.querySelector('.download');
+    const abortBtn = document.querySelector('.abort');
+
+    downloadBtn.addEventListener('click', fetchVideo);
+    abortBtn.addEventListener('click', function() {
+      controller.abort();
+      console.log('Download aborted!');
+    })
+
+    function fetchVideo() {
+      ...
+      fetch(url, {signal}).then(function（res){
+        ...
+      }).catch(function(err){
+        if (err.name === 'AbortError') {
+          console.log('Fetch aborted');
+        } else {
+          console.error('Uh oh, an error!', err);
+        }
+      })
+    }
+  ```
+
+  > 当 `abort()` 被调用， `fetch()` promise rejects 一个 `AbortError`。
 
 ## symbol
 
