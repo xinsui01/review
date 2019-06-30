@@ -699,8 +699,11 @@ if (!Function.prototype.bind) {
 > 柯里化是一种将使用多个参数的一个函数转换成一系列使用一个参数的函数的技术。
 
 ```js
-const curry = fn =>
-  (judge = (...args) => (args.length === fn.length ? fn(...args) : (...arg) => judge(...args, ...arg)));
+function curry(fn) {
+  return function judge(...args) {
+    return args.length === fn.length ? fn(...args) : (...arg) => judge(...args, ...arg);
+  };
+}
 ```
 
 ## 偏函数
