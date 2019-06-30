@@ -487,12 +487,12 @@ function type(obj) {
 | null               | Null      | object                        |
 | undefined          | Undefined | undefined                     |
 
-> Class 一列表示对象的内部属性 [[Class]] 的值。  
-> 为了获取对象的 [[Class]]，我们需要使用定义在 Object.prototype 上的方法 toString。
+> Class 一列表示对象的内部属性 `[[Class]]` 的值。  
+> 为了获取对象的 `[[Class]]`，我们需要使用 `Object.prototype.toString`。
 
 ## [正则](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions)
 
-![正则表达式中特殊字符的含义](./imgs/RegExp.png)
+![正则表达式中特殊字符的含义](../imgs/RegExp.png)
 
 - 标识符：
   - g: 全局
@@ -503,7 +503,7 @@ function type(obj) {
   - 所有的元字符都必须经过转义
 - 使用 `RegExp` 构造函数
 
-  - 由于 `RegExp` 构造函数的模式参数是个字符串，所以在某些情况下要对字符串进行双重转义
+  - **由于 `RegExp` 构造函数的模式参数是个字符串，所以在某些情况下要对字符串进行双重转义**
 
     | 字面量模式         | 等价的字符串          |
     | :----------------- | :-------------------- |
@@ -547,12 +547,42 @@ function type(obj) {
   | $1,$2,...,\$9 | 存储第一到第九个捕获组，调用 exec()或 test()时，这些属性自动填充 |                                        |
   |               |                                                                  |                                        |
 
-- [正则 test, match, exec](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions)
+- [正则 test、exec 与 String.prototype.match](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions)
 
-  - test\exec 是正则的实例方法， match 是字符串的方法
   - test 匹配与否，返回 Boolean
-  - match\exec 捕获组， 如果匹配，返回数组，未匹配返回 null
-    - 返回数组第一项为正则匹配的整个字符串，后面为括号对应的捕获组，index 是整个匹配从零开始的索引，Input 为被解析的原始字符串
+  - match、exec
+
+    - 如果使用 g 标志，则将返回与完整正则表达式匹配的所有结果，但是不会返回捕获组，未匹配返回 null
+
+      ```js
+      const str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+      var regexp = /[A-E]/gi;
+      var matches_array = str.match(regexp);
+
+      console.log(matches_array);
+      // ['A', 'B', 'C', 'D', 'E', 'a', 'b', 'c', 'd', 'e']
+      ```
+
+    - 如果未使用 g 标志，则仅返回第一个完整匹配及其相关的捕获组
+
+      > 返回数组第一项为正则匹配的整个字符串，
+      > 后面为括号对应的捕获组，
+      > index 是整个匹配从零开始的索引，
+      > Input 为被解析的原始字符串
+
+      ```js
+      var str = 'For more information, see Chapter 3.4.5.1';
+      var re = /see (chapter \d+(\.\d)*)/i;
+      var found = str.match(re);
+
+      console.log(found);
+
+      // logs [ 'see Chapter 3.4.5.1',
+      //        'Chapter 3.4.5.1',
+      //        '.1',
+      //        index: 22,
+      //        input: 'For more information, see Chapter 3.4.5.1' ]
+      ```
 
 ## call/apply 实现
 
