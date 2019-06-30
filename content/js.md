@@ -798,13 +798,89 @@ function _new() {
 
 ## [前端基础进阶（二）：执行上下文详细图解](https://www.jianshu.com/p/a6d37c77e8db)
 
+- JS 运行环境大概包括三种情况：
+  - 全局环境： JavaScript 代码运行起来会首先进入该环境
+  - 函数环境：当函数被调用执行时，会进入当前函数中执行代码
+  - eval（不建议使用，可忽略）
+
+因此在一个 JavaScript 程序中，必定会产生多个执行上下文，在我的上一篇文章中也有提到，JavaScript 引擎会以栈的方式来处理它们，这个栈，我们称其为函数调用栈(call stack)。栈底永远都是全局上下文，而栈顶就是当前正在执行的上下文。
+
+- 全局上下文在浏览器窗口关闭后出栈。
+- 函数中，遇到 return 能直接终止可执行代码的执行，因此会直接将当前上下文弹出栈。
+
 ### [什么是作用域和执行上下文](https://segmentfault.com/a/1190000009522006)
+
+### [前端基础进阶（六）：在 chrome 开发者工具中观察函数调用栈、作用域链与闭包](https://www.jianshu.com/p/73122bb3d262)
 
 ### [Javascript 函数声明的优先级高于变量声明的优先级，但不会覆盖变量赋值](https://blog.csdn.net/wy818/article/details/49247675)
 
-## Set 和 Map 数据结构
+## [Set 和 Map 数据结构](http://es6.ruanyifeng.com/#docs/set-map)
 
-<iframe src="http://es6.ruanyifeng.com/#docs/set-map" width="100%" frameborder="0" height="500px" ></iframe>
+- Set
+
+  - 属性
+    - constructor
+    - size
+  - 方法
+    - add(value): 添加某个值，返回 Set 结构本身。
+    - has(value): 返回一个布尔值，表示该值是否为 Set 的成员。
+    - delete(value): 删除某个值，返回一个布尔值，表示删除是否成功
+    - clear(): 清除所有成员，没有返回值。
+  - 遍历操作
+
+    - keys(): keys() 与 values() 行为完全一致
+    - values(): keys() 与 values() 行为完全一致
+    - entries()
+
+      ```js
+      let set = new Set(['red', 'green', 'blue']);
+
+      for (let item of set.entries()) {
+        console.log(item);
+      }
+      // ["red", "red"]
+
+      // ["green", "green"]
+      // ["blue", "blue"]
+      ```
+
+    - forEach()
+      ```js
+      let set = new Set([1, 4, 9]);
+      set.forEach((value, index, thisArgs) => console.log(indexs + ': ' + value));
+      ```
+
+- WeakSet
+  > WeakSet 的成员只能是对象。
+  > WeakSet 中的对象都是弱引用，即垃圾回收机制不考虑 WeakSet 对该对象的引用。
+  - 属性
+    - constructor
+  - 方法
+    - add(value)
+    - has(value)
+    - delete(value)
+- Map
+  - 属性
+    - size
+  - 方法
+    - set(key, value)
+    - get(key)
+    - has(key)
+    - delete(key)
+    - clear()
+  - 遍历
+    - keys()
+    - values()
+    - entries()
+    - forEach()
+- WeakMap
+  - WeakMap 只接受对象作为键名（null 除外）
+  - WeakMap 的键名所指向的对象，不计入垃圾回收机制。
+  - 方法
+    - get()
+    - set()
+    - has()
+    - delete()
 
 ## 异步解决方案
 
