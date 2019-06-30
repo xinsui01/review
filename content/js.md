@@ -587,24 +587,27 @@ function type(obj) {
 ## call/apply 实现
 
 ```js
-function Function.prototype.call = function(thisArg,...args){
-  thisArg = thisArg || typeof window === 'undefined' ? global : window;
-  thisArg.func = this;
+Function.prototype.call = function(oThis, ...args) {
+  oThis = oThis || typeof window === 'undefined' ? global : window;
+  oThis.func = this;
 
-  const result = thisArg.func(...args);
-  delete thisArg.func; // thisArg 上并没有 func 属性，需要移除
+  const result = oThis.func(...args);
+
+  delete oThis.func; // oThis 上并没有 func 属性，需要移除
+
   return result;
-}
+};
 
-function Function.prototype.apply = function(thisArg, args = []) {
-  thisArg = thisArg || typeof window === 'undefined' ? global : window;
+Function.prototype.apply = function(oThis, args = []) {
+  oThis = oThis || typeof window === 'undefined' ? global : window;
 
-  thisArg.func = this;
-  const result = thisArg.func(...args);
+  oThis.func = this;
+  const result = oThis.func(...args);
 
-  delete thisArg.func
+  delete oThis.func;
+
   return result;
-}
+};
 ```
 
 ## Array.prototype.reduce 实现
