@@ -738,111 +738,6 @@ function partial(fn, ...args) {
 }
 ```
 
-## [JavaScript 中的对象拷贝](https://juejin.im/entry/5a28ec86f265da43163cf720)
-
-- 浅拷贝
-
-  - Object.assign()、扩展运算符(...)
-    1. 复制对象的可枚举属性
-    2. 可以拷贝方法，和循环引用
-    3. 复制的嵌套属性是引用，共享
-
-- 深拷贝
-
-  - [深入深入再深入 js 深拷贝对象](https://juejin.im/post/5ad6b72f6fb9a028d375ecf6)
-  - [lodash baseClone](https://github.com/lodash/lodash/blob/master/.internal/baseClone.js)
-  - JSON.parse(JSON.stringify(obj))  
-    原型改变，不能复制对象方法，不能复制循环引用
-  - 递归遍历属性，复制属性 Object.getOwnPropertyDescriptor
-
-    - 可枚举属性
-    - 循环引用
-    - Symbol 键
-    - 原型上的属性
-    - 不可枚举的属性：属性描述符、setters、getters 等
-
-    ```js
-    function isObject(data) {
-      return data != null && (typeof data === 'object' || typeof data === 'function');
-    }
-
-    function deepClone(obj, hash = new WeakMap()) {
-      if (!isObject(obj)) {
-        return obj;
-      }
-      // 查表，防止循环拷贝
-      if (hash.has(obj)) {
-        return hash.get(obj);
-      }
-
-      let isArray = Array.isArray(obj);
-      // 初始化拷贝对象
-      let cloneObj = isArray ? [] : {};
-      // 哈希表设置
-      hash.set(obj, cloneObj);
-      // 获取原对象的所有属性描述符
-      let descriptors = Object.getOwnPropertyDescriptors(obj);
-      // 获取原对象所有 symbol 类型值
-      let symbolKeys = Object.getOwnPropertySymbols(obj);
-      // 拷贝所有 symbol 属性
-      if (symbolKeys.length > 0) {
-        symbolKeys.forEach(symbolKey => {
-          cloneObj[symbolKey] = isObject(obj[symbolKey]) ? deepClone(obj[symbolKey], hash) : obj[symbolKey];
-        });
-      }
-
-      // 拷贝不可枚举属性 ?????
-      cloneObj = Object.create(Object.getPrototypeOf(cloneObj), descriptors);
-
-      // 拷贝可枚举属性（包括原型链上的）
-      for (let key in obj) {
-        cloneObj[key] = isObject(obj[key]) ? deepClone(obj[key]) : obj[key];
-      }
-
-      return cloneObj;
-    }
-    /**
-     * 拷贝原型链
-     * 拷贝属性描述符
-     * 拷贝symbol属性
-     */
-    function cloneDeep(obj) {
-      // 拷贝原型链
-      let family = {};
-      let parent = Object.getPrototypeOf(obj);
-      while (parent != null) {
-        family = completeAssign(deepClone(obj), parent); //
-        parent = Object.getPrototypeOf(parent);
-      }
-
-      // 拷贝所有自有属性的属性描述符,来自于 MDN
-      // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-      function completeAssign(target, ...sources) {
-        sources.forEach(source => {
-          // 复制属性描述符
-          let descriptors = Object.keys(source).reduce((descriptors, curKey) => {
-            descriptors[curKeys] = Object.getOwnPropertyDescriptor(source, curKey);
-            return descriptors;
-          }, {});
-
-          // 复制可枚举的 symbols 属性
-          Object.getOwnPropertySymbols(source).forEach(sym => {
-            let descriptor = Object.getOwnPropertyDescriptor(source, sym);
-            if (descriptor.enumerable) {
-              descriptors[sym] = descriptor;
-            }
-          });
-
-          Object.defineProperties(target, descriptors);
-        });
-
-        return target;
-      }
-
-      return completeAssign(deepClone(obj), family);
-    }
-    ```
-
 ## [深入理解 new 操作符](https://www.cnblogs.com/onepixel/p/5043523.html)
 
 ```js
@@ -868,12 +763,38 @@ function _new() {
   > 以任意顺序遍历对象的可枚举属性 （enumerable properties），包括对象从其构造函数原型中继承的属性。
 
 - for...of
+
   > 遍历可迭代对象（iterable object, 定义了 Symbol.iterator 方法） 定义的可迭代的数据 ，比如遍历 Array，Map，Set，String，TypedArray，arguments 等对象的数据。
 
-* [for...in 和 for...of 区别](https://blog.csdn.net/wangjun5159/article/details/51479569)
-* [for in 和 for of 的区别](https://www.jianshu.com/p/c43f418d6bf0)
+- [for...in 和 for...of 区别](https://blog.csdn.net/wangjun5159/article/details/51479569)
+- [for in 和 for of 的区别](https://www.jianshu.com/p/c43f418d6bf0)
 
 ## [深入理解 Babel 原理及其使用](https://www.jianshu.com/p/e9b94b2d52e2)
+
+- 转义过程
+
+  三个阶段：`parsing`、`transforming`、`generating`
+
+  > ES6 代码输入 -> babylon 进行词法解析 -> 得到 AST -> plugin 调用 babel-traverse 对 AST 树进行遍历转译 -> 得到新的 AST 树 -> 用 babel-generator 通过 AST 生成 ES5 代码
+
+  > babel 只是转译新标准引入的语法，新标准引入的原生对象，部分原生对象新增的原型方法，新增的 API 等，需要用户自行引入 polyfill 来解决。
+
+- polyfill: `core-js` 和 `regenerator runtime` 的包装
+- babel-runtime
+
+  polyfill 是会污染原来的全局环境，babel-runtime 不会污染全局环境
+
+  babel-runtime 其实也不是真正的实现代码所在，真正的代码实现是在 core-js 中
+
+- transform-runtime
+
+  babel-plugin-transform-runtime 插件依赖 babel-runtime，babel-runtime 是真正提供 runtime 环境的包；也就是说 transform-runtime 插件是把 js 代码中使用到的新原生对象和静态方法转换成对 runtime 实现包的引用
+
+  1. 把代码中的使用到的 ES6 引入的新原生对象和静态方法用 babel-runtime/core-js 导出的对象和方法替代
+  2. 当使用 generators 或 async 函数时，用 babel-runtime/regenerator 导出的函数取代（类似 polyfill 分成 regenerator 和 core-js 两个部分）
+  3. 把 Babel 生成的辅助函数改为用 babel-runtime/helpers 导出的函数来替代（babel 默认会在每个文件顶部放置所需要的辅助函数，如果文件多的话，这些辅助函数就在每个文件中都重复了，通过引用 babel-runtime/helpers 就可以统一起来，减少代码体积）
+
+  > Note: 由于 runtime 不会污染全局空间，所以实例方法是无法工作的（因为这必须在原型链上添加这个方法，这是和 polyfill 最大的不同）
 
 ## [前端基础进阶（二）：执行上下文详细图解](https://www.jianshu.com/p/a6d37c77e8db)
 
@@ -1402,3 +1323,108 @@ console.log('doSomething 函数执行了' + (t1 - t0) + '毫秒。');
   };
 })();
 ```
+
+## [JavaScript 中的对象拷贝](https://juejin.im/entry/5a28ec86f265da43163cf720)
+
+- 浅拷贝
+
+  - Object.assign()、扩展运算符(...)
+    1. 复制对象的可枚举属性
+    2. 可以拷贝方法，和循环引用
+    3. 复制的嵌套属性是引用，共享
+
+- 深拷贝
+
+  - [深入深入再深入 js 深拷贝对象](https://juejin.im/post/5ad6b72f6fb9a028d375ecf6)
+  - [lodash baseClone](https://github.com/lodash/lodash/blob/master/.internal/baseClone.js)
+  - JSON.parse(JSON.stringify(obj))  
+    原型改变，不能复制对象方法，不能复制循环引用
+  - 递归遍历属性，复制属性 Object.getOwnPropertyDescriptor
+
+    - 可枚举属性
+    - 循环引用
+    - Symbol 键
+    - 原型上的属性
+    - 不可枚举的属性：属性描述符、setters、getters 等
+
+    ```js
+    function isObject(data) {
+      return data != null && (typeof data === 'object' || typeof data === 'function');
+    }
+
+    function deepClone(obj, hash = new WeakMap()) {
+      if (!isObject(obj)) {
+        return obj;
+      }
+      // 查表，防止循环拷贝
+      if (hash.has(obj)) {
+        return hash.get(obj);
+      }
+
+      let isArray = Array.isArray(obj);
+      // 初始化拷贝对象
+      let cloneObj = isArray ? [] : {};
+      // 哈希表设置
+      hash.set(obj, cloneObj);
+      // 获取原对象的所有属性描述符
+      let descriptors = Object.getOwnPropertyDescriptors(obj);
+      // 获取原对象所有 symbol 类型值
+      let symbolKeys = Object.getOwnPropertySymbols(obj);
+      // 拷贝所有 symbol 属性
+      if (symbolKeys.length > 0) {
+        symbolKeys.forEach(symbolKey => {
+          cloneObj[symbolKey] = isObject(obj[symbolKey]) ? deepClone(obj[symbolKey], hash) : obj[symbolKey];
+        });
+      }
+
+      // 拷贝不可枚举属性 ?????
+      cloneObj = Object.create(Object.getPrototypeOf(cloneObj), descriptors);
+
+      // 拷贝可枚举属性（包括原型链上的）
+      for (let key in obj) {
+        cloneObj[key] = isObject(obj[key]) ? deepClone(obj[key]) : obj[key];
+      }
+
+      return cloneObj;
+    }
+    /**
+     * 拷贝原型链
+     * 拷贝属性描述符
+     * 拷贝symbol属性
+     */
+    function cloneDeep(obj) {
+      // 拷贝原型链
+      let family = {};
+      let parent = Object.getPrototypeOf(obj);
+      while (parent != null) {
+        family = completeAssign(deepClone(obj), parent); //
+        parent = Object.getPrototypeOf(parent);
+      }
+
+      // 拷贝所有自有属性的属性描述符,来自于 MDN
+      // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+      function completeAssign(target, ...sources) {
+        sources.forEach(source => {
+          // 复制属性描述符
+          let descriptors = Object.keys(source).reduce((descriptors, curKey) => {
+            descriptors[curKeys] = Object.getOwnPropertyDescriptor(source, curKey);
+            return descriptors;
+          }, {});
+
+          // 复制可枚举的 symbols 属性
+          Object.getOwnPropertySymbols(source).forEach(sym => {
+            let descriptor = Object.getOwnPropertyDescriptor(source, sym);
+            if (descriptor.enumerable) {
+              descriptors[sym] = descriptor;
+            }
+          });
+
+          Object.defineProperties(target, descriptors);
+        });
+
+        return target;
+      }
+
+      return completeAssign(deepClone(obj), family);
+    }
+    ```
