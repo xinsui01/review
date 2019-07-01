@@ -22,6 +22,8 @@
 
 # [网络层](./content/net.md)
 
+# [大型网站技术架构核心原理](./大型网站技术架构核心原理.xmind)
+
 # [分享阿里前端 p7 架构图谱](https://juejin.im/post/5cf5f358e51d45778f076ce5)
 
 # [Nginx](./content/nginx.md)
@@ -29,10 +31,3 @@
 ## 算法
 
 - [前端笔试&面试爬坑系列---算法](https://juejin.im/post/5b72f0caf265da282809f3b5)
-
-* 长列表优化，内存
-* 有哪些操作 css 的方法
-* 很多 image 优化，有哪些格式，webp, bit8, bit32
-* 如何判断一个元素是否在可视区域
-* 自定义字体如何使用，有哪几种源
-* 后端获取不到 cookie，会有哪些问题
