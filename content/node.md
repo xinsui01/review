@@ -2,6 +2,32 @@
 
 ## [Node.js 中的模块机制](https://juejin.im/entry/5b4b5081e51d451984696cb7)
 
+- 模块查找流程
+
+  - 缓存
+  - 内置模块
+  - 绝对路径、相对路径
+    - 解析得到真实路径，按照后缀名 `.js`、`.json` 、`.node` 尝试加载
+    - 当做目录查找
+      - 寻找 package.json 文件，解析 main 字段， 根据 main 字段中指定的文件路径查找指定文件
+      - 在该目录按照 `index.js`、`index.json`、`index.node` 顺序加载
+      - 如果还没有找到，就抛出错误
+  - NPM 模块包
+
+    > 加载顺序是可以使用 module.paths 来查看。module.paths 返回是一个数组，第一个元素是文件当前目录下的 node_modules 文件夹，越往后就是上一级目录的 node_modules 文件夹，直到查找到 home 目录下的 node_modules 文件夹。
+
+    ```shell
+    [
+      'D:\\side project\\test\\node_modules',
+      'D:\\side project\\node_modules',
+      'D:\\node_modules'
+    ];
+    ```
+
+    > node 会在各个 node_modules 下先查找以标识符为主的分别是 .js, .json, .node 后缀的文件，如果没有找到，那么就当作是一个目录来进行来查找目录下的 package.json, 并解析出其中的 main 字段指定的文件路径，如果没有文件路径或者文件路径错误，目录下的 index.js, index.json, index.node, 如果没有查找到上述的文件，那么就会抛出一个错误。
+
+  ![](../imgs/node模块查找流程.png)
+
 ## NodeJS 的事件循环(Event Loop)
 
 - [详解 JavaScript 中的 Event Loop（事件循环）机制](https://zhuanlan.zhihu.com/p/33058983)
@@ -17,6 +43,126 @@
 ![](https://user-gold-cdn.xitu.io/2017/6/14/03e1f627b419676dbb727ab9bc35e77e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 ## [Nodejs 进程间通信](http://www.ayqy.net/blog/nodejs%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/)
+
+- 创建进程四种方式
+  - spawn()
+  - exec()
+  - execFile()
+  - fork()
+- 通信方式
+
+  - 通过 stdin/stdout 传递 json
+
+    ```js
+    const { spawn } = require('child_process');
+
+    const child = spawn('node', ['./stdio-child.js']);
+    child.stdout.setEncoding('utf8');
+    child.stdin.write(
+      JSON.stringify({
+        type: 'handshake',
+        payload: '你好吖'
+      })
+    );
+
+    child.stdout.on('data', function(chunk) {
+      let data = chunk.toString();
+      let message = JSON.parse(data);
+      console.log(`${message.type} ${message.payload}`);
+    });
+    ```
+
+    ```js
+    // ./stdio-child.js
+    // 子进程-收
+    process.stdin.on('data', chunk => {
+      let data = chunk.toString();
+      let message = JSON.parse(data);
+      switch (message.type) {
+        case 'handshake':
+          // 子进程-发
+          process.stdout.write(
+            JSON.stringify({
+              type: 'message',
+              payload: message.payload + ' : hoho'
+            })
+          );
+          break;
+        default:
+          break;
+      }
+    });
+    ```
+
+  - 原生 IPC 通信
+
+    spawn()及 fork()的例子，进程之间可以借助内置的 IPC 机制通信。
+
+    ```
+    父进程：
+
+      process.on('message')收
+
+      child.send()发
+
+    子进程：
+
+      process.on('message')收
+
+      process.send()发
+    ```
+
+  - socket
+
+    借助网络来完成进程间通信，不仅能跨进程，还能跨机器
+
+    node-ipc 就采用这种方案，例如：
+
+    ```js
+    // server
+
+    const ipc = require('../../../node-ipc');
+
+    ipc.config.id = 'world';
+    ipc.config.retry = 1500;
+    ipc.config.maxConnections = 1;
+
+    ipc.serveNet(function() {
+      ipc.server.on('message', function(data, socket) {
+        ipc.log('got a message : ', data);
+        ipc.server.emit(socket, 'message', data + ' world!');
+      });
+
+      ipc.server.on('socket.disconnected', function(data, socket) {
+        console.log('DISCONNECTED\n\n', arguments);
+      });
+    });
+    ipc.server.on('error', function(err) {
+      ipc.log('Got an ERROR!', err);
+    });
+    ipc.server.start();
+
+    // client
+    const ipc = require('node-ipc');
+
+    ipc.config.id = 'hello';
+    ipc.config.retry = 1500;
+
+    ipc.connectToNet('world', function() {
+      ipc.of.world.on('connect', function() {
+        ipc.log('## connected to world ##', ipc.config.delay);
+        ipc.of.world.emit('message', 'hello');
+      });
+      ipc.of.world.on('disconnect', function() {
+        ipc.log('disconnected from world');
+      });
+      ipc.of.world.on('message', function(data) {
+        ipc.log('got a message from world : ', data);
+      });
+    });
+    ```
+
+  - 消息队列
 
 ## [单线程与多线程的区别](https://blog.csdn.net/u012134199/article/details/46290465)
 
