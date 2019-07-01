@@ -344,6 +344,11 @@ function compose(middleware) {
 - [v8-profiler](https://github.com/node-inspector/v8-profiler)
 - [easy-monitor](https://github.com/hyj1991/easy-monitor)
 
+## IO 模式
+
+- [Linux IO 模式及 select、poll、epoll 详解](https://segmentfault.com/a/1190000003063859?utm_source=Weibo&utm_medium=shareLink&utm_campaign=socialShare#articleHeader0)
+- [大话 Select、Poll、Epoll](https://cloud.tencent.com/developer/article/1005481)
+
 ## webpack
 
 - [超详细的 webpack 原理解读](https://segmentfault.com/a/1190000017890529)
