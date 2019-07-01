@@ -14,8 +14,10 @@
 ## [chrome 显示 12px 以下字体的解决方法](https://blog.csdn.net/u012011360/article/details/41846905)
 
 ```html
-<span style="display: 'block'; font-size='16px'; transform: scale(0.5);">8px 字体</span>
+<span style="display: inline-block; font-size: 16px; transform: scale(0.5);">8px 字体</span>
 ```
+
+<span style="display: inline-block; font-size: 16px; transform: scale(0.5);">8px 字体</span>
 
 ## 跨域
 
@@ -23,17 +25,13 @@
 
   - JSONP(JSON with padding)
   - postMessage
-  - cors
   - document.domain + iFrame
   - window.name + iFrame
   - location.hash + iFrame
   - 同域服务器转发请求
+  - [CORS](http://www.ruanyifeng.com/blog/2016/04/cors.html)
 
-    <iframe src="https://segmentfault.com/a/1190000011145364" width="100%" frameborder="0" height="500px" ></iframe>
-
-- [CORS](http://www.ruanyifeng.com/blog/2016/04/cors.html)
-
-  ```js
+    ```js
     Access-Control-Allow-Origin: *                      // 对于不需要携带身份凭证的请求，服务器可以指定该字段的值为通配符，表示允许来自所有域的请求。
     Access-Control-Allow-Methods: GET, POST, PUT
     Access-Control-Allow-Headers: X-Custom-Header       // 允许客户端在请求中携带头部
@@ -43,23 +41,35 @@
       * 在跨域访问时，XMLHttpRequest对象的getResponseHeader()方法只能拿到一些最基本的响应头，Cache-Control、Content-Language、Content-Type、Expires、Last-Modified、Pragma，如果要访问其他头，则需要服务器设置本响应头。
       */
     Access-Control-Expose-Headers: X-My-Custom-Header, X-Custom-Header
-  ```
-
-  - 跨域携带 cookie
-
-    > 对于附带身份凭证的请求，服务器不得设置 Access-Control-Allow-Origin 的值为“\*”。
-
-    ```js
-      // 服务端
-      Access-Control-Allow-Credentials: true
-
-      // 客户端
-      XMLHttpRequest.withCredentials = true
     ```
 
-    [XMLHttpRequest.withCredentials](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/withCredentials)
+    > Note: 由于同源策略的限制，所读取的 cookie 为跨域请求接口所在域的 cookie，而非当前页。
 
-    [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials)
+    - 跨域携带 cookie
+
+      > 对于附带身份凭证的请求，服务器不得设置 Access-Control-Allow-Origin 的值为“\*”。
+
+      ```js
+        // 服务端
+        Access-Control-Allow-Credentials: true
+
+        // 客户端
+        XMLHttpRequest.withCredentials = true
+      ```
+
+      [XMLHttpRequest.withCredentials](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/withCredentials)
+
+      [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials)
+
+  - nginx 解决 iconfont 跨域
+
+    浏览器跨域访问 js、css、img 等常规静态资源被同源策略许可，但 iconfont 字体文件(eot|otf|ttf|woff|svg)例外，此时可在 nginx 的静态资源服务器中加入以下配置：
+
+    ```nginx
+      location / {
+        add_header Access-Control-Allow-Origin *;
+      }
+    ```
 
 ## [跨页面通信的各种姿势](https://zhuanlan.zhihu.com/p/29368435)
 
@@ -149,7 +159,25 @@
 
 - [带你彻底弄懂 Event Loop](https://juejin.im/post/5b8f76675188255c7c653811)
 - [浏览器事件循环机制（event loop）](https://juejin.im/post/5afbc62151882542af04112d)
+  - UI rendering 的节点是由浏览器自行判断决定的，只要执行 UI rendering，它的节点是在执行完所有的 microtask 之后，下一个 macrotask 之前，紧跟着执行 UI render。
 - [JavaScript 运行机制详解：再谈 Event Loop](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)
+- Node event loop
+  - 宏队列
+    - timers 阶段：这个阶段执行 setTimeout 和 setInterval 预定的 callback
+    - I/O callback 阶段：执行除了 close 事件的 callbacks、被 timers 设定的 callbacks、setImmediate()设定的 callbacks 这些之外的 callbacks
+    - idle: 仅 node 内部使用
+    - prepare: 仅 node 内部使用
+    - poll: 获取新的 I/O 事件，适当的条件下 node 将阻塞在这里
+    - check 阶段：执行 setImmediate() 设定的 callbacks
+    - close callback 阶段：执行 socket.on('close', ....)这些 callbacks
+  - 微队列
+    - nextTick: process.nextTick()
+    - others: Promise
+  - setTimeout(fn, 0) 和 setImmediate(fn)
+    - setTimeout(fn, 0) 不是严格的 0，一般是 setTimeout(fn, 3) 或什么，会有一定的延迟时间，当 setTimeout(fn, 0) 和 setImmediate(fn) 出现在同一段同步代码中时，就会存在两种情况。
+    - 第 1 种情况：同步代码执行完了，Timer 还没到期，setImmediate 回调先注册到 Check Queue 中，开始执行微队列，然后是宏队列，先从 Timers Queue 中开始，发现没回调，往下走直到 Check Queue 中有回调，执行，然后 timer 到期（只要在执行完 Timer Queue 后到期效果就都一样），timer 回调注册到 Timers Queue 中，下一轮循环执行到 Timers Queue 中才能执行那个 timer 回调；所以，这种情况下，setImmediate(fn)回调先于 setTimeout(fn, 0)回调执行。
+    - 第 2 种情况：同步代码还没执行完，timer 先到期，timer 回调先注册到 Timers Queue 中，执行到 setImmediate 了，它的回调再注册到 Check Queue 中。 然后，同步代码执行完了，执行微队列，然后开始先执行 Timers Queue，先执行 Timer 回调，再到 Check Queue，执行 setImmediate 回调；所以，这种情况下，setTimeout(fn, 0)回调先于 setImmediate(fn)回调执行。
+    - 所以，在同步代码中同时调 setTimeout(fn, 0)和 setImmediate 情况是不确定的，但是如果把他们放在一个 IO 的回调，比如 readFile('xx', function () {// ....})回调中，那么 IO 回调是在 IO Queue 中，setTimeout 到期回调注册到 Timers Queue，setImmediate 回调注册到 Check Queue，IO Queue 执行完到 Check Queue，timer Queue 得到下个周期，所以 setImmediate 回调这种情况下肯定比 setTimeout(fn, 0)回调先执行。
 
 ## IO 模式
 
@@ -163,12 +191,29 @@
 ## 浏览器缓存
 
 - [彻底搞懂浏览器缓存机制](https://juejin.im/post/5c4528a6f265da611a4822cc)
+  - 三级缓存原理 (访问缓存优先级)
+    - memory cache
+    - disk cache
+    - 重新请求
+  - 强缓存
+    - expires
+    - cache-control
+      - no-store：禁止使用缓存，每一次都要重新请求数据。
+      - no-catch：告诉浏览器、缓存服务器，不管本地副本是否过期，使用资源副本前，一定要到源服务器进行副本有效性校验。
+      - max-age
+      - must-revalidate：告诉浏览器、缓存服务器，本地副本过期前，可以使用本地副本；本地副本一旦过期，必须去源服务器进行有效性校验。
+      - private
+      - public
+  - 协商缓存（304 Not Modified）
+    - Last-Modify/If-Modify-Since
+    - ETag/If-No-Match
 - [HTTP 缓存](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching_FAQ)
 - [Cache-Control](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Cache-Control)
-  - no-cache: 告诉浏览器、缓存服务器，不管本地副本是否过期，使用资源副本前，一定要到源服务器进行副本有效性校验。
-  - must-revalidate：告诉浏览器、缓存服务器，本地副本过期前，可以使用本地副本；本地副本一旦过期，必须去源服务器进行有效性校验。
 
 ## [DNS 解析过程及 DNS 优化](https://blog.csdn.net/cat_foursi/article/details/71194397)
+
+- 递归查询
+- 迭代查询
 
 ## 前端安全
 
@@ -321,16 +366,65 @@
     - 数据缓存: 通过各种存储将不常变的数据进行缓存，缩短数据的获取时间；
 
 - 首屏渲染优化
+
   - css / js 分割，使首屏依赖的文件体积最小，内联首屏关键 css / js；
   - 非关键性的文件尽可能的 异步加载和懒加载，避免阻塞首页渲染；
-  - 使用 dns-prefetch / preconnect / prefetch / preload 等浏览器提供的资源提示，加快文件传输；
+  - 使用 preconnect / prefetch / preload 等浏览器提供的资源提示，加快文件传输；
+
     - [[译] 资源提示 —— 什么是 Preload，Prefetch 和 Preconnect？](https://juejin.im/post/5b5984b851882561da216311)
-  - 谨慎控制好 Web 字体，一个大字体包足够让你功亏一篑；
-    - 控制字体包的加载时机；
-    - 如果使用的字体有限，那尽可能只将使用的文字单独打包，能有效减少体积；
-  - 合理利用 Localstorage / server-worker 等存储方式进行 数据与资源缓存；
-  - 重要的元素优先渲染；视窗内的元素优先渲染；
-  - 优化用户感知:
-    - 利用一些动画过渡效果，能有效减少用户对卡顿的感知；
-    - 尽可能利用骨架屏(Placeholder) / Loading 等减少用户对白屏的感知；
-    - 动画帧数尽量保证在 30 帧 以上，低帧数、卡顿的动画宁愿不要；
+    - Preload
+
+      ```html
+      <link rel="preload" href="/css/mystyles.css" as="style" />
+      <link rel="preload" href="https://example.com/fonts/font.woff" as="font" crossorigin />
+      ```
+
+      ```js
+      <script>
+        var res = document.createElement("link"); res.rel = "preload"; res.as = "style"; res.href = "css/mystyles.css";
+        document.head.appendChild(res);
+      </script>
+      ```
+
+    - Prefetch
+
+      - Link Prefetching
+
+      ```html
+      <link rel="prefetch" href="/uploads/images/pic.png" />
+      ```
+
+      - DNS Prefetching
+
+        ```html
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//www.google-analytics.com" />
+        <link rel="dns-prefetch" href="//opensource.keycdn.com" />
+        <link rel="dns-prefetch" href="//cdn.domain.com" />
+        ```
+
+    - Prerendering
+
+      > prerendering 在后台渲染了整个页面，整个页面所有的资源。
+
+      ```html
+      <link rel="prerender" href="https://www.keycdn.com" />
+      ```
+
+    - preconnect
+
+      > 允许浏览器在一个 HTTP 请求正式发给服务器前预先执行一些操作，这包括 DNS 解析，TLS 协商，TCP 握手
+
+      ```html
+      <link href="https://cdn.domain.com" rel="preconnect" crossorigin />
+      ```
+
+- 谨慎控制好 Web 字体，一个大字体包足够让你功亏一篑；
+  - 控制字体包的加载时机；
+  - 如果使用的字体有限，那尽可能只将使用的文字单独打包，能有效减少体积；
+- 合理利用 Localstorage / server-worker 等存储方式进行 数据与资源缓存；
+- 重要的元素优先渲染；视窗内的元素优先渲染；
+- 优化用户感知:
+  - 利用一些动画过渡效果，能有效减少用户对卡顿的感知；
+  - 尽可能利用骨架屏(Placeholder) / Loading 等减少用户对白屏的感知；
+  - 动画帧数尽量保证在 30 帧 以上，低帧数、卡顿的动画宁愿不要；
