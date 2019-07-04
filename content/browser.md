@@ -1,5 +1,52 @@
 # 浏览器
 
+## 事件冒泡
+
+- stopPropagation
+
+  > 元素绑定了两个 click 事件的监听函数。stopPropagation 方法只能阻止这个事件向其他元素传播。因此，第二个监听函数会触发。输出结果会先是 1，然后是 2。
+
+  ```js
+  p.addEventListener('click', function(event) {
+    event.stopPropagation();
+    console.log(1);
+  });
+
+  p.addEventListener('click', function(event) {
+    // 会触发
+    console.log(2);
+  });
+  ```
+
+- stopImmediatePropagation
+
+  > 彻底阻止这个事件传播，使得后面绑定的所有 click 监听函数都不再触发。所以，只会输出 1，不会输出 2。
+
+  ```js
+  p.addEventListener('click', function(event) {
+    event.stopImmediatePropagation();
+    console.log(1);
+  });
+
+  p.addEventListener('click', function(event) {
+    // 不会被触发
+    console.log(2);
+  });
+  ```
+
+- Event.currentTarget，Event.target
+
+  - Event.currentTarget 属性返回事件当前所在的节点，即正在执行的监听函数所绑定的那个节点。
+  - Event.target 属性返回原始触发事件的那个节点，即事件最初发生的节点。
+
+- 事件委托
+
+  - 统一处理事件，降低代码耦合性，维护方便
+  - 动态子元素无需操作绑定事件
+  - 减少内存占用，减少事件注册
+
+  > Note: 减少绑定的层级，遍历就少了好多层级，效率高。
+
 ## Cookie
 
 - [SameSite cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#SameSite_cookies)
