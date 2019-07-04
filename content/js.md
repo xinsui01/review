@@ -1,5 +1,67 @@
 # JavaScript
 
+## JS 变量声明及初始化
+
+- [深入理解 JavaScript 系列（12）：变量对象（Variable Object）](https://www.cnblogs.com/TomXu/archive/2012/01/16/2309728.html)
+
+  - 只有全局上下文的变量对象允许通过 VO 的属性名称来间接访问(因为在全局上下文里，全局对象自身就是变量对象，稍后会详细介绍)，在其它上下文中是不能直接访问 VO 对象的，因为它只是内部机制的一个实现。
+  - 在 DOM 中，全局对象的 window 属性就可以引用全局对象自身(当然，并不是所有的具体实现都是这样)
+
+    ```js
+      global = {
+        Math: <...>,
+        String: <...>
+        ...
+        ...
+        window: global //引用自身
+      };
+    ```
+
+  - 未传值的形参和 arguments 内的值不共享
+
+    ```js
+    function foo(x, y, z) {
+      // 声明的函数参数数量arguments (x, y, z)
+      alert(foo.length); // 3
+
+      // 真正传进来的参数个数(only x, y)
+      alert(arguments.length); // 2
+
+      // 参数的callee是函数自身
+      alert(arguments.callee === foo); // true
+
+      // 参数共享
+
+      alert(x === arguments[0]); // true
+      alert(x); // 10
+
+      arguments[0] = 20;
+      alert(x); // 20
+
+      x = 30;
+      alert(arguments[0]); // 30
+
+      // 不过，没有传进来的参数z，和参数的第3个索引值是不共享的
+
+      z = 40;
+      alert(arguments[2]); // undefined
+
+      arguments[2] = 50;
+      alert(z); // 40
+    }
+
+    foo(10, 20);
+    ```
+
+  - 当进入执行上下文(代码执行之前)时，VO 里已经包含了下列属性(前面已经说了)：
+    - 函数的所有形参(如果我们是在函数执行上下文中)
+      - 由名称和对应值组成的一个变量对象的属性被创建；没有传递对应参数的话，那么由名称和 undefined 值组成的一种变量对象的属性也将被创建。
+    - 所有函数声明(FunctionDeclaration, FD)
+      - 由名称和对应值（函数对象(function-object)）组成一个变量对象的属性被创建；如果变量对象已经存在相同名称的属性，则完全替换这个属性。
+    - 所有变量声明(var, VariableDeclaration)
+      - 由名称和对应值（undefined）组成一个变量对象的属性被创建；如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性。
+  - 变量声明在顺序上跟在函数声明和形式参数声明之后，而且在这个进入上下文阶段，变量声明不会干扰 VO 中已经存在的同名函数声明或形式参数声明
+
 ## var, let 区别
 
 - 顶级作用域 var 声明变量是 window 的属性，let\const 声明变量不是 window 的属性，变量都可以在控制台访问。
