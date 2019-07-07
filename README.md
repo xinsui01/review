@@ -8,6 +8,8 @@
 
 # [JavaScript](./content/js.md)
 
+# [JS 常用设计模式](./content/js_pattern.md)
+
 # [浏览器](./content/browser.md)
 
 # [React](./conent/react.md)
