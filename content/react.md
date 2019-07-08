@@ -89,7 +89,7 @@
 ## 生命周期
 
 [react-lifecycle-methods](http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)
-![react life cycle](./imgs/react-life-cycle.png)
+![react life cycle](../imgs/react-life-cycle.png)
 
 [React v16.4 生命周期的理解](https://juejin.im/post/5b6f1800f265da282d45a79a)
 
@@ -102,7 +102,7 @@
 
   - <s>componentWillMount/UNSAFE_componentWillMount</s>
 
-    或者 `<span style="text-decoration: line-through"></span>`
+    或者 `<span style="text-decoration: line-through">componentWillMount/UNSAFE_componentWillMount</span>`
 
   - render() 纯函数
   - componentDidMount()
@@ -756,7 +756,7 @@ export default function connectAdvanced() {
 
 ## redux 基本组成和设计单向数据流
 
-![](https://user-gold-cdn.xitu.io/2017/10/14/c08df9d398f505f4aa0ac620396fb9e0?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+<img style="background-color: white;" src="https://user-gold-cdn.xitu.io/2017/10/14/c08df9d398f505f4aa0ac620396fb9e0?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"/>
 
 - [redux 源码解读](https://juejin.im/post/5ae7db125188253dc6127bc7)
 
@@ -789,13 +789,16 @@ export default function connectAdvanced() {
 ![](https://user-gold-cdn.xitu.io/2018/4/4/1628e77dc419816b?imageslim)
 
 - 优缺点
+
   1. 降低 Mutable 带来的复杂度
+
      ```js
      let obj = { a: 1 };
      let copy_obj = obj;
      copy_obj.a = 2;
      console.log(obj.a); // 2
      ```
+
   2. 节省内存空间（结构共享）
   3. 拥抱函数式编程
      纯函数式编程比面向对象更适用于前端开发。因为只要输入一致，输出必然一致，开发的组件更易于调试和安装。
