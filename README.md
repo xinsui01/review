@@ -24,12 +24,22 @@
 
 # [网络层](./content/net.md)
 
+# [前端模块化](./content/modular.md)
+
 # [大型网站技术架构核心原理](./大型网站技术架构核心原理.xmind)
 
 # [分享阿里前端 p7 架构图谱](https://juejin.im/post/5cf5f358e51d45778f076ce5)
 
 # [Nginx](./content/nginx.md)
 
-## 算法
+# 算法
 
 - [前端笔试&面试爬坑系列---算法](https://juejin.im/post/5b72f0caf265da282809f3b5)
+
+## Others
+
+- DSL
+- 框架选型
+- BFF 层存在意义
+- 工程化
+- 架构
