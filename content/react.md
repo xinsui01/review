@@ -328,93 +328,6 @@
     - 使用 class 组件会无意中鼓励开发者使用一些让优化措施无效的方案。
     - class 不能很好的压缩，并且会使热重载出现不稳定的情况。因此，我们想提供一个使代码更易于优化的 API。
 
-  - `useContext` 让你不使用组件嵌套就可以订阅 `React` 的 `Context`。
-
-    ```js
-    function Example() {
-      const locale = useContext(LocaleContext);
-      const theme = useContext(ThemeContext);
-    }
-    ```
-
-  - `useReducer` 可以让你通过 `reducer` 来管理组件本地的复杂 `state`。
-
-    ```js
-    function Todos() {
-      const [todos, dispatch] = useReducer(todosReducer, initialState);
-    }
-    ```
-
-- useEffect
-
-  > 传递给 useEffect 的函数在每次渲染中都会有所不同，这是刻意为之的。事实上这正是我们可以在 effect 中获取最新的 count 的值，而不用担心其过期的原因。每次我们重新渲染，都会生成新的 effect，替换掉之前的。  
-  > 默认会在调用一个新的 effect 之前对前一个 effect 进行清理。  
-  > React 会等待浏览器完成画面渲染之后才会延迟调用 useEffect
-
-  - 无需清除的 effect
-
-    > 比如发送网络请求，手动变更 DOM，记录日志，这些都是常见的无需清除的操作。  
-    > 在执行 DOM 更新之后调用它。默认情况下，它在第一次渲染之后和每次更新之后都会执行。
-
-    ```jsx
-    import React, { useState, useEffect } from 'react';
-
-    function Example() {
-      const [count, setCount] = useState(0);
-
-      useEffect(() => {
-        document.title = `You clicked ${count} times`;
-      });
-
-      return (
-        <div>
-          <p>You clicked {count} times</p>
-          <button onClick={() => setCount(count + 1)}>Click me</button>
-        </div>
-      );
-    }
-    ```
-
-  - 需要清除的 effect
-
-  > 如果你的 effect 返回一个函数，React 将会在执行清除操作时调用它
-
-  ```js
-  import React, { useState, useEffect } from 'react';
-
-  function FriendStatus(props) {
-    const [isOnline, setIsOnline] = useState(null);
-
-    useEffect(() => {
-      function handleStatusChange(status) {
-        setIsOnline(status.isOnline);
-      }
-
-      ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
-
-      return function cleanUp() {
-        ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
-      };
-    });
-
-    if (isOnline === null) {
-      return 'Loading ...';
-    }
-
-    return isOnline ? 'Online' : 'Offline';
-  }
-  ```
-
-  - 通过跳过 Effect 进行性能优化,**传递数组作为 useEffect 的第二个可选参数即可**。
-
-  ```js
-  useEffect(() => {
-    document.title = `You clicked ${count} times`;
-  }, [count]);
-  ```
-
-  > 如果想执行只运行一次的 effect（仅在组件挂载和卸载时执行），可以传递一个空数组（[]）作为第二个参数。
-
 - Hooks 使用规则
 
   - 只能在函数最外层调用 Hook。不要在循环、条件判断或者子函数中调用。
@@ -424,7 +337,7 @@
     - 在自定义 Hook 中调用其他 Hook
   - 自定义 Hook 是一个函数，其名称以 “use” 开头，函数内部可以调用其他的 Hook。
 
-- [Hooks 罗列]()
+- [Hook API 索引](https://zh-hans.reactjs.org/docs/hooks-reference.html)
 
   - 基础 Hook
 
@@ -449,20 +362,109 @@
       - 与 class 组件中的 setState 方法不同，useState 不会自动合并更新对象。
 
     - useEffect
-      - 在浏览器完成布局与绘制之后，传给 useEffect 的函数会延迟调用。虽然 useEffect 会在浏览器绘制后延迟执行，但会保证在任何新的渲染前执行。
-      - 为防止内存泄漏，清除函数会在组件卸载前执行。
-      - 如果组件多次渲染（通常如此），则在执行下一个 effect 之前，上一个 effect 就已被清除。
+
+      > 传递给 useEffect 的函数在每次渲染中都会有所不同，这是刻意为之的。事实上这正是我们可以在 effect 中获取最新的 count 的值，而不用担心其过期的原因。每次我们重新渲染，都会生成新的 effect，替换掉之前的。  
+      > 默认会在调用一个新的 effect 之前对前一个 effect 进行清理。  
+      > React 会等待浏览器完成画面渲染之后才会延迟调用 useEffect  
+      > 在浏览器完成布局与绘制之后，传给 useEffect 的函数会延迟调用。虽然 useEffect 会在浏览器绘制后延迟执行，但会保证在任何新的渲染前执行。  
+      > 为防止内存泄漏，清除函数会在组件卸载前执行。  
+      > 如果组件多次渲染（通常如此），则在执行下一个 effect 之前，上一个 effect 就已被清除。
+
+      - 无需清除的 effect
+
+        > 比如发送网络请求，手动变更 DOM，记录日志，这些都是常见的无需清除的操作。  
+        > 在执行 DOM 更新之后调用它。默认情况下，它在第一次渲染之后和每次更新之后都会执行。
+
+        ```jsx
+        import React, { useState, useEffect } from 'react';
+
+        function Example() {
+          const [count, setCount] = useState(0);
+
+          useEffect(() => {
+            document.title = `You clicked ${count} times`;
+          });
+
+          return (
+            <div>
+              <p>You clicked {count} times</p>
+              <button onClick={() => setCount(count + 1)}>Click me</button>
+            </div>
+          );
+        }
+        ```
+
+      - 需要清除的 effect
+
+        > 如果你的 effect 返回一个函数，React 将会在执行清除操作时调用它
+
+        ```js
+        import React, { useState, useEffect } from 'react';
+
+        function FriendStatus(props) {
+          const [isOnline, setIsOnline] = useState(null);
+
+          useEffect(() => {
+            function handleStatusChange(status) {
+              setIsOnline(status.isOnline);
+            }
+
+            ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+
+            return function cleanUp() {
+              ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+            };
+          });
+
+          if (isOnline === null) {
+            return 'Loading ...';
+          }
+
+          return isOnline ? 'Online' : 'Offline';
+        }
+        ```
+
+      - 通过跳过 Effect 进行性能优化,**传递数组作为 useEffect 的第二个可选参数即可**。
+
+        ```js
+        useEffect(() => {
+          document.title = `You clicked ${count} times`;
+        }, [count]);
+        ```
+
+      > 如果想执行只运行一次的 effect（仅在组件挂载和卸载时执行），可以传递一个空数组（[]）作为第二个参数。
+
+
     - useContext
 
-  - 额外的 Hook
-    - useReducer
-    - useCallback
-    - useMemo
-    - useRef
-    - useImperativeHandle
-    - useLayoutEffect
-      - 和 useEffect 的结构相同，区别只是调用时机不同。
-    - useDebugValue
+      `useContext` 让你不使用组件嵌套就可以订阅 `React` 的 `Context`。
+
+      ```js
+      function Example() {
+        const locale = useContext(LocaleContext);
+        const theme = useContext(ThemeContext);
+      }
+      ```
+
+- 额外的 Hook
+
+  - useReducer
+
+    `useReducer` 可以让你通过 `reducer` 来管理组件本地的复杂 `state`。
+
+    ```js
+    function Todos() {
+      const [todos, dispatch] = useReducer(todosReducer, initialState);
+    }
+    ```
+
+  - useCallback
+  - useMemo
+  - useRef
+  - useImperativeHandle
+  - useLayoutEffect
+    - 和 useEffect 的结构相同，区别只是调用时机不同。
+  - useDebugValue
 
 ## React 性能优化
 
