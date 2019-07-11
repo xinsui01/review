@@ -28,6 +28,7 @@
 
 - [大型网站技术架构核心原理](./大型网站技术架构核心原理.xmind)
 
+- [Pattern: Backends For Frontends](https://samnewman.io/patterns/architectural/bff/)
 - [了解 BFF 架构](https://segmentfault.com/a/1190000009558309)
 
 ## [Nginx](./content/nginx.md)
