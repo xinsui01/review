@@ -52,7 +52,7 @@
           }
         </style>
 
-        | Product Name                | Store Nums                     | price   | operation                              |
+        | Product Name                | Stock                          | Price   |                                        |
         | :-------------------------- | :----------------------------- | :------ | :------------------------------------- |
         | The Brakes - Give Blood     | In Stock! (14 items remaining) | \$5.99  | <button class="btn">Order Now</button> |
         | Blue Juice - Retrospectable | Out Of Stock                   | \$17.50 | <button class="btn">Pre Order</button> |
