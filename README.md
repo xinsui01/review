@@ -24,17 +24,7 @@
 
 ### [前端监控](./content/monit.md)
 
-## 架构
-
-- [大型网站技术架构核心原理](./大型网站技术架构核心原理.xmind)
-
-- [Pattern: Backends For Frontends](https://samnewman.io/patterns/architectural/bff/)
-- [了解 BFF 架构](https://segmentfault.com/a/1190000009558309)
-  - BFF 理念中，最重要的一点是：**服务自治，谁使用谁开发，即它应该由前端同学去维护。**
-    - 服务自治减少了沟通成本，带来了灵活和高效。
-    - BFF 并不限制具体技术，团队根据自己的技术栈来选型
-    - 在大部分前端团队中，都会倾向于选择生态更优，语法更熟悉的 Node.js 。
-    - 研发成本一定程度上的增加，对开发者的能力要求增加。
+## [架构](./content/architecture.md)
 
 ## [Nginx](./content/nginx.md)
 
