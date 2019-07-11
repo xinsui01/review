@@ -14,17 +14,21 @@
 
 ## [NodeJS](./content/node.md)
 
-## [前端监控](./content/monit.md)
-
 ## [编程](./content/coding.md)
 
 ## [网络层](./content/net.md)
 
 ## [前端模块化](./content/modular.md)
 
-## [大型网站技术架构核心原理](./大型网站技术架构核心原理.xmind)
+## 工程化
 
-## [分享阿里前端 p7 架构图谱](https://juejin.im/post/5cf5f358e51d45778f076ce5)
+### [前端监控](./content/monit.md)
+
+## 架构
+
+- [大型网站技术架构核心原理](./大型网站技术架构核心原理.xmind)
+
+- [了解 BFF 架构](https://segmentfault.com/a/1190000009558309)
 
 ## [Nginx](./content/nginx.md)
 
@@ -39,3 +43,5 @@
 [中高级前端大厂面试秘籍，寒冬中为您保驾护航，直通大厂(中)](https://juejin.im/post/5c92f499f265da612647b754)
 
 [中高级前端大厂面试秘籍，寒冬中为您保驾护航，直通大厂(下)](https://juejin.im/post/5cc26dfef265da037b611738)
+
+[分享阿里前端 p7 架构图谱](https://juejin.im/post/5cf5f358e51d45778f076ce5)

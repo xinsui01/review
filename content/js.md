@@ -873,6 +873,39 @@ function _new() {
 - 全局上下文在浏览器窗口关闭后出栈。
 - 函数中，遇到 return 能直接终止可执行代码的执行，因此会直接将当前上下文弹出栈。
 
+### [JavaScript 深入之执行上下文](https://github.com/mqyqingfeng/Blog/issues/8)
+
+```js
+var scope = 'global scope';
+
+function checkScope() {
+  var scope = 'local scope';
+
+  function f() {
+    return scope;
+  }
+
+  return f();
+}
+
+checkScope(); // local scope
+```
+
+```js
+var scope = 'global scope';
+function checkScope() {
+  var scope = 'local scope';
+
+  function f() {
+    return scope;
+  }
+
+  return f;
+}
+
+checkScope()(); // local scope
+```
+
 ### [什么是作用域和执行上下文](https://segmentfault.com/a/1190000009522006)
 
 ### [前端基础进阶（六）：在 chrome 开发者工具中观察函数调用栈、作用域链与闭包](https://www.jianshu.com/p/73122bb3d262)
@@ -884,13 +917,17 @@ function _new() {
 - Set
 
   - 属性
+
     - constructor
     - size
+
   - 方法
+
     - add(value): 添加某个值，返回 Set 结构本身。
     - has(value): 返回一个布尔值，表示该值是否为 Set 的成员。
     - delete(value): 删除某个值，返回一个布尔值，表示删除是否成功
     - clear(): 清除所有成员，没有返回值。
+
   - 遍历操作
 
     - keys(): keys() 与 values() 行为完全一致
@@ -910,6 +947,7 @@ function _new() {
       ```
 
     - forEach()
+
       ```js
       let set = new Set([1, 4, 9]);
       set.forEach((value, index, thisArgs) => console.log(indexs + ': ' + value));
@@ -1222,7 +1260,9 @@ async 和 promise 都不会阻塞执行，await 只会对 async 函数内 await 
 
 async 异常捕获用 try...catch, promise 直接用 catch(), try...catch 无法捕获 promise 异常。
 
-async...await 是 Generator 函数语法糖。[ co 模块类似实现](#asyncawait)。
+async...await 是 Generator 函数语法糖。
+
+[co 模块类似实现](#asyncawait)。
 
 ## 防抖与节流
 
