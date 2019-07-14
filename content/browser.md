@@ -474,3 +474,124 @@
 # [WebP 相对于 PNG、JPG 有什么优势？](https://www.zhihu.com/question/27201061)
 
 - WebP 的优势在于它具有更优的图像数据压缩算法，在拥有肉眼无法识别差异的图像质量前提下，带来更小的图片体积，同时具备了无损和有损的压缩模式、Alpha 透明以及动画的特性，在 JPEG 和 PNG 上的转化效果都非常优秀、稳定和统一。
+
+# [动态拆分 JavaScript 加载性能优化--考虑加载性能因素](https://developers.google.com/web/fundamentals/performance/optimizing-javascript/code-splitting/?hl=zh-cn)
+
+- “预算”
+
+  - 如果在项目中使用 webpack，则可以将应用程序配置为通过 [performance](https://webpack.docschina.org/configuration/performance/) 配置对象以构建产出过大的资产时抛出错误。可以有效地限制资产大小的预算:
+
+    ```js
+    module.exports = {
+      // ...
+      performance: {
+        hints: 'error',
+        maxAssetSize: 102400,
+        maxEntrypointSize: 250000,
+        // 此属性允许 webpack 控制用于计算性能提示的文件。默认函数如下：
+        // function assetFilter(assetFilename) {
+        //   return !(/\.map$/.test(assetFilename));
+        // }
+        assetFilter: function(assetFilename) {
+          return assetFilename.endsWith('.js');
+        }
+      }
+    };
+    ```
+
+- 使用 Service Worker 预缓存脚本
+
+  在初始化时 Service Worker 预先缓存剩余的路由和功能。可以通过以下方式有效地进行预处理：
+
+  - 它不会影响应用程序初始的加载性能，因为 Service Worker 会在页面加载完成（load）后注册并开始进行预缓存。
+  - 使用 Service Worker 预缓存剩余路由和功能可确保在以后请求时可以立即使用。
+
+  [Workbox](https://developers.google.com/web/tools/workbox/?hl=zh-cn) 有一个 webpack 插件，可以轻松地为您的应用程序生成服务工作线程。
+
+  - 安装 [workbox-webpack-plugin](https://www.npmjs.com/package/workbox-webpack-plugin) 并将其加入您的 webpack 配置中，如下所示：
+
+    ```js
+    const { GenerateSW } = require('workbox-webpack-plugin');
+    ```
+
+    将一个 GenerateSW 实例添加到 plugins 配置中：
+
+    ```js
+    module.exports = {
+      // ...
+      plugins: [
+        // ... other plugins omitted
+        new GenerateSW()
+      ]
+    };
+    ```
+
+    通过此配置，Workbox 会生成一个 Service Worker ，可以预缓存应用程序中的所有 JavaScript。对于小型应用程序来说这可能很好，但对于大型应用程序，您可能**希望限制需要预处理的内容。可以通过插件的 chunks 添加白名单来实现**：
+
+    ```js
+    module.exports = {
+      // ...
+      plugins: [
+        new GenerateSW({
+          chunks: ['main', 'Favorites', 'PedalDetail', 'vendors']
+        })
+      ]
+      // ...
+    };
+    ```
+
+    使用白名单，我们可以确保 Service Worker 只预缓存我们需要的脚本。要查看示例应用中如何使用 Workbox，请查看 repo 的 [webpack-dynamic-splitting-precache](https://github.com/malchata/code-splitting-example/tree/webpack-dynamic-splitting-precache) 分支！
+
+- 预提取和预加载脚本
+
+  `rel=prefetch` 和 `rel=preload` 都是在浏览器之前获取指定资源的资源提示，可以通过屏蔽延迟来提高加载性能。尽管乍一看它们非常相似，但它们的表现却截然不同：
+
+      - rel=prefetch 是对以后要使用的非关键资源的低优先级提取。当浏览器空闲时，rel=prefetch 会启动请求。
+      - rel=preload 是当前路由使用的关键资源的高优先级提取。 rel=preload 启动的资源请求可能比浏览器发现它们时更早发生。但是，预加载是非常敏感的，因此您可能需要查看本指南 （以及可能的规范 ）以获得指导。
+
+  - Prefetch
+
+    - 为合理确定用户将访问或使用的路由或功能预取脚本可能是合理的，但先不要这样做。本指南的示例应用中预提取的一个很好的用例发生在我们将应用程序的 Router 组件安装在 index.js 入口的地方：
+      ```js
+      render(
+        <Router>
+          <Search path="/" default />
+          <AsyncRoute
+            path="/pedal/:id"
+            getComponent={() =>
+              import(/* webpackChunkName: "PedalDetail" */ './components/PedalDetail/PedalDetail').then(
+                module => module.default
+              )
+            }
+          />
+          <AsyncRoute
+            path="/favorites"
+            getComponent={() =>
+              import(
+                /* webpackPrefetch: true, webpackChunkName: "Favorites" */ './components/Favorites/Favorites'
+              ).then(module => module.default)
+            }
+          />
+        </Router>,
+        document.getElementById('app')
+      );
+      ```
+
+  - Preload
+
+    - webpackPreload 内联指令可以像 webpackPrefetch 为预提取一样调用预加载。然而，根据我的经验，使用 webpackPreload 预加载动态导入的内容与将给定路径的所有功能捆绑到一整个代码块中区别不大。
+    - webpackPreload 仅适用于动态 import()调用，因此为了预加载对示例应用中初始路由至关重要的代码块，我们需要依赖另一个名为 preload-webpack-plugin 的插件。
+
+      ```js
+      const PreloadWebpackPlugin = require('preload-webpack-plugin');
+
+      plugins: [
+        // Other plugins omitted...
+        new PreloadWebpackPlugin({
+          rel: 'preload',
+          include: ['main', 'vendors']
+        })
+      ];
+      ```
+
+      此配置将通过`<head>`中的`<link>`元素为 vendors 和 main 代码块提供预加载提示。
