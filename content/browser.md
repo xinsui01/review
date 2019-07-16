@@ -49,14 +49,28 @@
 
 ## Cookie
 
-- [SameSite cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#SameSite_cookies)
-  - Strict: same origin
-  - Lax: 在跨站点子请求中不携带 same-site cookies，例如加载图像或帧的调用。但是当用户从外部站点导航到 URL 时将发送 same-site cookies
-  ```js
-    Set-Cookie: key=value; SameSite=Strict
-  ```
-- Secure
-- HttpOnly
+- Set-Cookie
+
+  - expires
+    - 指定浏览器可发送 Cookie 的有效期。当省略 expires 属性时，Cookie 仅在浏览器关闭之前有效。
+  - path
+    - Cookie 的 path 属性可用于限制指定 Cookie 的发送范围的文件目录
+  - domain
+
+    - 通过 Cookie 的 domain 属性指定的域名可做到与结尾匹配一致。比如， 当指定 `http://example.com` 后， 除 `http://example.com` 以外，Example Domain 或 www2.example.com 等都可以发送 Cookie。因此，除了针对具体指定的多个域名发送 Cookie 之外，不指定 domain 属性显得更安全。
+
+  - [SameSite cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#SameSite_cookies)
+
+    - Strict: same origin
+    - Lax: 在跨站点子请求中不携带 same-site cookies，例如加载图像或帧的调用。但是当用户从外部站点导航到 URL 时将发送 same-site cookies
+
+    ```js
+      Set-Cookie: key=value; SameSite=Strict
+    ```
+
+  - Secure
+  - HttpOnly
+    - 使 JavaScript 脚本无法获得 Cookie。其主要目的为防止跨站脚本攻击（Cross-sitescripting，XSS）对 Cookie 的信息窃取。
 
 ## [chrome 显示 12px 以下字体的解决方法](https://blog.csdn.net/u012011360/article/details/41846905)
 
@@ -173,6 +187,10 @@
 - Server
 
 ## [深入浅出浏览器渲染原理](https://juejin.im/post/5c35cf62f265da615e05a67d)
+
+- [requestAnimationFrame Scheduling For Nerds](https://medium.com/@paul_irish/requestanimationframe-scheduling-for-nerds-9c57f7438ef4)
+
+![Life of a frame](../imgs/life_of_a_frame.png)
 
 - 以下操作会导致重排或重绘
 
@@ -499,7 +517,7 @@
     };
     ```
 
-- 使用 Service Worker 预缓存脚本
+- 使用 [Service Worker](https://juejin.im/post/5ba0fe356fb9a05d2c43a25c) 预缓存脚本
 
   在初始化时 Service Worker 预先缓存剩余的路由和功能。可以通过以下方式有效地进行预处理：
 

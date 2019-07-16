@@ -1,7 +1,6 @@
 # React
 
 - [Deep In React 之浅谈 React Fiber 架构(一)](https://juejin.im/post/5d12c907f265da1b6d4033c5)
-- [requestAnimationFrame Scheduling For Nerds](https://medium.com/@paul_irish/requestanimationframe-scheduling-for-nerds-9c57f7438ef4)
 
 - React 基础模块
 
@@ -1011,6 +1010,8 @@ export default function connectAdvanced() {
       - 没有副作用
       - 不会依赖外部状态
 
+## [【译】Redux 还是 Mobx，让我来解决你的困惑！](https://segmentfault.com/a/1190000011148981)
+
 ## Immutable.js
 
 > Immutable Data 就是一旦创建，就不能再被更改的数据。对 Immutable 对象的任何添加、修改、删除操作都会返回一个新的 Immutable 对象。  
@@ -1032,6 +1033,8 @@ export default function connectAdvanced() {
   2. 节省内存空间（结构共享）
   3. 拥抱函数式编程
      纯函数式编程比面向对象更适用于前端开发。因为只要输入一致，输出必然一致，开发的组件更易于调试和安装。
+
+- [你需要 Mobx 还是 Redux？](https://juejin.im/post/5a7fd72c5188257a766324ae)
 
 # Angular
 
