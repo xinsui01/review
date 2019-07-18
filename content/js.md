@@ -1619,6 +1619,11 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
   - js 原生方法总会比你写的任何代码都要快
 
 - 构建并部署高性能 js 应用小结
+
   - 合并、压缩 js 文件。可使用 Gzip 压缩，能够减少约 70%的体积！
   - 通过正确设置 HTTP 响应头来缓存 js 文件，通过向文件名增加时间戳来避免缓存问题。
   - 使用 CDN 提供 js 文件；CDN 不仅可以提升性能，它也为你管理文件的压缩与缓存。
+
+## [CDN 是什么？使用 CDN 有什么优势？](https://www.zhihu.com/question/36514327)
+
+## [对函数式编程的理解](http://taobaofed.org/blog/2017/03/16/javascript-functional-programing/)
