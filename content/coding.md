@@ -662,14 +662,10 @@ function sequenceTasks(arr) {
 ```
 
 ```js
-function sequenceTasks(arr) {
-  async function run() {
-    for (let promiseFn of arr) {
-      await promiseFn();
-    }
+async function sequenceTasks(arr) {
+  for (let promiseFn of arr) {
+    await promiseFn();
   }
-
-  return run();
 }
 ```
 
