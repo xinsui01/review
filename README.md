@@ -12,7 +12,7 @@
 
 ## [国际化](./content/intl.md)
 
-## [NodeJS](./content/node.md)
+## [NodeJS](./content/node/node.md)
 
 ## [编程](./content/coding.md)
 
@@ -25,6 +25,8 @@
 ### [前端监控](./content/monit.md)
 
 ## [架构](./content/architecture.md)
+
+## [cli](./cli.md)
 
 ## [Nginx](./content/nginx.md)
 

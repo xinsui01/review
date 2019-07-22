@@ -42,13 +42,10 @@
 
 ![](https://user-gold-cdn.xitu.io/2017/6/14/03e1f627b419676dbb727ab9bc35e77e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
+## [Process](./process.md)
+
 ## [Nodejs 进程间通信](http://www.ayqy.net/blog/nodejs%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/)
 
-- 创建进程四种方式
-  - spawn()
-  - exec()
-  - execFile()
-  - fork()
 - 通信方式
 
   - 通过 stdin/stdout 传递 json
@@ -96,7 +93,7 @@
 
   - 原生 IPC 通信
 
-    spawn()及 fork()的例子，进程之间可以借助内置的 IPC 机制通信。
+    spawn() 及 fork() 的例子，进程之间可以借助内置的 IPC 机制通信。
 
     ```
     父进程：
