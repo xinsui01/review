@@ -78,6 +78,7 @@ Master-Worker 模式，又称主从模式。具备较好的可伸缩性和稳定
       send() 方法在将消息发送到 IPC 管道前，将消息封装成两个对象， 一个 handle，一个 message.
 
       - message:
+
         ```js
         {
           cmd: 'NODE_HANDLE',
@@ -131,3 +132,101 @@ Master-Worker 模式，又称主从模式。具备较好的可伸缩性和稳定
     ```
 
   - cluster.fork()子进程时，将这个 TCP 服务端 socket 文件描述符发给工作进程。通过 cluster.fork() 复制的进程，环境变量就存在 NODE_UNIQUE_ID。
+
+- example
+
+```js
+// master.js
+const { fork } = require('child_process');
+const cpusLen = require('os').cpus().length;
+
+const server = require('net').createServer();
+server.listen(1339);
+
+// 限量重启
+const limit = 20;
+const during = 60 * 1000;
+let restart = [];
+const isTooFrequently = function() {
+  const time = Date.now();
+  const length = restart.push(time);
+  if (length > limit) {
+    restart = restart.slice(limit * -1);
+  }
+
+  return restart.length >= limit && restart[restart.length - 1] - restart[0] < during;
+};
+
+const workers = {};
+const createWorker = function() {
+  // 检查是否太过频繁
+  if (isTooFrequently()) {
+    process.emit('giveup', limit, during);
+    return;
+  }
+
+  const worker = fork(__dirname + '/worker.js');
+
+  worker.on('message', function(msg) {
+    // 接收到子进程自杀信号，创建新的进程
+    if (msg.act === 'suicide') {
+      createWorker();
+    }
+  });
+  // 退出时重新启动新的进程
+  worker.on('exit', function() {
+    console.log(`worker ${worker.pid} exited`);
+    delete workers[worker.pid];
+  });
+
+  worker.send('server', server);
+  workers[worker.pid] = worker;
+  console.log(`Create worker. pid ${worker.pid}`);
+};
+
+for (let i = 0; i < cpusLen; i++) {
+  createWorker();
+}
+
+// 进程退出时，让所有的工作进程退出
+process.on('exit', function() {
+  for (let pid in workers) {
+    workers[pid].kill();
+  }
+});
+```
+
+```js
+// worker.js
+const http = require('http');
+const server = http.createServer(function(req, res) {
+  res.writeHead(200, { 'content-type': 'text/plain' });
+  res.end(`handled by child, pid is ${process.pid} \n`);
+  throw new Error('throw exception');
+});
+
+let worker;
+process.on('message', (msg, tcp) => {
+  if (msg === 'server') {
+    worker = tcp;
+    worker.on('connection', function(socket) {
+      server.emit('connection', socket);
+    });
+  }
+});
+
+process.on('uncaughtException', function(err) {
+  // 向主进程发送自杀信号
+  process.send({ act: 'suicide' });
+  // 停止接收新的连接
+  worker.close(function() {
+    // 所有已有的连接断开后，退出进程
+    process.exit(1);
+  });
+
+  // 等待长连接的断开需要较久的时间，为已有的连接设置一个超时时间，在限定的时间强制退出
+  setTimeout(function() {
+    process.exit(1);
+  }, 5000);
+});
+```
