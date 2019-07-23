@@ -1,5 +1,20 @@
 # React
 
+- [从 React 渲染流程分析 Diff 算法](https://segmentfault.com/a/1190000016304921)
+  - 什么是虚拟 DOM
+    - 其实所谓的 virtual DOM 就是 JavaScript 对象到 Html DOM 节点的映射；即使用 JavaScript 对象将 Html 结构表示出来，而这个对象就是 virtual DOM。
+  - 什么时候会生成到 virtual DOM
+    - render 执行的结果得到的并不是真正的 DOM 节点，结果仅仅是轻量级的 JavaScript 对象，即在 render 函数调用时将会创建出虚拟 DOM；
+      ![react render 流程](../imgs/react_render.png)
+    - 通过 React.createElemen 创建出虚拟 DOM（React Element），而该函数只在 Render 函数中调用，所以在 React 装载和更新的过程中才会有虚拟 DOM 的生成；至于挂载到真实 DOM 自然而然是 ReactDom.render 函数啦。
+  - 为什么需要使用 virtual DOM
+    - DOM 管理历史阶段：
+      - JS 或者 jQuery 操作 DOM： 当应用程序越来越复杂，需要在 JS 里面维护的字段也越来越多，需要监听事件和在事件回调用更新页面的 DOM 操作也越来越多，应用程序会变得非常难维护。
+      - 后来产出 MVC、MVP 的架构模式，期望从代码组织方式来降低维护难度。但是 MVC 架构并没办法减少维护的状态，也没有降低状态更新时需要对页面的更新操作，你需要操作的 DOM 还是需要操作，只是换了个地方。
+      - 既然状态改变了要操作相应的 DOM 元素，为什么不做一个东西让视图和状态进行绑定，状态变更了视图自动变更。这就是后来人们想出了 MVVM 模式，只要在模版中声明视图组件是和什么状态进行绑定的，双向绑定引擎就会在状态更新的时候自动更新视图;
+      - 但 MVVM 双向数据绑定并不是唯一的办法，还有一个非常直观的方法：一旦状态发生了变化，就用模版引擎重新渲染整个视图，然后用新的视图更换掉旧的视图。
+    - React 采用的就是第四种模式；但是我们都知道对于操作 DOM 成本太高，而相对操作 JavaScript 就快速多了，而 Html DOM 可以很简单的用 JavaScript 对象表示出来（Virtual DOM 就这样诞生了）
+    - 这样的做法会导致很多的问题，最大的问题就是这样做会很慢，因为即使一个小小的状态变更都要重新构造整棵 DOM，性价比太低；而 React Virtual DOM 在状态更新过程加了一些特别的操作来避免整棵 DOM 树变更。
 - [Deep In React 之浅谈 React Fiber 架构(一)](https://juejin.im/post/5d12c907f265da1b6d4033c5)
 
 - React 基础模块

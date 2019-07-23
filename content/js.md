@@ -649,6 +649,31 @@ function type(obj) {
       //        input: 'For more information, see Chapter 3.4.5.1' ]
       ```
 
+## 判断数组的几种方法及优劣
+
+- Array.isArray
+- Object.prototype.toString.call
+
+  - 不能校验自定义类型
+
+    ```js
+    function Animal() {}
+    let a = new Animal();
+    Object.prototype.toString.call(a); // '[object Object]'
+    ```
+
+- instanceof
+
+  - 原型可能被修改
+  - 不能校验原始类型值
+
+    ```js
+    'a' instanceof String; // false
+    ```
+
+- arr.constructor === Array
+  - 原型被改写
+
 ## call/apply 实现
 
 ```js
