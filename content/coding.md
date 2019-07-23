@@ -867,3 +867,16 @@ function maxSum(arr) {
   return Math.max(...sumArr);
 }
 ```
+
+- 计算对象最大深度
+
+```js
+function getDepth(obj, max = 0) {
+  if (obj === null) return max;
+  if (['[object Array]', '[object Object]'].includes(Object.prototype.toString.call(obj))) {
+    const maxArr = Object.values(obj).map(val => getDepth(val, max + 1));
+    return Math.max(...maxArr, max);
+  }
+  return max;
+}
+```

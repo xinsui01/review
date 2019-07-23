@@ -28,7 +28,7 @@
 
   > 如果不传第二个参数，默认命令为 `-V, --version`
 
-- `program.option(flags, desc, [fn], [defaultValue])`
+- `program.option(flags, desc, [fn | RegExp], [defaultValue])`
 
   > 使用`.option()`方法定义`commander`的选项
   > 短标志 -abc 等于 -a -b -c
@@ -115,7 +115,7 @@
 
   > 设置 options，调用命令
 
-- 自定义校验
+- 自定义处理数据
 
 ```js
 function range(val) {
@@ -158,7 +158,7 @@ console.log(' verbosity: %j', program.verbose);
 console.log(' args: %j', program.args);
 ```
 
-- 正则表达式
+- 正则表达式处理数据: `RegExp.exec(data)[0]`, 没有匹配返回默认值
 
 ```js
 program
@@ -254,15 +254,15 @@ const questions = [
      * an error message (String) otherwise
      * If false is returned, a default error message is provided.
      */
-    // validate: function(value) {
-    //   const pass = value.match(
-    //     /^([01]{1})?[-.\s]?\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})\s?((?:#|ext\.?\s?|x\.?\s?){1}(?:\d+)?)?$/i
-    //   );
-    //   if (pass) {
-    //     return true;
-    //   }
-    //   return 'Please enter a valid phone number';
-    // },
+    validate: function(value) {
+      const pass = value.match(
+        /^([01]{1})?[-.\s]?\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})\s?((?:#|ext\.?\s?|x\.?\s?){1}(?:\d+)?)?$/i
+      );
+      if (pass) {
+        return true;
+      }
+      return 'Please enter a valid phone number';
+    },
     /**
      * async validate
      */
@@ -291,7 +291,7 @@ const questions = [
     when: function(answers) {
       return answers.user.name === 'Azrael';
     },
-    prefix: '⭐️ ', // default ?
+    prefix: '⭐️ ', // default '?'
     suffix: ' ?' // default ''
   },
   {
@@ -491,7 +491,7 @@ const tasks = new Listr([
           {
             title: 'Checking git status',
             task: () =>
-              execa.stdout('git', ['status', '--porcelain']).then(result => {
+              execa('git', ['status', '--porcelain']).then(result => {
                 if (result !== '') {
                   throw new Error('Unclean working tree. Commit or stash changes first.');
                 }
@@ -500,7 +500,7 @@ const tasks = new Listr([
           {
             title: 'Checking remote history',
             task: () =>
-              execa.stdout('git', ['rev-list', '--count', '--left-only', '@{u}...HEAD']).then(result => {
+              execa('git', ['rev-list', '--count', '--left-only', '@{u}...HEAD']).then(result => {
                 if (result !== '0') {
                   throw new Error('Remote history differ. Please pull changes.');
                 }
@@ -594,9 +594,7 @@ const tasks = new Listr([
      *  - throws or returns a Promise that rejects, the task (and the whole build) will fail
      */
     skip: ctx => {},
-    task: () => {
-      fs.createReadStream('data.txt', 'utf8').pipe(split(/\r?\n/, null, { trailing: false }));
-    }
+    task: () => fs.createReadStream('data.txt', 'utf8').pipe(split(/\r?\n/, null, { trailing: false }))
   }
 ]);
 
