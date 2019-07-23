@@ -806,18 +806,17 @@ function partial(fn, ...args) {
 ## [深入理解 new 操作符](https://www.cnblogs.com/onepixel/p/5043523.html)
 
 ```js
-function _new() {
+function _new(constructor, ...args) {
   const obj = {};
-
-  const [constructor, ...args] = [...arguments];
 
   _new.target = constructor;
 
   obj.__proto__ = constructor.prototype;
 
   const result = constructor.apply(obj, args);
-  const isObject = result !== null && typeof result === 'object';
-  return isObject ? result : obj; // 忽略 null
+  // const isObject = result !== null && typeof result === 'object';
+  // return isObject ? result : obj; // 忽略 null
+  return result instanceof Object ? result : obj;
 }
 ```
 
@@ -991,9 +990,9 @@ checkScope()(); // local scope
 
 - [【剖析 Promise 内部结构，一步一步实现一个完整的、能通过所有 Test case 的 Promise 类】](https://github.com/xieranmaya/blog/issues/3)
 
-* [深入 Promise(一)——Promise 实现详解](https://zhuanlan.zhihu.com/p/25178630)
-* [深入 Promise(二)——进击的 Promise](https://zhuanlan.zhihu.com/p/25198178)
-* [深入 Promise(三)——命名 Promise](https://zhuanlan.zhihu.com/p/25199781)
+- [深入 Promise(一)——Promise 实现详解](https://zhuanlan.zhihu.com/p/25178630)
+- [深入 Promise(二)——进击的 Promise](https://zhuanlan.zhihu.com/p/25198178)
+- [深入 Promise(三)——命名 Promise](https://zhuanlan.zhihu.com/p/25199781)
 
 - [实现](https://github.com/xieranmaya/Promise3/blob/master/Promise3.js)
 
@@ -1549,6 +1548,45 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       return completeAssign(deepClone(obj), family);
     }
     ```
+
+## Array.prototype.flat(depth)
+
+> 按照一个可指定的深度递归遍历数组，并将所有元素与遍历到的子数组中的元素合并为一个新数组返回
+
+```js
+// polyfill
+function flattenDeep(arr) {
+  return arr.reduce((accu, val) => accu.concat(Array.isArray(val) ? flattenDeep(val) : val), []);
+}
+```
+
+```js
+function flatten(input) {
+  if (Array.isArray(input)) {
+    let output = [];
+    function _flatten(input) {
+      for (let i = 0, len = input.length; i < len; i++) {
+        let value = input[i];
+        if (Array.isArray(value)) {
+          _flatten(value);
+        } else {
+          output.push(value);
+        }
+      }
+    }
+    _flatten(input);
+    return output;
+  } else {
+    return input;
+  }
+}
+```
+
+```js
+function flatten(input) {
+  return Array.isArray(input) ? input.toString().split(',') : input;
+}
+```
 
 ## [高性能 Javascript](https://juejin.im/post/5a48c63451882560b76c8323)
 

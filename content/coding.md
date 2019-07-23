@@ -14,36 +14,6 @@
     num.toString().replace(/^\d+/, m => m.replace(/(\d{1,3})(?=(?:\d{3})+$)/g, '$1,'));
     ```
 
-- 实现一个 flatten 方法。
-
-  ```js
-  function flatten(input) {
-    if (Array.isArray(input)) {
-      let output = [];
-      function _flatten(input) {
-        for (let i = 0, len = input.length; i < len; i++) {
-          let value = input[i];
-          if (Array.isArray(value)) {
-            _flatten(value);
-          } else {
-            output.push(value);
-          }
-        }
-      }
-      _flatten(input);
-      return output;
-    } else {
-      return input;
-    }
-  }
-  ```
-
-  ```js
-  function flatten(input) {
-    return Array.isArray(input) ? input.toString().split(',') : input;
-  }
-  ```
-
 - 将一个 json 数据的所有 key 从下划线改为驼峰
 
   ```js
