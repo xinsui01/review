@@ -213,6 +213,7 @@
     - 把差异应用到真正的 DOM 树上，视图就更新了
 
 - [react diff](https://zhuanlan.zhihu.com/p/20346379)
+- [vDOM 比真实 DOM 快吗？](https://www.zhihu.com/question/31809713/answer/53544875)
 
 ## [合成事件（SyntheticEvent）](https://reactjs.org/docs/events.html)
 

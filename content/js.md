@@ -70,19 +70,21 @@
 
   只要块级作用域内存在 let 命令，它所声明的变量就“绑定”（binding）这个区域，不再受外部的影响。
 
-  ```
-    var tmp = 123;
+  ```js
+  var tmp = 123;
 
-    if (true) {
-      tmp = 'abc'; // ReferenceError
-      let tmp;
-    }
+  if (true) {
+    tmp = 'abc'; // ReferenceError
+    let tmp;
+  }
   ```
 
 - 不允许重复声明
 - var 的副作用
   - 通过 var 创建的全局变量（任何函数之外的程序中创建）是不能被删除的。
   - 无 var 创建的隐式全局变量（无视是否在函数中创建）是能被删除的。
+
+![var let const](../imgs/var_let.png)
 
 ## 箭头函数
 
@@ -659,7 +661,7 @@ function type(obj) {
     ```js
     function Animal() {}
     let a = new Animal();
-    Object.prototype.toString.call(a); // '[object Object]'
+    Object.prototype.toString.call(a); // '[objevarct Object]'
     ```
 
 - instanceof

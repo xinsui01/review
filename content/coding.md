@@ -850,3 +850,61 @@ function getDepth(obj, max = 0) {
   return max;
 }
 ```
+
+- 请把俩个数组 [A1, A2, B1, B2, C1, C2, D1, D2] 和 [A, B, C, D]，合并为 [A1, A2, A, B1, B2, B, C1, C2, C, D1, D2, D]
+
+```js
+let a1 = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'D1', 'D2'];
+let a2 = ['A', 'B', 'C', 'D'].map(item => {
+  return item + 3;
+});
+let a3 = [...a1, ...a2].sort().map(item => item.replace(/3$/, ''));
+```
+
+- 改造下面的代码，使之输出 0 - 9，写出你能想到的所有解法。
+
+```js
+for (var i = 0; i < 10; i++) {
+  setTimeout(() => {
+    console.log(i);
+  }, 1000);
+}
+```
+
+解法：
+
+```js
+for (let i = 0; i < 10; i++) {
+  setTimeout(() => {
+    console.log(i);
+  }, 1000);
+}
+```
+
+```js
+for (let i = 0; i < 10; i++) {
+  (i =>
+    setTimeout(() => {
+      console.log(i);
+    }, 1000))(i);
+}
+```
+
+```js
+/**
+ *  var timeoutID = scope.setTimeout(function[, delay, param1, param2, ...]);
+ *  var timeoutID = scope.setTimeout(function[, delay]);
+ *  var timeoutID = scope.setTimeout(code[, delay]);
+ *  let intervalID = window.setInterval(func, delay[, param1, param2, ...]);
+ *  let intervalID = window.setInterval(code, delay);
+ */
+for (let i = 0; i < 10; i++) {
+  setTimeout(
+    i => {
+      console.log(i);
+    },
+    1000,
+    i
+  );
+}
+```
