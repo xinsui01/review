@@ -226,7 +226,7 @@
 - [浏览器事件循环机制（event loop）](https://juejin.im/post/5afbc62151882542af04112d)
   - UI rendering 的节点是由浏览器自行判断决定的，只要执行 UI rendering，它的节点是在执行完所有的 microtask 之后，下一个 macrotask 之前，紧跟着执行 UI render。
 - [JavaScript 运行机制详解：再谈 Event Loop](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)
-- Node event loop
+- Node event loop: v11 之后与浏览器保持一致
 
   - 宏队列
     - timers 阶段：这个阶段执行 setTimeout 和 setInterval 预定的 callback
@@ -282,6 +282,39 @@
    * async1 end
    * promise2
    * setTimeout
+   */
+  ```
+
+  ```js
+  setTimeout(() => {
+    console.log(1);
+  }, 0);
+
+  new Promise((resolved, rejected) => {
+    console.log(2);
+    resolved();
+  })
+    .then(() => {
+      setTimeout(() => {
+        console.log(4);
+      }, 0);
+      return new Promise((resolved, rejected) => {
+        console.log(5);
+        resolved();
+      });
+    })
+    .then(() => {
+      console.log(6);
+    });
+
+  console.log(7);
+  /**
+  `* 2
+   * 7
+   * 5
+   * 6
+   * 1
+   * 4
    */
   ```
 
