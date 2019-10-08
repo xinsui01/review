@@ -468,6 +468,8 @@
 
 ## [transform](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform)
 
+> 开启硬件加速 transform: translateZ(0);
+
 ```css
 /* Keyword values */
 transform: none;
@@ -551,7 +553,7 @@ transform: unset;
 
   ```html
   <style>
-    <style > .caret {
+    .caret {
       display: inline-block;
       border-top: 10px solid red;
       border-left: 10px solid transparent;
