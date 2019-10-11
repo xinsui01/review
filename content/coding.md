@@ -908,3 +908,31 @@ for (let i = 0; i < 10; i++) {
   );
 }
 ```
+
+- 括号是否匹配
+
+```js
+function isBalance(str) {
+  const brackets = {
+    '(': ')',
+    '[': ']',
+    '{': '}'
+  };
+
+  const stack = [],
+    leftBrackets = Object.keys(brackets),
+    rightBrackets = Object.values(brackets);
+
+  for (let i of str) {
+    if (leftBrackets.includes(i)) {
+      stack.push(brackets[i]);
+    } else if (rightBrackets.includes(i)) {
+      if (stack.length === 0 || stack.pop() !== i) {
+        return false;
+      }
+    }
+  }
+
+  return stack.length === 0;
+}
+```

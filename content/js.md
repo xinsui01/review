@@ -936,6 +936,9 @@ checkScope()(); // local scope
 
 ### [前端基础进阶（六）：在 chrome 开发者工具中观察函数调用栈、作用域链与闭包](https://www.jianshu.com/p/73122bb3d262)
 
+- 闭包
+  - 本来函数外部是无权访问函数内部的函数或者变量，但是通过外部变量引用或者返回函数方式使得函数能够在外部调用，在调用时执行上下文创建和执行过程中保留了变量对象和作用域链使其不会被垃圾回收的过程就是闭包
+
 ### [Javascript 函数声明的优先级高于变量声明的优先级，但不会覆盖变量赋值](https://blog.csdn.net/wy818/article/details/49247675)
 
 ## [Set 和 Map 数据结构](http://es6.ruanyifeng.com/#docs/set-map)
