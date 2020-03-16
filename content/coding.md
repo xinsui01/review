@@ -364,74 +364,74 @@
 
 - 二分查找
 
-```js
-/**
- * 递归
- */
-function binarySearch(arr, target, start = 0, end = arr.length) {
-  if (start > end) {
+  ```js
+  /**
+   * 递归
+   */
+  function binarySearch(arr, target, start = 0, end = arr.length) {
+    if (start > end) {
+      return -1;
+    }
+    let midIndex = Math.floor((start + end) / 2);
+    let mid = arr[midIndex];
+
+    if (target === mid) {
+      return midIndex;
+    }
+
+    if (target < mid) {
+      return binarySearch(arr, target, 0, midIndex - 1);
+    }
+
+    if (target > mid) {
+      return binarySearch(arr, target, midIndex + 1, end);
+    }
+
     return -1;
   }
-  let midIndex = Math.floor((start + end) / 2);
-  let mid = arr[midIndex];
+  ```
 
-  if (target === mid) {
-    return midIndex;
-  }
+  ```js
+  /**
+   * 非递归
+   */
+  function binarySearch(arr, target) {
+    let min = 0;
+    let max = arr.length - 1;
 
-  if (target < mid) {
-    return binarySearch(arr, target, 0, midIndex - 1);
-  }
-
-  if (target > mid) {
-    return binarySearch(arr, target, midIndex + 1, end);
-  }
-
-  return -1;
-}
-```
-
-```js
-/**
- * 非递归
- */
-function binarySearch(arr, target) {
-  let min = 0;
-  let max = arr.length - 1;
-
-  while (min <= max) {
-    let mid = Math.floor((min + max) / 2);
-    if (target < arr[mid]) {
-      max = mid - 1;
-    } else if (target > arr[mid]) {
-      min = mid + 1;
-    } else {
-      return mid;
+    while (min <= max) {
+      let mid = Math.floor((min + max) / 2);
+      if (target < arr[mid]) {
+        max = mid - 1;
+      } else if (target > arr[mid]) {
+        min = mid + 1;
+      } else {
+        return mid;
+      }
     }
+    return -1;
   }
-  return -1;
-}
-```
+  ```
 
 - 二维数组查找
 
-```js
-function binarySearch(arr, target) {
-  let i = 0;
-  let j = arr[i].length - 1;
+  ```js
+  function binarySearch(arr, target) {
+    let i = 0;
+    let j = arr[i].length - 1;
 
-  while (i < arr.length && j >= 0) {
-    if (target < arr[i][j]) {
-      j--;
-    } else if (target > arr[i][j]) {
-      i++;
-    } else {
-      return [i, j];
+    while (i < arr.length && j >= 0) {
+      if (target < arr[i][j]) {
+        j--;
+      } else if (target > arr[i][j]) {
+        i++;
+      } else {
+        return [i, j];
+      }
     }
+    return -1;
   }
-  return -1;
-}
-```
+  ```
 
 - 数组去重
 
@@ -470,11 +470,11 @@ function binarySearch(arr, target) {
 
 - 字符串去除相邻的重复项
 
-```js
-function unique(str) {
-  return str.replace(/(.)(?=\1+)/g, "");
-}
-```
+  ```js
+  function unique(str) {
+    return str.replace(/(.)(?=\1+)/g, "");
+  }
+  ```
 
 - 输入 `携程C2t0r1i8p2020校招`, 输出 `2018Ctrip`
 
@@ -634,112 +634,112 @@ function unique(str) {
 
 - 数组中的 Promise 顺序执行
 
-```js
-function sequenceTasks(arr) {
-  return arr.reduce(function(prevPromise, promiseFn, index) {
-    return prevPromise.then(function() {
-      return promiseFn();
-    });
-  }, Promise.resolve());
-}
-```
-
-```js
-function sequenceTasks(arr) {
-  let p = Promise.resolve();
-  arr.forEach(promiseFn => {
-    p = p.then(function() {
-      return promiseFn();
-    });
-  });
-  return p;
-}
-```
-
-```js
-async function sequenceTasks(arr) {
-  for (let promiseFn of arr) {
-    await promiseFn();
+  ```js
+  function sequenceTasks(arr) {
+    return arr.reduce(function(prevPromise, promiseFn, index) {
+      return prevPromise.then(function() {
+        return promiseFn();
+      });
+    }, Promise.resolve());
   }
-}
-```
+  ```
+
+  ```js
+  function sequenceTasks(arr) {
+    let p = Promise.resolve();
+    arr.forEach(promiseFn => {
+      p = p.then(function() {
+        return promiseFn();
+      });
+    });
+    return p;
+  }
+  ```
+
+  ```js
+  async function sequenceTasks(arr) {
+    for (let promiseFn of arr) {
+      await promiseFn();
+    }
+  }
+  ```
 
 - 在一个数组中，找出里面其中两项相加后的和为 num，如果存在就返回两个数的索引位置，否则 false
 
-```js
-function fn(num = 0, arr = []) {
-  for (let i = 0, len = arr.length; i < len; i++) {
-    let diff = num - arr[i];
-    let diffIndex = arr.indexOf(diff);
-    if (diffIndex !== -1) {
-      return [i, diffIndex];
+  ```js
+  function fn(num = 0, arr = []) {
+    for (let i = 0, len = arr.length; i < len; i++) {
+      let diff = num - arr[i];
+      let diffIndex = arr.indexOf(diff);
+      if (diffIndex !== -1) {
+        return [i, diffIndex];
+      }
     }
+    return false;
   }
-  return false;
-}
-```
+  ```
 
 - 将两个有序数组合并为一个排好序的大数组
 
-```js
-function mergeArray(arr1 = [], arr2 = []) {
-  const result = [];
-  while (arr1.length && arr2.length) {
-    result.push(arr1[0] <= arr2[0] ? arr1.shift() : arr2.shift());
+  ```js
+  function mergeArray(arr1 = [], arr2 = []) {
+    const result = [];
+    while (arr1.length && arr2.length) {
+      result.push(arr1[0] <= arr2[0] ? arr1.shift() : arr2.shift());
+    }
+    return result.concat(left, right);
   }
-  return result.concat(left, right);
-}
-```
+  ```
 
 - 在数组中找到三个不同元素 其中两项的和当于第三项 arr[x] + arr[y] = arr[z] 如果数组中存在返回这三个数否则返回 false
 
-```js
-function find(_arr) {
-  let arr = Array.from(_arr).sort((a, b) => a - b);
-  for (let i = 0, len = arr.length - 1; i < len; i++) {
-    let cur = arr[i];
-    for (let j = i + 1; j < arr.length; j++) {
-      let next = arr[j];
-      let sum = cur + next;
-      let idx = arr.indexOf(sum, j + 1); // 开始查找的位置。如果该索引值大于或等于数组长度，意味着不会在数组里查找，返回-1。
-      if (idx > -1) {
-        return [cur, next, sum];
+  ```js
+  function find(_arr) {
+    let arr = Array.from(_arr).sort((a, b) => a - b);
+    for (let i = 0, len = arr.length - 1; i < len; i++) {
+      let cur = arr[i];
+      for (let j = i + 1; j < arr.length; j++) {
+        let next = arr[j];
+        let sum = cur + next;
+        let idx = arr.indexOf(sum, j + 1); // 开始查找的位置。如果该索引值大于或等于数组长度，意味着不会在数组里查找，返回-1。
+        if (idx > -1) {
+          return [cur, next, sum];
+        }
       }
     }
+    return false;
   }
-  return false;
-}
-```
+  ```
 
 - 字符串 repeat 实现
 
-```js
-String.prototype.repeat = function(count) {
-  return Array(count)
-    .fill(this)
-    .join("");
-};
+  ```js
+  String.prototype.repeat = function(count) {
+    return Array(count)
+      .fill(this)
+      .join("");
+  };
 
-String.prototype.repeat = function(count) {
-  return Array(count + 1).join(this);
-};
+  String.prototype.repeat = function(count) {
+    return Array(count + 1).join(this);
+  };
 
-String.prototype.repeat = function(count) {
-  let rpt = "";
-  let str = "" + this;
-  for (;;) {
-    if ((count & 1) == 1) {
-      rpt += str;
+  String.prototype.repeat = function(count) {
+    let rpt = "";
+    let str = "" + this;
+    for (;;) {
+      if ((count & 1) == 1) {
+        rpt += str;
+      }
+      count >>>= 1;
+      if (count == 0) {
+        break;
+      }
+      str += str;
     }
-    count >>>= 1;
-    if (count == 0) {
-      break;
-    }
-    str += str;
-  }
-  return rpt;
-};
-```
+    return rpt;
+  };
+  ```
 
 - 请实现函数 CodingMan, 此函数可以按照以下方式调用：
   ![](https://user-gold-cdn.xitu.io/2018/3/21/162468732563a3da?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
@@ -814,159 +814,159 @@ String.prototype.repeat = function(count) {
 
 - 利用数据劫持(Proxy/Object.definedProperty)
 
-```js
-let a = new Proxy(
-  { i: 1 },
-  {
-    get: function(target) {
-      return () => target.i++;
+  ```js
+  let a = new Proxy(
+    { i: 1 },
+    {
+      get: function(target) {
+        return () => target.i++;
+      }
     }
-  }
-);
-```
+  );
+  ```
 
 - 数组的 toString 接口默认调用数组的 join 方法，重新 join 方法
 
-```js
-let a = [1, 2, 3];
-a.join = a.shift;
-```
+  ```js
+  let a = [1, 2, 3];
+  a.join = a.shift;
+  ```
 
 - 检测字符串中括号表达式是否平衡
 
-```js
-function isBalance(str) {
-  function match(a, b) {
+  ```js
+  function isBalance(str) {
+    function match(a, b) {
+      return (
+        (a === "(" && b === ")") ||
+        (a === ")" && b === "(") ||
+        (a === "[" && b === "]") ||
+        (a === "]" && b === "[")
+      );
+    }
     return (
-      (a === "(" && b === ")") ||
-      (a === ")" && b === "(") ||
-      (a === "[" && b === "]") ||
-      (a === "]" && b === "[")
+      [...str].reduce((stack, cur) => {
+        match(stack[stack.length - 1], cur) ? stack.pop() : stack.push(cur);
+        return stack;
+      }, []).length === 0
     );
   }
-  return (
-    [...str].reduce((stack, cur) => {
-      match(stack[stack.length - 1], cur) ? stack.pop() : stack.push(cur);
-      return stack;
-    }, []).length === 0
-  );
-}
 
-console.log(isBalance("[()()()]"));
-```
+  console.log(isBalance("[()()()]"));
+  ```
 
 - 求相邻两项最大和
 
-```js
-function maxSum(arr) {
-  let sumArr = [];
-  arr.reduce((prev, cur, index) => {
-    sumArr.push(prev + cur);
-    return cur;
-  });
-  return Math.max(...sumArr);
-}
-```
+  ```js
+  function maxSum(arr) {
+    let sumArr = [];
+    arr.reduce((prev, cur, index) => {
+      sumArr.push(prev + cur);
+      return cur;
+    });
+    return Math.max(...sumArr);
+  }
+  ```
 
 - 计算对象最大深度
 
-```js
-function getDepth(obj, max = 0) {
-  if (obj === null) return max;
-  if (
-    ["[object Array]", "[object Object]"].includes(
-      Object.prototype.toString.call(obj)
-    )
-  ) {
-    const maxArr = Object.values(obj).map(val => getDepth(val, max + 1));
-    return Math.max(...maxArr, max);
+  ```js
+  function getDepth(obj, max = 0) {
+    if (obj === null) return max;
+    if (
+      ["[object Array]", "[object Object]"].includes(
+        Object.prototype.toString.call(obj)
+      )
+    ) {
+      const maxArr = Object.values(obj).map(val => getDepth(val, max + 1));
+      return Math.max(...maxArr, max);
+    }
+    return max;
   }
-  return max;
-}
-```
+  ```
 
 - 请把俩个数组 [A1, A2, B1, B2, C1, C2, D1, D2] 和 [A, B, C, D]，合并为 [A1, A2, A, B1, B2, B, C1, C2, C, D1, D2, D]
 
-```js
-let a1 = ["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2"];
-let a2 = ["A", "B", "C", "D"].map(item => {
-  return item + 3;
-});
-let a3 = [...a1, ...a2].sort().map(item => item.replace(/3$/, ""));
-```
+  ```js
+  let a1 = ["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2"];
+  let a2 = ["A", "B", "C", "D"].map(item => {
+    return item + 3;
+  });
+  let a3 = [...a1, ...a2].sort().map(item => item.replace(/3$/, ""));
+  ```
 
 - 改造下面的代码，使之输出 0 - 9，写出你能想到的所有解法。
 
-```js
-for (var i = 0; i < 10; i++) {
-  setTimeout(() => {
-    console.log(i);
-  }, 1000);
-}
-```
-
-解法：
-
-```js
-for (let i = 0; i < 10; i++) {
-  setTimeout(() => {
-    console.log(i);
-  }, 1000);
-}
-```
-
-```js
-for (let i = 0; i < 10; i++) {
-  (i =>
+  ```js
+  for (var i = 0; i < 10; i++) {
     setTimeout(() => {
       console.log(i);
-    }, 1000))(i);
-}
-```
+    }, 1000);
+  }
+  ```
 
-```js
-/**
- *  var timeoutID = scope.setTimeout(function[, delay, param1, param2, ...]);
- *  var timeoutID = scope.setTimeout(function[, delay]);
- *  var timeoutID = scope.setTimeout(code[, delay]);
- *  let intervalID = window.setInterval(func, delay[, param1, param2, ...]);
- *  let intervalID = window.setInterval(code, delay);
- */
-for (let i = 0; i < 10; i++) {
-  setTimeout(
-    i => {
+  解法：
+
+  ```js
+  for (let i = 0; i < 10; i++) {
+    setTimeout(() => {
       console.log(i);
-    },
-    1000,
-    i
-  );
-}
-```
+    }, 1000);
+  }
+  ```
+
+  ```js
+  for (let i = 0; i < 10; i++) {
+    (i =>
+      setTimeout(() => {
+        console.log(i);
+      }, 1000))(i);
+  }
+  ```
+
+  ```js
+  /**
+   *  var timeoutID = scope.setTimeout(function[, delay, param1, param2, ...]);
+   *  var timeoutID = scope.setTimeout(function[, delay]);
+   *  var timeoutID = scope.setTimeout(code[, delay]);
+   *  let intervalID = window.setInterval(func, delay[, param1, param2, ...]);
+   *  let intervalID = window.setInterval(code, delay);
+   */
+  for (let i = 0; i < 10; i++) {
+    setTimeout(
+      i => {
+        console.log(i);
+      },
+      1000,
+      i
+    );
+  }
+  ```
 
 - 括号是否匹配
 
-```js
-function isBalance(str) {
-  const brackets = {
-    "(": ")",
-    "[": "]",
-    "{": "}"
-  };
+  ```js
+  function isBalance(str) {
+    const brackets = {
+      "(": ")",
+      "[": "]",
+      "{": "}"
+    };
 
-  const stack = [],
-    leftBrackets = Object.keys(brackets),
-    rightBrackets = Object.values(brackets);
+    const stack = [],
+      leftBrackets = Object.keys(brackets),
+      rightBrackets = Object.values(brackets);
 
-  for (let i of str) {
-    if (leftBrackets.includes(i)) {
-      stack.push(brackets[i]);
-    } else if (rightBrackets.includes(i)) {
-      if (stack.length === 0 || stack.pop() !== i) {
-        return false;
+    for (let i of str) {
+      if (leftBrackets.includes(i)) {
+        stack.push(brackets[i]);
+      } else if (rightBrackets.includes(i)) {
+        if (stack.length === 0 || stack.pop() !== i) {
+          return false;
+        }
       }
     }
-  }
 
-  return stack.length === 0;
-}
-```
+    return stack.length === 0;
+  }
+  ```
