@@ -11,71 +11,94 @@
 
     // 方法二
     var num = 234982347.73;
-    num.toString().replace(/^\d+/, m => m.replace(/(\d{1,3})(?=(?:\d{3})+$)/g, '$1,'));
+    num
+      .toString()
+      .replace(/^\d+/, m => m.replace(/(\d{1,3})(?=(?:\d{3})+$)/g, "$1,"));
     ```
 
-- 将一个 json 数据的所有 key 从下划线改为驼峰
+- 有如下对象 testData, 请将该对象所有 key 从下划线转换为大驼峰
 
   ```js
-  const testData = {
-    a_bbb: 123,
-    a_g: [1, 2, 3, 4],
-    a_d: {
-      s: 2,
-      s_d: 3
-    },
-    a_f: [
-      1,
-      2,
-      3,
-      {
-        a_g: 5
-      }
-    ],
-    a_d_s: 1
+  var testData = {
+    aa_bb: 123,
+    bb_cc_dd: [1, 2, 3]
   };
 
-  /**
-   * 将一个json数据的所有key从下划线改为驼峰
-   *
-   * @param {object | array} value 待处理对象或数组
-   * @returns {object | array} 处理后的对象或数组
-   */
+  testData.cc = [
+    { abc_xy: testData },
+    { aa_bb_cc: testData.bb_cc_dd },
+    1,
+    "st_ri_n_g"
+  ];
+  testData.dd_xyz_cc_bb_ax = {
+    c: testData.cc,
+    xy: [1, 2, 3, null, undefined, false],
+    z: undefined,
+    is_string: false,
+    is_array: function() {}
+  };
+
+  ////////////////////// 解答  ///////////////////////////
   function mapKeysToCamelCase(data) {
-    /**
-     * 如果是基本常量return
-     */
-    if (isBaseType(data)) {
-      return data;
-    }
+    function _mapKeysToCamelCase(data, map) {
+      if (map.get(data)) return map.get(data);
+      /**
+       * 如果是基本常量return
+       */
+      if (isBaseType(data)) {
+        map.set(data, data);
+        return data;
+      }
 
-    if (Array.isArray(data)) {
-      return data.map(key => {
-        return isBaseType(key) ? key : mapKeysToCamelCase(key);
+      if (Array.isArray(data)) {
+        let _data = [];
+        map.set(data, _data);
+        data.forEach((key, index) => {
+          _data[index] = isBaseType(key) ? key : _mapKeysToCamelCase(key, map);
+        });
+        return _data;
+      }
+
+      let obj = {};
+      map.set(data, obj);
+      Object.keys(data).forEach(key => {
+        const _key = strToCamelCase(key);
+        obj[_key] = _mapKeysToCamelCase(data[key], map);
       });
+
+      return obj;
     }
 
-    let obj = {};
+    const isBaseType = (function() {
+      const baseTypes = [
+        "Number",
+        "String",
+        "Boolean",
+        "Null",
+        "Undefined",
+        "Function"
+      ].map(item => `[object ${item}]`);
+      return val => {
+        const tp = Object.prototype.toString.call(val);
+        return baseTypes.includes(tp);
+      };
+    })();
 
-    Object.keys(data).forEach(key => {
-      const _key = strToCamelCase(key);
-      obj[_key] = mapKeysToCamelCase(data[key]);
-    });
-    return obj;
+    function strToCamelCase(key) {
+      return key
+        .split("_")
+        .map(key =>
+          key.replace(/\b(\w)(\w*)/g, function($0, $1, $2) {
+            return $1.toUpperCase() + $2.toLowerCase();
+          })
+        )
+        .join("");
+    }
+
+    let map = new Map();
+    return _mapKeysToCamelCase(data, map);
   }
-
-  const isBaseType = (function() {
-    const baseTypes = ['Number', 'String', 'Boolean', 'Null', 'Undefined'].map(item => `[object ${item}]`);
-    return val => {
-      const tp = Object.prototype.toString.call(val);
-      return baseTypes.includes(tp);
-    };
-  })();
-
-  function strToCamelCase(key) {
-    return ('' + key).replace(/(_.{1})/g, val => val.slice(1).toUpperCase());
-  }
-
+  ////////////////////// 解答结束  ///////////////////////////
   console.log(mapKeysToCamelCase(testData));
   ```
 
@@ -91,12 +114,12 @@
     // );
 
     let obj = {};
-    ('' + str).replace(/./g, letter => {
+    ("" + str).replace(/./g, letter => {
       obj[letter] = (obj[letter] || 0) + 1;
       return letter;
     });
 
-    let letter = '',
+    let letter = "",
       maxNum = 0;
 
     for (let _letter in obj) {
@@ -109,7 +132,7 @@
     return { letter, maxNum };
   }
 
-  const str = 'qweqrtyuiqqqwrtyudfgerqtywer';
+  const str = "qweqrtyuiqqqwrtyudfgerqtywer";
   console.log(maxN(str));
   ```
 
@@ -118,14 +141,14 @@
   ```js
   function parseQueryString(url) {
     let result = {};
-    let arr = url.split('?');
+    let arr = url.split("?");
     if (arr.length <= 1) {
       return result;
     } else {
-      arr = arr[1].split('#');
-      arr = arr[0].split('&');
+      arr = arr[1].split("#");
+      arr = arr[0].split("&");
       arr.forEach(item => {
-        const [key, value] = item.split('=');
+        const [key, value] = item.split("=");
         result[key] = value;
       });
     }
@@ -133,7 +156,7 @@
     return result;
   }
 
-  var url = 'http://witmax.cn/index.php?key0=0&key1=1&key2=2#location';
+  var url = "http://witmax.cn/index.php?key0=0&key1=1&key2=2#location";
 
   console.log(parseQueryString(url));
   ```
@@ -187,11 +210,11 @@
           } else {
             evt.cancelBubble = true; // IE 阻止事件冒泡
           }
-          this.style.border = '1px solid #ccc';
+          this.style.border = "1px solid #ccc";
         };
 
         child.onmouseout = function() {
-          this.style.border = '';
+          this.style.border = "";
         };
 
         mouseOverShowBorder(child);
@@ -441,7 +464,7 @@ function binarySearch(arr, target) {
 
   ```js
   function unique(str) {
-    return [...new Set(str)].join('');
+    return [...new Set(str)].join("");
   }
   ```
 
@@ -449,7 +472,7 @@ function binarySearch(arr, target) {
 
 ```js
 function unique(str) {
-  return str.replace(/(.)(?=\1+)/g, '');
+  return str.replace(/(.)(?=\1+)/g, "");
 }
 ```
 
@@ -457,15 +480,15 @@ function unique(str) {
 
   ```js
   function handleStr(str) {
-    let nums = str.match(/\d/g).join('');
-    let words = str.match(/[a-zA-Z]/g).join('');
+    let nums = str.match(/\d/g).join("");
+    let words = str.match(/[a-zA-Z]/g).join("");
 
     return uniqueStr(nums) + words;
   }
 
   function uniqueStr(str) {
-    const arr = str.split('');
-    return arr.filter((item, index) => arr.indexOf(item) === index).join('');
+    const arr = str.split("");
+    return arr.filter((item, index) => arr.indexOf(item) === index).join("");
   }
   ```
 
@@ -500,7 +523,9 @@ function unique(str) {
     const result = {};
 
     validItems.forEach(item => {
-      result[item.type] ? result[item.type].push(item) : (result[item.type] = [item]);
+      result[item.type]
+        ? result[item.type].push(item)
+        : (result[item.type] = [item]);
       // if(result.hasOwnProperty(item.type)) {
       //  result[item.type].push(item)
       // } else {
@@ -517,7 +542,7 @@ function unique(str) {
   }
 
   function isPureObject(obj) {
-    return Object.prototype.toString.call(obj).slice(8, -1) === 'Object';
+    return Object.prototype.toString.call(obj).slice(8, -1) === "Object";
   }
 
   function resultFormat(obj) {
@@ -531,8 +556,8 @@ function unique(str) {
 
   ```js
   function calculateRoute(path1, path2) {
-    let pathArr1 = path1.split('/'),
-      pathArr2 = path2.split('/'),
+    let pathArr1 = path1.split("/"),
+      pathArr2 = path2.split("/"),
       routeArr = [],
       fileArr = [],
       diff = false;
@@ -540,7 +565,7 @@ function unique(str) {
     for (let i = 1, len = pathArr1.length; i < len; i++) {
       if (pathArr1[i] !== pathArr2[i] || diff) {
         if (pathArr1[i]) {
-          routeArr.push('..');
+          routeArr.push("..");
         }
         if (pathArr2[i]) {
           fileArr.push(pathArr2[i]);
@@ -551,10 +576,10 @@ function unique(str) {
       }
     }
 
-    return `${routeArr.join('/')}/${fileArr.join('/')}`;
+    return `${routeArr.join("/")}/${fileArr.join("/")}`;
   }
 
-  let path = caculateRoute('/a/b/c/d/e.js', '/a/b/f/g.js');
+  let path = caculateRoute("/a/b/c/d/e.js", "/a/b/f/g.js");
   ```
 
 - 实现一个数组中删除一个子数组的函数，要求函数中不 return 返回新的数组。
@@ -575,7 +600,7 @@ function unique(str) {
   ```js
   let promise = new Promise(resolve => {
     setTimeout(() => {
-      console.log('A');
+      console.log("A");
       resolve();
     }, 4000);
   });
@@ -584,7 +609,7 @@ function unique(str) {
     .then(() => {
       return new Promise(resolve => {
         setTimeout(() => {
-          console.log('B');
+          console.log("B");
           resolve();
         }, 3000);
       });
@@ -592,7 +617,7 @@ function unique(str) {
     .then(() => {
       return new Promise(resolve => {
         setTimeout(() => {
-          console.log('C');
+          console.log("C");
           resolve();
         }, 2000);
       });
@@ -600,7 +625,7 @@ function unique(str) {
     .then(() => {
       return new Promise(resolve => {
         setTimeout(() => {
-          console.log('D');
+          console.log("D");
           resolve();
         }, 1000);
       });
@@ -692,7 +717,7 @@ function find(_arr) {
 String.prototype.repeat = function(count) {
   return Array(count)
     .fill(this)
-    .join('');
+    .join("");
 };
 
 String.prototype.repeat = function(count) {
@@ -700,8 +725,8 @@ String.prototype.repeat = function(count) {
 };
 
 String.prototype.repeat = function(count) {
-  let rpt = '';
-  let str = '' + this;
+  let rpt = "";
+  let str = "" + this;
   for (;;) {
     if ((count & 1) == 1) {
       rpt += str;
@@ -812,7 +837,12 @@ a.join = a.shift;
 ```js
 function isBalance(str) {
   function match(a, b) {
-    return (a === '(' && b === ')') || (a === ')' && b === '(') || (a === '[' && b === ']') || (a === ']' && b === '[');
+    return (
+      (a === "(" && b === ")") ||
+      (a === ")" && b === "(") ||
+      (a === "[" && b === "]") ||
+      (a === "]" && b === "[")
+    );
   }
   return (
     [...str].reduce((stack, cur) => {
@@ -822,7 +852,7 @@ function isBalance(str) {
   );
 }
 
-console.log(isBalance('[()()()]'));
+console.log(isBalance("[()()()]"));
 ```
 
 - 求相邻两项最大和
@@ -843,7 +873,11 @@ function maxSum(arr) {
 ```js
 function getDepth(obj, max = 0) {
   if (obj === null) return max;
-  if (['[object Array]', '[object Object]'].includes(Object.prototype.toString.call(obj))) {
+  if (
+    ["[object Array]", "[object Object]"].includes(
+      Object.prototype.toString.call(obj)
+    )
+  ) {
     const maxArr = Object.values(obj).map(val => getDepth(val, max + 1));
     return Math.max(...maxArr, max);
   }
@@ -854,11 +888,11 @@ function getDepth(obj, max = 0) {
 - 请把俩个数组 [A1, A2, B1, B2, C1, C2, D1, D2] 和 [A, B, C, D]，合并为 [A1, A2, A, B1, B2, B, C1, C2, C, D1, D2, D]
 
 ```js
-let a1 = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'D1', 'D2'];
-let a2 = ['A', 'B', 'C', 'D'].map(item => {
+let a1 = ["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2"];
+let a2 = ["A", "B", "C", "D"].map(item => {
   return item + 3;
 });
-let a3 = [...a1, ...a2].sort().map(item => item.replace(/3$/, ''));
+let a3 = [...a1, ...a2].sort().map(item => item.replace(/3$/, ""));
 ```
 
 - 改造下面的代码，使之输出 0 - 9，写出你能想到的所有解法。
@@ -914,9 +948,9 @@ for (let i = 0; i < 10; i++) {
 ```js
 function isBalance(str) {
   const brackets = {
-    '(': ')',
-    '[': ']',
-    '{': '}'
+    "(": ")",
+    "[": "]",
+    "{": "}"
   };
 
   const stack = [],
