@@ -449,6 +449,62 @@ function compose(middleware) {
     };
     ```
 
+- webpack plugins
+
+  - 插件基本结构
+
+    ```js
+    module.exports = class MyPlugin {
+      constructor(options) {
+        this.options = options;
+      }
+
+      apply(compiler) {
+        console.log("my plugin is executed!");
+        compiler.hooks.done.tap("My Plugin", (stat) => {
+          console.log("hello world");
+          console.log("my plugin options: " + JSON.stringify(this.options));
+        });
+      }
+    };
+    ```
+
+  - 插件错误处理
+
+    - 参数校验阶段可以直接 throw 的方式抛出
+      ```js
+      throw new Error("Error Message");
+      ```
+    - 通过 compilation 对象的 warnings 和 errors 接收
+
+      ```js
+        compilation.warnings.push('warning);
+        compilation.errors.push('error)
+      ```
+
+  - 通过 compilation 进行文件写入
+
+    - compilation 上的 assets 可以用于文件写入
+      - 可以将 zip 资源包设置到 compilation.assets 对象上
+    - 文件写入需要使用 [webpack-sources](https://github.com/webpack/webpack-sources)
+
+      ```js
+      const { RawSource } = require("webpack-sources");
+      module.exports = class DemoPlugin {
+        constructor(options) {
+          this.options = options;
+        }
+
+        apply(compiler) {
+          const { name } = this.options;
+          compiler.hooks.emit.tapAsync("emit", (compilation, cb) => {
+            compilation.assets[name] = new RawResource("demo");
+            cb();
+          });
+        }
+      };
+      ```
+
 - [超详细的 webpack 原理解读](https://segmentfault.com/a/1190000017890529)
 
   1. 初始化阶段
