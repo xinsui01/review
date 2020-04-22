@@ -51,18 +51,18 @@
   - 通过 stdin/stdout 传递 json
 
     ```js
-    const { spawn } = require('child_process');
+    const { spawn } = require("child_process");
 
-    const child = spawn('node', ['./stdio-child.js']);
-    child.stdout.setEncoding('utf8');
+    const child = spawn("node", ["./stdio-child.js"]);
+    child.stdout.setEncoding("utf8");
     child.stdin.write(
       JSON.stringify({
-        type: 'handshake',
-        payload: '你好吖'
+        type: "handshake",
+        payload: "你好吖",
       })
     );
 
-    child.stdout.on('data', function(chunk) {
+    child.stdout.on("data", function (chunk) {
       let data = chunk.toString();
       let message = JSON.parse(data);
       console.log(`${message.type} ${message.payload}`);
@@ -72,16 +72,16 @@
     ```js
     // ./stdio-child.js
     // 子进程-收
-    process.stdin.on('data', chunk => {
+    process.stdin.on("data", (chunk) => {
       let data = chunk.toString();
       let message = JSON.parse(data);
       switch (message.type) {
-        case 'handshake':
+        case "handshake":
           // 子进程-发
           process.stdout.write(
             JSON.stringify({
-              type: 'message',
-              payload: message.payload + ' : hoho'
+              type: "message",
+              payload: message.payload + " : hoho",
             })
           );
           break;
@@ -118,43 +118,43 @@
     ```js
     // server
 
-    const ipc = require('../../../node-ipc');
+    const ipc = require("../../../node-ipc");
 
-    ipc.config.id = 'world';
+    ipc.config.id = "world";
     ipc.config.retry = 1500;
     ipc.config.maxConnections = 1;
 
-    ipc.serveNet(function() {
-      ipc.server.on('message', function(data, socket) {
-        ipc.log('got a message : ', data);
-        ipc.server.emit(socket, 'message', data + ' world!');
+    ipc.serveNet(function () {
+      ipc.server.on("message", function (data, socket) {
+        ipc.log("got a message : ", data);
+        ipc.server.emit(socket, "message", data + " world!");
       });
 
-      ipc.server.on('socket.disconnected', function(data, socket) {
-        console.log('DISCONNECTED\n\n', arguments);
+      ipc.server.on("socket.disconnected", function (data, socket) {
+        console.log("DISCONNECTED\n\n", arguments);
       });
     });
-    ipc.server.on('error', function(err) {
-      ipc.log('Got an ERROR!', err);
+    ipc.server.on("error", function (err) {
+      ipc.log("Got an ERROR!", err);
     });
     ipc.server.start();
 
     // client
-    const ipc = require('node-ipc');
+    const ipc = require("node-ipc");
 
-    ipc.config.id = 'hello';
+    ipc.config.id = "hello";
     ipc.config.retry = 1500;
 
-    ipc.connectToNet('world', function() {
-      ipc.of.world.on('connect', function() {
-        ipc.log('## connected to world ##', ipc.config.delay);
-        ipc.of.world.emit('message', 'hello');
+    ipc.connectToNet("world", function () {
+      ipc.of.world.on("connect", function () {
+        ipc.log("## connected to world ##", ipc.config.delay);
+        ipc.of.world.emit("message", "hello");
       });
-      ipc.of.world.on('disconnect', function() {
-        ipc.log('disconnected from world');
+      ipc.of.world.on("disconnect", function () {
+        ipc.log("disconnected from world");
       });
-      ipc.of.world.on('message', function(data) {
-        ipc.log('got a message from world : ', data);
+      ipc.of.world.on("message", function (data) {
+        ipc.log("got a message from world : ", data);
       });
     });
     ```
@@ -175,7 +175,7 @@ module.exports = class Application extends Emitter {
     super();
     this.proxy = false;
     this.middleware = [];
-    this.env = process.env.NODE_ENV || 'development';
+    this.env = process.env.NODE_ENV || "development";
     this.context = Object.create(context);
     this.request = Object.create(request);
     this.response = Object.create(response);
@@ -187,9 +187,9 @@ module.exports = class Application extends Emitter {
   }
 
   use(fn) {
-    if (typeof fn !== 'function') throw new TypeError('');
+    if (typeof fn !== "function") throw new TypeError("");
     if (isGeneratorFunction(fn)) {
-      console.warn('');
+      console.warn("");
       fn = convert(fn);
     }
     this.middleware.push(fn);
@@ -201,7 +201,7 @@ module.exports = class Application extends Emitter {
     fn = compose(this.middleware);
 
     // 添加默认的 error handle
-    if (!this.listenCounter('error')) this.on('error', this.onerror);
+    if (!this.listenCounter("error")) this.on("error", this.onerror);
 
     return (req, res) => {
       // 生成 ctx
@@ -213,12 +213,12 @@ module.exports = class Application extends Emitter {
   handleRequest(ctx, fnMiddleware) {
     const res = ctx.res;
     res.statusCode = 404;
-    const onerror = err => ctx.onerror(err);
+    const onerror = (err) => ctx.onerror(err);
     const handleResponse = () => respond(ctx);
     onFinished(res, onerror);
     fnMiddleware(ctx)
       .then(handleResponse)
-      .catch(error => onerror);
+      .catch((error) => onerror);
   }
 
   createContext(req, res) {
@@ -237,14 +237,15 @@ module.exports = class Application extends Emitter {
   }
 
   onerror(err) {
-    if (!(err instanceof Error)) throw new TypeError(util.format('non-error thrown: %j', err));
+    if (!(err instanceof Error))
+      throw new TypeError(util.format("non-error thrown: %j", err));
 
     if (404 == err.status || err.expose) return;
     if (this.silent) return;
 
     const msg = err.stack || err.toString();
     console.error();
-    console.error(msg.replace(/^/gm, '  '));
+    console.error(msg.replace(/^/gm, "  "));
     console.error();
   }
 };
@@ -266,7 +267,7 @@ function respond(ctx) {
     return res.end();
   }
 
-  if ('HEAD' == ctx.method) {
+  if ("HEAD" == ctx.method) {
     if (!res.headersSent && isJSON(body)) {
       ctx.length = Buffer.byteLength(JSON.stringify(body));
     }
@@ -281,7 +282,7 @@ function respond(ctx) {
       body = ctx.message || String(code);
     }
     if (!res.headersSent) {
-      ctx.type = 'text';
+      ctx.type = "text";
       ctx.length = Buffer.byteLength(body);
     }
     return res.end(body);
@@ -289,7 +290,7 @@ function respond(ctx) {
 
   // responses
   if (Buffer.isBuffer(body)) return res.end(body);
-  if ('string' == typeof body) return res.end(body);
+  if ("string" == typeof body) return res.end(body);
   if (body instanceof Stream) return body.pipe(res);
 
   // body: json
@@ -304,9 +305,11 @@ function respond(ctx) {
 ```js
 // koajs/compose  洋葱模型
 function compose(middleware) {
-  if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!');
+  if (!Array.isArray(middleware))
+    throw new TypeError("Middleware stack must be an array!");
   for (const fn of middleware) {
-    if (typeof fn !== 'function') throw new TypeError('Middleware must be composed of functions!');
+    if (typeof fn !== "function")
+      throw new TypeError("Middleware must be composed of functions!");
   }
 
   /**
@@ -315,12 +318,13 @@ function compose(middleware) {
    * @api public
    */
 
-  return function(context, next) {
+  return function (context, next) {
     // last called middleware #
     let index = -1;
     return dispatch(0);
     function dispatch(i) {
-      if (i <= index) return Promise.reject(new Error('next() called multiple times'));
+      if (i <= index)
+        return Promise.reject(new Error("next() called multiple times"));
       index = i;
       let fn = middleware[i];
       if (i === middleware.length) fn = next;
@@ -348,6 +352,102 @@ function compose(middleware) {
 - [大话 Select、Poll、Epoll](https://cloud.tencent.com/developer/article/1005481)
 
 ## webpack
+
+- [Webpack 核心模块 tapable 解析](https://blog.csdn.net/github_38140984/article/details/83013823)
+
+  > Webpack 本质上是一种事件流的机制，它的工作流程就是将各个插件串联起来，而实现这一切的核心就是 tapable，Webpack 中最核心的，负责编译的 Compiler 和负责创建 bundles 的 Compilation 都是 tapable 构造函数的实例。
+
+- webpack loaders
+
+  - 简单的 raw-loader
+
+    ```js
+    module.exports = function (source) {
+      const json = JSON.stringify(source)
+        .replace(/\u2028/g, "\\u2028") // es6 模板字符串问题
+        .replace(/\u2029/g, "\\u2029");
+      return `export default ${json}`;
+    };
+    ```
+
+  - 通过 loader-utils 的方法 getOptions 获取 loader 的 options 配置
+
+    ```js
+    const loaderUtils = require("loader-utils");
+    module.exports = function (source) {
+      const { name } = loaderUtils.getOptions(this);
+      console.log("loader options.name", name);
+      const json = JSON.stringify(source)
+        .replace(/\u2028/g, "\\u2028") // es6 模板字符串问题
+        .replace(/\u2029/g, "\\u2029");
+      return `export default ${json}`;
+    };
+    ```
+
+  - loader 异常处理
+
+    - loader 内直接通过 throw 抛出
+
+      ```js
+      module.exports = function (source) {
+        throw new Error("loader error);
+        return `export default`;
+      };
+      ```
+
+    - 通过 this.callback(err, result) 传递错误
+
+      ```js
+      module.exports = function (source) {
+        throw new Error("loader error);
+        this.callback(err, `export default1`,`export default2`,`export default3`,`export default4`,)
+      };
+      ```
+
+  - 异步 loader
+
+    ```js
+    const fs = require("fs");
+    const path = require("path");
+    module.exports = function (source) {
+      const callback = this.async();
+      fs.readFile("./src/async.txt", "utf-8", (err, result) => {
+        callback(err, result);
+      });
+    };
+    ```
+
+  - 在 loader 中使用缓存
+
+    > webpack 中默认开启 loader 缓存， 可以使用 this.cacheable(false) 关闭
+    > 缓存条件： loader 的结果在相同的输入下有确定的输出， 有依赖的 loader 无法使用缓存
+
+    ```js
+    const loaderUtils = require("loader-utils");
+    module.exports = function (source) {
+      const { name } = loaderUtils.getOptions(this);
+      this.cacheable(false); // 关闭缓存
+      console.log("loader options.name", name);
+      const json = JSON.stringify(source)
+        .replace(/\u2028/g, "\\u2028") // es6 模板字符串问题
+        .replace(/\u2029/g, "\\u2029");
+      return `export default ${json}`;
+    };
+    ```
+
+  - loaderUtils.interpolateName()
+
+    ```js
+    const loaderUtils = require("loader-utils");
+    module.exports = function (source) {
+      console.log("Loader  is excuted!");
+
+      const url = loaderUtils.interpolateName(this, "[name].[ext]", source);
+      console.log(url);
+      this.emitFile(url, "test");
+      return source;
+    };
+    ```
 
 - [超详细的 webpack 原理解读](https://segmentfault.com/a/1190000017890529)
 
@@ -389,166 +489,168 @@ function compose(middleware) {
   //以下代码用来包含webpack运行过程中的每个阶段
   //file:webpack.config.js
 
-  const path = require('path');
+  const path = require("path");
   //插件监听事件并执行相应的逻辑
   class TestPlugin {
     constructor() {
-      console.log('@plugin constructor');
+      console.log("@plugin constructor");
     }
 
     apply(compiler) {
-      console.log('@plugin apply');
+      console.log("@plugin apply");
 
-      compiler.plugin('environment', options => {
-        console.log('@environment');
+      compiler.plugin("environment", (options) => {
+        console.log("@environment");
       });
 
-      compiler.plugin('after-environment', options => {
-        console.log('@after-environment');
+      compiler.plugin("after-environment", (options) => {
+        console.log("@after-environment");
       });
 
-      compiler.plugin('entry-option', options => {
-        console.log('@entry-option');
+      compiler.plugin("entry-option", (options) => {
+        console.log("@entry-option");
       });
 
-      compiler.plugin('after-plugins', options => {
-        console.log('@after-plugins');
+      compiler.plugin("after-plugins", (options) => {
+        console.log("@after-plugins");
       });
 
-      compiler.plugin('after-resolvers', options => {
-        console.log('@after-resolvers');
+      compiler.plugin("after-resolvers", (options) => {
+        console.log("@after-resolvers");
       });
 
-      compiler.plugin('before-run', (options, callback) => {
-        console.log('@before-run');
+      compiler.plugin("before-run", (options, callback) => {
+        console.log("@before-run");
         callback();
       });
 
-      compiler.plugin('run', (options, callback) => {
-        console.log('@run');
+      compiler.plugin("run", (options, callback) => {
+        console.log("@run");
         callback();
       });
 
-      compiler.plugin('watch-run', (options, callback) => {
-        console.log('@watch-run');
+      compiler.plugin("watch-run", (options, callback) => {
+        console.log("@watch-run");
         callback();
       });
 
-      compiler.plugin('normal-module-factory', options => {
-        console.log('@normal-module-factory');
+      compiler.plugin("normal-module-factory", (options) => {
+        console.log("@normal-module-factory");
       });
 
-      compiler.plugin('context-module-factory', options => {
-        console.log('@context-module-factory');
+      compiler.plugin("context-module-factory", (options) => {
+        console.log("@context-module-factory");
       });
 
-      compiler.plugin('before-compile', (options, callback) => {
-        console.log('@before-compile');
+      compiler.plugin("before-compile", (options, callback) => {
+        console.log("@before-compile");
         callback();
       });
 
-      compiler.plugin('compile', options => {
-        console.log('@compile');
+      compiler.plugin("compile", (options) => {
+        console.log("@compile");
       });
 
-      compiler.plugin('this-compilation', options => {
-        console.log('@this-compilation');
+      compiler.plugin("this-compilation", (options) => {
+        console.log("@this-compilation");
       });
 
-      compiler.plugin('compilation', options => {
-        console.log('@compilation');
+      compiler.plugin("compilation", (options) => {
+        console.log("@compilation");
       });
 
-      compiler.plugin('make', (options, callback) => {
-        console.log('@make');
+      compiler.plugin("make", (options, callback) => {
+        console.log("@make");
         callback();
       });
 
-      compiler.plugin('compilation', compilation => {
-        compilation.plugin('build-module', options => {
-          console.log('@build-module');
+      compiler.plugin("compilation", (compilation) => {
+        compilation.plugin("build-module", (options) => {
+          console.log("@build-module");
         });
 
-        compilation.plugin('normal-module-loader', options => {
-          console.log('@normal-module-loader');
+        compilation.plugin("normal-module-loader", (options) => {
+          console.log("@normal-module-loader");
         });
 
-        compilation.plugin('program', (options, callback) => {
-          console.log('@program');
+        compilation.plugin("program", (options, callback) => {
+          console.log("@program");
           callback();
         });
 
-        compilation.plugin('seal', options => {
-          console.log('@seal');
+        compilation.plugin("seal", (options) => {
+          console.log("@seal");
         });
       });
 
-      compiler.plugin('after-compile', (options, callback) => {
-        console.log('@after-compile');
+      compiler.plugin("after-compile", (options, callback) => {
+        console.log("@after-compile");
         callback();
       });
 
-      compiler.plugin('should-emit', options => {
-        console.log('@should-emit');
+      compiler.plugin("should-emit", (options) => {
+        console.log("@should-emit");
       });
 
-      compiler.plugin('emit', (options, callback) => {
-        console.log('@emit');
+      compiler.plugin("emit", (options, callback) => {
+        console.log("@emit");
         callback();
       });
 
-      compiler.plugin('after-emit', (options, callback) => {
-        console.log('@after-emit');
+      compiler.plugin("after-emit", (options, callback) => {
+        console.log("@after-emit");
         callback();
       });
 
-      compiler.plugin('done', options => {
-        console.log('@done');
+      compiler.plugin("done", (options) => {
+        console.log("@done");
       });
 
-      compiler.plugin('failed', (options, callback) => {
-        console.log('@failed');
+      compiler.plugin("failed", (options, callback) => {
+        console.log("@failed");
         callback();
       });
 
-      compiler.plugin('invalid', options => {
-        console.log('@invalid');
+      compiler.plugin("invalid", (options) => {
+        console.log("@invalid");
       });
     }
   }
   ```
 
-  ```
-    #在目录下执行
-    webpack
-    #输出以下内容
-    @plugin constructor
-    @plugin apply
-    @environment
-    @after-environment
-    @entry-option
-    @after-plugins
-    @after-resolvers
-    @before-run
-    @run
-    @normal-module-factory
-    @context-module-factory
-    @before-compile
-    @compile
-    @this-compilation
-    @compilation
-    @make
-    @build-module
-    @normal-module-loader
-    @build-module
-    @normal-module-loader
-    @seal
-    @after-compile
-    @should-emit
-    @emit
-    @after-emit
-    @done
-  ```
+````
+
+```
+  #在目录下执行
+  webpack
+  #输出以下内容
+  @plugin constructor
+  @plugin apply
+  @environment
+  @after-environment
+  @entry-option
+  @after-plugins
+  @after-resolvers
+  @before-run
+  @run
+  @normal-module-factory
+  @context-module-factory
+  @before-compile
+  @compile
+  @this-compilation
+  @compilation
+  @make
+  @build-module
+  @normal-module-loader
+  @build-module
+  @normal-module-loader
+  @seal
+  @after-compile
+  @should-emit
+  @emit
+  @after-emit
+  @done
+```
 
 ## [npm 模块安装机制](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/22)
 
@@ -579,7 +681,7 @@ function compose(middleware) {
     - 升级小版本号：npm version minor
     - 升级大版本号：npm version major
 
-    > 当执行 npm publish 时，会首先将当前版本发布到 npm registry，然后更新 **dist-tags.latest** 的值为新版本。  
+    > 当执行 npm publish 时，会首先将当前版本发布到 npm registry，然后更新 **dist-tags.latest** 的值为新版本。
     > 当执行 npm publish --tag=next 时，会首先将当前版本发布到 npm registry，并且更新 **dist-tags.next** 的值为新版本。这里的 next 可以是任意有意义的命名（比如：v1.x、v2.x 等等）
 
 - [语义化版本（SemVer）的范围](https://www.jianshu.com/p/d306ed03de62)
@@ -592,7 +694,7 @@ function compose(middleware) {
     - `>= 大于等于`；
     - `= 等于`；如果没有指定操作符，则默认为等于。
 
-    > `>=1.2.7 <1.3.0`  
+    > `>=1.2.7 <1.3.0`
     > `1.2.7 || >=1.2.9 <2.0.0`
 
   - 版本范围高级用法
@@ -624,3 +726,4 @@ function compose(middleware) {
       - `^0.0` -> `>=0.0.0 <0.1.0`
       - `^1.x` -> `>=1.0.0 <2.0.0`
       - `^0.x` -> `>=0.0.0 <1.0.0`
+````
