@@ -485,25 +485,466 @@ function compose(middleware) {
   - 通过 compilation 进行文件写入
 
     - compilation 上的 assets 可以用于文件写入
+
       - 可以将 zip 资源包设置到 compilation.assets 对象上
-    - 文件写入需要使用 [webpack-sources](https://github.com/webpack/webpack-sources)
+      - 文件写入需要使用 [webpack-sources](https://github.com/webpack/webpack-sources)
+
+        ```js
+        const { RawSource } = require("webpack-sources");
+        module.exports = class DemoPlugin {
+          constructor(options) {
+            this.options = options;
+          }
+
+          apply(compiler) {
+            const { name } = this.options;
+            compiler.hooks.emit.tapAsync("emit", (compilation, cb) => {
+              compilation.assets[name] = new RawResource("demo");
+              cb();
+            });
+          }
+        };
+        ```
+
+- 指纹
+
+  - js
+    - hash
+    - chunkhash
+    - contenthash
+  - css
+    - hash
+    - contenthash
+  - file\image
+    - hash
+
+- 移动端 CSS `px` 自动装换成 `rem`
+
+  - px2rem-loader
+  - lib-flexible: 根据屏幕分辨率自动计算根元素 font-size 大小
+
+- CSS 内联
+
+  - `style-loader`
+
+    ```js
+    use: [
+      {
+        loader: "style-loader",
+        options: {
+          insertAt: "top", // 样式插入到 head
+          singleton: true, // 将所有的 style 标签合并成一个
+        },
+      },
+    ];
+    ```
+
+  - `html-inline-css-webpack-plugin`
+
+    > require `mini-css-extract-plugin` and `html-webpack-plugin`
+
+    ```js
+    const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+    const HtmlWebpackPlugin = require('html-webpack-plugin');
+    const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin").default;
+
+    module.exports = {
+      module: {
+        rules: [
+          {
+            test: /\.css$/,
+            use: [
+              MiniCssExtractPlugin.loader,
+              "css-loader"
+            ],
+          },
+        ];
+      },
+      plugins: [
+        new MiniCssExtractPlugin({
+          filename: "[name].css",
+          chunkFilename: "[id].css"
+        }),
+        new HtmlWebpackPlugin(),
+        new HTMLInlineCSSWebpackPlugin(
+          filter?(fileName: string): boolean
+          leaveCSSFile?: boolean
+          replace?: {
+            target: string
+            position?: 'before' | 'after'
+            removeTarget?: boolean
+          }
+        ),
+      ]
+    }
+
+    ```
+
+- html、js 内联（raw-loader)
+
+  ```html
+  // meta.html
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  ```
+
+  ```html
+  // html-webpack-plugin 默认支持 ejs 语法
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      ${ require('raw-loader!./meta.html')}
+      <title>Document</title>
+      <script>
+        ${require('raw-loader!babel-loader!../../node_modules/lib-flexible/flexible.js')}
+      </script>
+    </head>
+    <body></body>
+  </html>
+  ```
+
+- 多页面应用打包通用方案
+
+  ```js
+  const glob = require("glob");
+
+  let entry = {},
+    htmlWebpackPlugin = [];
+
+  const setMpa = () => {
+    const entryFiles = glob.sync(path.join(__dirname, "./src/*/index.js"));
+    entryFiles.forEach((item) => {
+      const match = item.match(/src\/(.*)\/index.js/);
+      const pageName = match[1];
+      entry[pageName] = item;
+      htmlWebpackPlugin.push(
+        HtmlWebpackPlugin({
+          template: path.join(__dirname, "src/" + pageName + "/index.html"),
+          filename: pageName + ".html",
+          chunks: [pageName],
+          injects: true,
+          minify: {
+            html5: true,
+            collapseWhitespace: true,
+            preserveLineBreaks: false,
+            minifyCSS: true,
+            minifyJS: true,
+            removeComments: false,
+          },
+        })
+      );
+    });
+  };
+
+  const { entry, htmlWebpackPlugin } = setMpa();
+  module.exports = {
+    entry,
+    plugin: [].concat(htmlWebpackPlugin),
+  };
+  ```
+
+- devtool（ source map ）
+
+  - eval: 用 eval 包裹
+  - source map: 产生 `.map` 文件
+  - cheap: 不包含列信息
+  - inline: 将 `.map` 作为 `DataURI` 嵌入，不单独生成 `.map` 文件
+  - module: 包含 loader 的 source map
+
+- eslint-loader
+- webpack 打包库和组件
+- SSR
+- 优化命令行显示日志
+
+  - stat: errors-only
+  - friendly-errors-webpack-plugin
+
+- 构建异常和中断处理
+
+  - node 中的 process.exit 规范
+
+    - 0 表示成功完成，回调函数中 err 为 null
+    - 非 0 表示执行失败，回调函数中 err 不为 null, err.code 就是传给 exit 的值
+
+  - webpack 中主动捕获并处理构建错误
+
+    ```js
+    plugin: [
+      function () {
+        this.hooks.done.tap("done", (stat) => {
+          if (
+            stat.compilation.errors &&
+            stat.compilation.errors.length &&
+            process.argv.indexOf("--watch") == -1
+          ) {
+            console.log("build error");
+            process.exit(1);
+          }
+        });
+      },
+    ];
+    ```
+
+- 优化
+
+  - 打包优化
+
+    - runtimechunk
 
       ```js
-      const { RawSource } = require("webpack-sources");
-      module.exports = class DemoPlugin {
-        constructor(options) {
-          this.options = options;
+        optimization: {
+          runtimeChunk: 'single',
         }
+      ```
 
-        apply(compiler) {
-          const { name } = this.options;
-          compiler.hooks.emit.tapAsync("emit", (compilation, cb) => {
-            compilation.assets[name] = new RawResource("demo");
-            cb();
-          });
-        }
+    - 基础库分离
+
+      > 将 `react`、`reactDOM` 基础包通过 `CDN` 引入，不打入 bundle
+
+      - 使用 SplitChunkPlugin
+
+        ```js
+          optimization: {
+            splitChunks: {
+              maxAsyncRequests: 5,
+              maxInitialRequests: 3,
+              cacheGroups: {
+                vender: {
+                  // test(module, chunks) {return true/false},
+                  test: /[\\/]node_modules[\\/]/,
+                  name: 'venders',
+                  chunks: 'all',  // all, async, initial
+                },
+                commons: {
+                  minSize: 30000,
+                  minChunks: 2,
+                  reuseExistingChunk: true
+                  name: 'commons'，
+                  // name(module, chunks, cacheGroupKey) {return ``}
+                }
+              }
+            }
+          }
+        ```
+
+      - 使用 html-webpack-externals-plugin
+
+        ```js
+        plugins: [
+          new HtmlWebpackExternalsPlugin({
+            externals: [
+              {
+                module: "react",
+                entry: "//unpkg.com/react@16/umd/react.production.min.js",
+                global: "React",
+              },
+              {
+                module: "react-dom",
+                entry:
+                  "//unpkg.com/react-dom@16/umd/react-dom.production.min.js",
+                global: "ReactDOM",
+              },
+            ],
+          }),
+        ];
+        ```
+
+    - Tree Shaking (不能有副作用)
+
+      - js
+
+        > 如果所有的模块没有副作用，可以在 `package.json` 中设置如下, 以通知 webpack 它可以安全地 `Tree sharking`:
+
+        ```js
+          {
+            "name": 'your-project',
+            "sideEffects": false
+          }
+        ```
+
+        > 如果代码中有副作用，可以在 `package.json` 中设置如下：
+
+        ```js
+          {
+            "name": "your-project",
+            "sideEffects": [
+              "./src/some-side-effectful-file.js"
+            ]
+          }
+        ```
+
+        - uglifyjs-webpack-plugin: 开启 parallel 参数（不支持 es6）（配置 mode=production 即可）
+        - terser-webpack-plugin: 开启 parallel 参数（支持 es6）
+
+      - 删除无用的 CSS
+        - PurifyCSS
+          > 使用 `purgecss-webpack-plugin` 配合 `mini-css-extract-plugin` 使用
+        - uncss
+
+    - Scope Hoisting
+
+      - 导致的问题
+        - 大量函数闭包包裹代码，体积增大
+        - 运行代码时创建的函数作用域变多，内存开销增大
+      - 原理
+        - 将所有函数的代码按照引用顺序放在一个函数作用域中，然后适当的重命名一些变量防止变量命名冲突
+
+  - 速度分析: speed-measure-webpack-plugin
+  - 体积分析: webpack-bundle-analyzer
+  - 多进程、多实例构建
+
+    - webpack v3: `happypack`
+    - webpack v4: `thread-loader`(Runs the following loaders in a worker pool)
+
+      > 每次 webpack 解析一个模块，thread-loader 会将它及他的依赖分配给一个 work 进程，达到多进程构建的目的  
+      > 每个工作程序都是一个单独的 node.js 进程
+
+      ```js
+      use: [
+        {
+          loader: "thread_loader",
+          options: {
+            workers: 2,
+            workerParallelJobs: 50,
+            workerNodeArgs: ["--max-old-space-size=1024"],
+            poolRespawn: false,
+            poolTimeout: 2000,
+            poolParallelJobs: 50,
+            name: "my-pool",
+          },
+        },
+        // your expensive loader (e.g babel-loader)
+      ];
+      ```
+
+      - prewarming
+
+        > 这将引导池中的最大 workers 数量，并将指定的模块加载到 node.js 模块高速缓存中。
+
+        ```js
+        const threadLoader = require("thread-loader");
+
+        threadLoader.warmup(
+          {
+            // pool options, like passed to loader options
+            // must match loader options to boot the correct pool
+          },
+          [
+            // modules to load
+            // can be any module, i. e.
+            "babel-loader",
+            "babel-preset-es2015",
+            "sass-loader",
+          ]
+        );
+        ```
+
+    - 并行压缩
+      - uglifyjs-webpack-plugin: 开启 parallel 参数（不支持 es6）
+      - terser-webpack-plugin: 开启 parallel 参数（支持 es6）
+        ```js
+        module.exports = {
+          optimization: {
+            minimize: true,
+            minimizer: [
+              new TerserPlugin({
+                // parallel: 4,
+                parallel: true, // Use multi-process parallel running to improve the build speed. Default number of concurrent runs: os.cpus().length - 1.
+              }),
+            ],
+          },
+        };
+        ```
+
+  - 分包
+    - DLLPlugin
+  - 缓存
+
+    - babel-loader
+      ```js
+      module: {
+        rules: [
+          {
+            test: /\.m?js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: {
+              loader: "babel-loader",
+              options: {
+                presets: ["@babel/preset-env"],
+                plugins: ["@babel/plugin-proposal-object-rest-spread"],
+                cacheDirectory: true, // the loader will use the default cache directory in `node_modules/.cache/babel-loader` or fallback to the default OS temporary file directory if no node_modules folder could be found in any `root directory`.
+              },
+            },
+          },
+        ];
+      }
+      ```
+    - terser-webpack-plugin
+
+      ```js
+      const TerserPlugin = require("terser-webpack-plugin");
+      module.exports = {
+        optimization: {
+          minimize: true,
+          minimizer: [
+            new TerserPlugin({
+              test: /\.js(\?.*)?$/i,
+              // cache: "path/to/cache",
+              cache: true, // Default path to cache directory: `node_modules/.cache/terser-webpack-plugin`.
+              chunkFilter: (chunk) => {
+                // Exclude uglification for the `vendor` chunk
+                if (chunk.name === "vendor") {
+                  return false;
+                }
+
+                return true;
+              },
+            }),
+          ],
+        },
       };
       ```
+
+    - cache-loader 或者 hard-source-webpack-plugin
+
+      ```js
+      module.exports = {
+        module: {
+          rules: [
+            {
+              test: /\.js$/,
+              use: [
+                {
+                  loader: "cache-loader",
+                  options: {
+                    cacheKey,
+                    read,
+                    write,
+                  },
+                },
+                "babel-loader",
+              ],
+              include: path.resolve("src"),
+            },
+          ],
+        },
+      };
+      ```
+
+  - 缩小构建目标
+
+    - exclude: /node_moudles/
+
+  - 图片压缩
+    - Imagemin -> image-webpack-loader
+  - 动态 polyfill
+
+    - babel-polyfill
+    - babel-plugin-transform-runtime
+    - 自己写的 polyfill
+    - polyfill-service: 只给用户返回需要的 polyfill
 
 - [超详细的 webpack 原理解读](https://segmentfault.com/a/1190000017890529)
 
@@ -674,39 +1115,37 @@ function compose(middleware) {
   }
   ```
 
-````
-
-```
-  #在目录下执行
-  webpack
-  #输出以下内容
-  @plugin constructor
-  @plugin apply
-  @environment
-  @after-environment
-  @entry-option
-  @after-plugins
-  @after-resolvers
-  @before-run
-  @run
-  @normal-module-factory
-  @context-module-factory
-  @before-compile
-  @compile
-  @this-compilation
-  @compilation
-  @make
-  @build-module
-  @normal-module-loader
-  @build-module
-  @normal-module-loader
-  @seal
-  @after-compile
-  @should-emit
-  @emit
-  @after-emit
-  @done
-```
+  ```
+    #在目录下执行
+    webpack
+    #输出以下内容
+    @plugin constructor
+    @plugin apply
+    @environment
+    @after-environment
+    @entry-option
+    @after-plugins
+    @after-resolvers
+    @before-run
+    @run
+    @normal-module-factory
+    @context-module-factory
+    @before-compile
+    @compile
+    @this-compilation
+    @compilation
+    @make
+    @build-module
+    @normal-module-loader
+    @build-module
+    @normal-module-loader
+    @seal
+    @after-compile
+    @should-emit
+    @emit
+    @after-emit
+    @done
+  ```
 
 ## [npm 模块安装机制](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/22)
 
@@ -750,8 +1189,7 @@ function compose(middleware) {
     - `>= 大于等于`；
     - `= 等于`；如果没有指定操作符，则默认为等于。
 
-    > `>=1.2.7 <1.3.0`
-    > `1.2.7 || >=1.2.9 <2.0.0`
+    > `>=1.2.7 <1.3.0` > `1.2.7 || >=1.2.9 <2.0.0`
 
   - 版本范围高级用法
     - 连接符（-）范围 X.Y.Z - A.B.C
@@ -782,4 +1220,3 @@ function compose(middleware) {
       - `^0.0` -> `>=0.0.0 <0.1.0`
       - `^1.x` -> `>=1.0.0 <2.0.0`
       - `^0.x` -> `>=0.0.0 <1.0.0`
-````
