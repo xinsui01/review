@@ -79,6 +79,50 @@
 
 ## http
 
+- 从输入 url 到页面呈现浏览器都做了啥？
+
+  - 构建请求
+    - 构建请求行信息，构建好后，浏览器准备发起网络请求
+      ```http
+        GET /index.html HTTP/1.1
+      ```
+  - 查找缓存
+    - 在真正发起⽹络请求之前，浏览器会先在浏览器缓存中查询是否有要请求的⽂件
+  - 准备 IP 地址和端⼝
+    - DNS 查询
+    - 默认端口 80/443
+  - 等待 TCP 队列
+    - Chrome 有个机制，同⼀个域名同时最多只能建⽴ 6 个 TCP 连接，如果在同⼀个域名下同时有 10 个请求发⽣，那么其中 4 个请求会进⼊排队等待状态，直⾄进⾏中的请求完成。
+    - 如果当前请求数量少于 6，会直接进⼊下⼀步，建⽴ TCP 连接。
+  - 建⽴ TCP 连接
+  - 发送 HTTP 请求
+    - 发送请求行
+    - 发送请求头
+    - 发送请求体
+  - 服务器端处理 HTTP 请求流程
+    - 返回响应⾏
+    - 返回响应头
+    - 返回响应体
+  - 断开 TCP 连接？
+
+  ![HTTP 请求流程示意图](../imgs/HTTP请求流程示意图.png)
+
+- [HTTP 报文](https://www.cnblogs.com/klguang/p/4618526.html)
+  - 请求
+    - 起始行：`method`、`path`、`HTTP version`
+    - 首部
+    - 主体
+  - 响应
+    - 起始行：`HTTP version`、`status code`、`status description`
+    - 首部
+    - 主体
+- [HTTP 协议](https://zhuanlan.zhihu.com/p/24913080)
+- [HTTP 请求方法：GET、HEAD、POST、PUT、DELETE、CONNECT、OPTIONS、TRACE、PATCH](https://itbilu.com/other/relate/EkwKysXIl.html)
+
+  - PUT 和 PATCH 区别
+    - PUT 一般是资源的整体更新，PATCH 一般是资源的部分更新
+    - 当资源不存在时，PATCH 会创建一个新的资源，PUT 只会对已在资源进行更新。
+
 - HTTP 响应头
 
   - X-Frame-Options (禁止页面被加载进 iframe 中):
@@ -109,21 +153,7 @@
       Content-Security-Policy: default-src 'self'; img-src *; media-src media1.com media2.com; script-src userscripts.example.com;
       ```
 
-- [HTTP 报文](https://www.cnblogs.com/klguang/p/4618526.html)
-  - 请求
-    - 起始行：`method`、`path`、`HTTP version`
-    - 首部
-    - 主体
-  - 响应
-    - 起始行：`HTTP version`、`status code`、`status description`
-    - 首部
-    - 主体
-- [HTTP 协议](https://zhuanlan.zhihu.com/p/24913080)
-- [HTTP 请求方法：GET、HEAD、POST、PUT、DELETE、CONNECT、OPTIONS、TRACE、PATCH](https://itbilu.com/other/relate/EkwKysXIl.html)
-  - PUT 和 PATCH 区别
-    - PUT 一般是资源的整体更新，PATCH 一般是资源的部分更新
-    - 当资源不存在时，PATCH 会创建一个新的资源，PUT 只会对已在资源进行更新。
-- [HTTP 中 GET 与 POST 的区别](https://mp.weixin.qq.com/s?__biz=MzI3NzIzMzg3Mw==&mid=100000054&idx=1&sn=71f6c214f3833d9ca20b9f7dcd9d33e4)
+* [HTTP 中 GET 与 POST 的区别](https://mp.weixin.qq.com/s?__biz=MzI3NzIzMzg3Mw==&mid=100000054&idx=1&sn=71f6c214f3833d9ca20b9f7dcd9d33e4)
 
   **GET 和 POST 本质上就是 TCP 链接，并无差别。但是由于 HTTP 的规定和浏览器/服务器的限制，导致他们在应用过程中体现出一些不同。**
 
@@ -140,7 +170,7 @@
       对于 GET 方式的请求，浏览器会把 http header 和 data 一并发送出去，服务器响应 200（返回数据）；  
       而对于 POST，浏览器先发送 header，服务器响应 100 continue，浏览器再发送 data，服务器响应 200 ok（返回数据）。
 
-- HTTP 请求优化
+* HTTP 请求优化
   - [前端性能优化之 http 请求的过程](https://juejin.im/post/59f44c5ef265da4327177b98)
 
 ## https
