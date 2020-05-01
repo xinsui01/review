@@ -1,5 +1,7 @@
 # 浏览器
 
+## [浏览器工作原理与实战](./browser_browser.md)
+
 ## 事件冒泡
 
 - stopPropagation
@@ -7,12 +9,12 @@
   > 元素绑定了两个 click 事件的监听函数。stopPropagation 方法只能阻止这个事件向其他元素传播。因此，第二个监听函数会触发。输出结果会先是 1，然后是 2。
 
   ```js
-  p.addEventListener('click', function(event) {
+  p.addEventListener("click", function (event) {
     event.stopPropagation();
     console.log(1);
   });
 
-  p.addEventListener('click', function(event) {
+  p.addEventListener("click", function (event) {
     // 会触发
     console.log(2);
   });
@@ -23,12 +25,12 @@
   > 彻底阻止这个事件传播，使得后面绑定的所有 click 监听函数都不再触发。所以，只会输出 1，不会输出 2。
 
   ```js
-  p.addEventListener('click', function(event) {
+  p.addEventListener("click", function (event) {
     event.stopImmediatePropagation();
     console.log(1);
   });
 
-  p.addEventListener('click', function(event) {
+  p.addEventListener("click", function (event) {
     // 不会被触发
     console.log(2);
   });
@@ -75,7 +77,9 @@
 ## [chrome 显示 12px 以下字体的解决方法](https://blog.csdn.net/u012011360/article/details/41846905)
 
 ```html
-<span style="display: inline-block; font-size: 16px; transform: scale(0.5);">8px 字体</span>
+<span style="display: inline-block; font-size: 16px; transform: scale(0.5);"
+  >8px 字体</span
+>
 ```
 
 <span style="display: inline-block; font-size: 16px; transform: scale(0.5);">8px 字体</span>
@@ -143,7 +147,7 @@
     childPage.postMessage(message, targetOrigin, [transfer]);
   };
 
-  window.onmessage = e => {
+  window.onmessage = (e) => {
     console.log(e.data);
     console.log(e.origin);
     console.log(e.source);
@@ -153,9 +157,9 @@
 - localStorage,设置共享区域的 storage，storage 会触发 storage 事件
 
   ```js
-  localStorage.setItem('message', 'hello');
+  localStorage.setItem("message", "hello");
 
-  window.onStorage = evt => {
+  window.onStorage = (evt) => {
     // evt.key evt.oldValue evt.newValue
   };
   ```
@@ -168,14 +172,14 @@
 
   ```js
   // a.html
-  const channel = new BroadcastChannel('tabs');
-  channel.onmessage = evt => {
+  const channel = new BroadcastChannel("tabs");
+  channel.onmessage = (evt) => {
     // evt.data
   };
 
   // b.html
-  const channel = new BroadcastChannel('tabs');
-  channel.postMessage('hello');
+  const channel = new BroadcastChannel("tabs");
+  channel.postMessage("hello");
   ```
 
 - SharedWorker
@@ -249,29 +253,29 @@
 
   ```js
   async function async1() {
-    console.log('async1 start');
+    console.log("async1 start");
     await async2();
-    console.log('async1 end');
+    console.log("async1 end");
   }
   async function async2() {
-    console.log('async2');
+    console.log("async2");
   }
 
-  console.log('script start');
+  console.log("script start");
 
-  setTimeout(function() {
-    console.log('setTimeout');
+  setTimeout(function () {
+    console.log("setTimeout");
   }, 0);
 
   async1();
 
-  new Promise(function(resolve) {
-    console.log('promise1');
+  new Promise(function (resolve) {
+    console.log("promise1");
     resolve();
-  }).then(function() {
-    console.log('promise2');
+  }).then(function () {
+    console.log("promise2");
   });
-  console.log('script end');
+  console.log("script end");
 
   /**
    * script start
@@ -400,7 +404,7 @@
       <script>
         eval(location.hash.substr(1));
         // 而这个时候，如果用户在网址后面加上恶意代码
-        ('http://www.xss.com#alert(document.cookie)');
+        ("http://www.xss.com#alert(document.cookie)");
       </script>
       ```
 
@@ -510,13 +514,18 @@
 
       ```html
       <link rel="preload" href="/css/mystyles.css" as="style" />
-      <link rel="preload" href="https://example.com/fonts/font.woff" as="font" crossorigin />
+      <link
+        rel="preload"
+        href="https://example.com/fonts/font.woff"
+        as="font"
+        crossorigin
+      />
       ```
 
       ```js
       <script>
-        var res = document.createElement("link"); res.rel = "preload"; res.as = "style"; res.href = "css/mystyles.css";
-        document.head.appendChild(res);
+        var res = document.createElement("link"); res.rel = "preload"; res.as =
+        "style"; res.href = "css/mystyles.css"; document.head.appendChild(res);
       </script>
       ```
 
@@ -577,17 +586,17 @@
     module.exports = {
       // ...
       performance: {
-        hints: 'error',
+        hints: "error",
         maxAssetSize: 102400,
         maxEntrypointSize: 250000,
         // 此属性允许 webpack 控制用于计算性能提示的文件。默认函数如下：
         // function assetFilter(assetFilename) {
         //   return !(/\.map$/.test(assetFilename));
         // }
-        assetFilter: function(assetFilename) {
-          return assetFilename.endsWith('.js');
-        }
-      }
+        assetFilter: function (assetFilename) {
+          return assetFilename.endsWith(".js");
+        },
+      },
     };
     ```
 
@@ -603,7 +612,7 @@
   - 安装 [workbox-webpack-plugin](https://www.npmjs.com/package/workbox-webpack-plugin) 并将其加入您的 webpack 配置中，如下所示：
 
     ```js
-    const { GenerateSW } = require('workbox-webpack-plugin');
+    const { GenerateSW } = require("workbox-webpack-plugin");
     ```
 
     将一个 GenerateSW 实例添加到 plugins 配置中：
@@ -613,8 +622,8 @@
       // ...
       plugins: [
         // ... other plugins omitted
-        new GenerateSW()
-      ]
+        new GenerateSW(),
+      ],
     };
     ```
 
@@ -625,9 +634,9 @@
       // ...
       plugins: [
         new GenerateSW({
-          chunks: ['main', 'Favorites', 'PedalDetail', 'vendors']
-        })
-      ]
+          chunks: ["main", "Favorites", "PedalDetail", "vendors"],
+        }),
+      ],
       // ...
     };
     ```
@@ -651,21 +660,21 @@
           <AsyncRoute
             path="/pedal/:id"
             getComponent={() =>
-              import(/* webpackChunkName: "PedalDetail" */ './components/PedalDetail/PedalDetail').then(
-                module => module.default
-              )
+              import(
+                /* webpackChunkName: "PedalDetail" */ "./components/PedalDetail/PedalDetail"
+              ).then((module) => module.default)
             }
           />
           <AsyncRoute
             path="/favorites"
             getComponent={() =>
               import(
-                /* webpackPrefetch: true, webpackChunkName: "Favorites" */ './components/Favorites/Favorites'
-              ).then(module => module.default)
+                /* webpackPrefetch: true, webpackChunkName: "Favorites" */ "./components/Favorites/Favorites"
+              ).then((module) => module.default)
             }
           />
         </Router>,
-        document.getElementById('app')
+        document.getElementById("app")
       );
       ```
 
@@ -675,14 +684,14 @@
     - webpackPreload 仅适用于动态 import()调用，因此为了预加载对示例应用中初始路由至关重要的代码块，我们需要依赖另一个名为 preload-webpack-plugin 的插件。
 
       ```js
-      const PreloadWebpackPlugin = require('preload-webpack-plugin');
+      const PreloadWebpackPlugin = require("preload-webpack-plugin");
 
       plugins: [
         // Other plugins omitted...
         new PreloadWebpackPlugin({
-          rel: 'preload',
-          include: ['main', 'vendors']
-        })
+          rel: "preload",
+          include: ["main", "vendors"],
+        }),
       ];
       ```
 
