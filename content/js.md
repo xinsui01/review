@@ -1,67 +1,5 @@
 # JavaScript
 
-## JS 变量声明及初始化
-
-- [深入理解 JavaScript 系列（12）：变量对象（Variable Object）](https://www.cnblogs.com/TomXu/archive/2012/01/16/2309728.html)
-
-  - 只有全局上下文的变量对象允许通过 VO 的属性名称来间接访问(因为在全局上下文里，全局对象自身就是变量对象，稍后会详细介绍)，在其它上下文中是不能直接访问 VO 对象的，因为它只是内部机制的一个实现。
-  - 在 DOM 中，全局对象的 window 属性就可以引用全局对象自身(当然，并不是所有的具体实现都是这样)
-
-    ```js
-      global = {
-        Math: <...>,
-        String: <...>
-        ...
-        ...
-        window: global //引用自身
-      };
-    ```
-
-  - 未传值的形参和 arguments 内的值不共享
-
-    ```js
-    function foo(x, y, z) {
-      // 声明的函数参数数量arguments (x, y, z)
-      alert(foo.length); // 3
-
-      // 真正传进来的参数个数(only x, y)
-      alert(arguments.length); // 2
-
-      // 参数的callee是函数自身
-      alert(arguments.callee === foo); // true
-
-      // 参数共享
-
-      alert(x === arguments[0]); // true
-      alert(x); // 10
-
-      arguments[0] = 20;
-      alert(x); // 20
-
-      x = 30;
-      alert(arguments[0]); // 30
-
-      // 不过，没有传进来的参数z，和参数的第3个索引值是不共享的
-
-      z = 40;
-      alert(arguments[2]); // undefined
-
-      arguments[2] = 50;
-      alert(z); // 40
-    }
-
-    foo(10, 20);
-    ```
-
-  - 当进入执行上下文(代码执行之前)时，VO 里已经包含了下列属性(前面已经说了)：
-    - 函数的所有形参(如果我们是在函数执行上下文中)
-      - 由名称和对应值组成的一个变量对象的属性被创建；没有传递对应参数的话，那么由名称和 undefined 值组成的一种变量对象的属性也将被创建。
-    - 所有函数声明(FunctionDeclaration, FD)
-      - 由名称和对应值（函数对象(function-object)）组成一个变量对象的属性被创建；如果变量对象已经存在相同名称的属性，则完全替换这个属性。
-    - 所有变量声明(var, VariableDeclaration)
-      - 由名称和对应值（undefined）组成一个变量对象的属性被创建；如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性。
-  - 变量声明在顺序上跟在函数声明和形式参数声明之后，而且在这个进入上下文阶段，变量声明不会干扰 VO 中已经存在的同名函数声明或形式参数声明
-
 ## var, let 区别
 
 - 顶级作用域 var 声明变量是 window 的属性，let\const 声明变量不是 window 的属性，变量都可以在控制台访问。
@@ -74,7 +12,7 @@
   var tmp = 123;
 
   if (true) {
-    tmp = 'abc'; // ReferenceError
+    tmp = "abc"; // ReferenceError
     let tmp;
   }
   ```
@@ -166,7 +104,7 @@
       this.property = true;
     }
 
-    SuperType.prototype.getSuperValue = function() {
+    SuperType.prototype.getSuperValue = function () {
       return this.property;
     };
 
@@ -179,7 +117,7 @@
 
     SubType.prototype.constructor = SubType;
 
-    SubType.prototype.getSubValue = function() {
+    SubType.prototype.getSubValue = function () {
       return this.subProperty;
     };
 
@@ -196,7 +134,7 @@
 
        ```js
        function SuperType() {
-         this.colors = ['red', 'blue', 'green'];
+         this.colors = ["red", "blue", "green"];
        }
 
        function SubType() {}
@@ -204,7 +142,7 @@
        // 继承了 SuperType
        SubType.prototype = new SuperType();
        var inst1 = new SubType();
-       inst1.colors.push('black');
+       inst1.colors.push("black");
        console.log(inst1.colors); // 'red', 'blue', 'green', 'black'
 
        var inst2 = new SubType();
@@ -224,7 +162,7 @@
     ```js
     function SuperType(name) {
       this.name = name;
-      this.colors = ['red', 'blue', 'green'];
+      this.colors = ["red", "blue", "green"];
     }
 
     function SubType(name, age) {
@@ -234,11 +172,11 @@
       this.age = age;
     }
 
-    var inst1 = new SubType('Nicholas', 29);
-    inst1.colors.push('black');
+    var inst1 = new SubType("Nicholas", 29);
+    inst1.colors.push("black");
     console.log(inst1.colors); // 'red', 'blue', 'green', 'black'
 
-    var inst2 = new SubType('Jerry', 27);
+    var inst2 = new SubType("Jerry", 27);
     console.log(inst2.colors); // 'red', 'blue', 'green'
     ```
 
@@ -255,10 +193,10 @@
     ```js
     function SuperType(name) {
       this.name = name;
-      this.colors = ['red', 'blue', 'green'];
+      this.colors = ["red", "blue", "green"];
     }
 
-    SuperType.prototype.sayName = function() {
+    SuperType.prototype.sayName = function () {
       console.log(this.name);
     };
 
@@ -273,17 +211,17 @@
     SubType.prototype = new SuperType();
     // 修复构造函数
     SubType.prototype.constructor = SubType;
-    SubType.prototype.sayAge = function() {
+    SubType.prototype.sayAge = function () {
       console.log(this.age);
     };
 
-    var inst1 = new SubType('Nicholas', 29);
-    inst1.colors.push('black');
+    var inst1 = new SubType("Nicholas", 29);
+    inst1.colors.push("black");
     console.log(inst1.colors); // 'red', 'blue', 'green', 'black'
     inst1.sayName();
     inst1.sayAge();
 
-    var inst2 = new SubType('Jerry', 27);
+    var inst2 = new SubType("Jerry", 27);
     console.log(inst2.colors); // 'red', 'blue', 'green'
     inst2.sayName();
     inst2.sayAge();
@@ -315,17 +253,19 @@
     - 实现
 
       ```js
-      if (typeof Object.create !== 'function') {
-        Object.create = function(proto, propertiesObject) {
-          if (typeof proto !== 'object' && typeof proto !== 'function') {
-            throw new TypeError('Object prototype may only be an Object: ' + proto);
+      if (typeof Object.create !== "function") {
+        Object.create = function (proto, propertiesObject) {
+          if (typeof proto !== "object" && typeof proto !== "function") {
+            throw new TypeError(
+              "Object prototype may only be an Object: " + proto
+            );
           } else if (proto === null) {
             throw new Error(
               "This browser's implementation of Object.create is a shim and doesn't support 'null' as the first argument."
             );
           }
 
-          if (typeof propertiesObject != 'undefined')
+          if (typeof propertiesObject != "undefined")
             throw new Error(
               "This browser's implementation of Object.create is a shim and doesn't support a second argument."
             );
@@ -353,15 +293,15 @@
       // 通过调用函数创建一个新对象
       var clone = Object.create(original);
       // 以某种方式来增强新对象
-      clone.sayHi = function() {
-        console.log('Hi');
+      clone.sayHi = function () {
+        console.log("Hi");
       };
       return clone;
     }
 
     var person = {
-      name: 'Nicholas',
-      friends: ['red', 'blue', 'green']
+      name: "Nicholas",
+      friends: ["red", "blue", "green"],
     };
     var anotherPerson = createAnother(person);
     anotherPerson.sayHi();
@@ -419,10 +359,10 @@
     ```js
     function SuperType(name) {
       this.name = name;
-      this.colors = ['red', 'blue', 'green'];
+      this.colors = ["red", "blue", "green"];
     }
 
-    SuperType.prototype.sayName = function() {
+    SuperType.prototype.sayName = function () {
       console.log(this.name);
     };
 
@@ -433,7 +373,7 @@
     }
 
     inheritPrototype(SubType, SuperType);
-    SubType.prototype.sayAge = function() {
+    SubType.prototype.sayAge = function () {
       console.log(this.age);
     };
     ```
@@ -498,11 +438,11 @@ typeof 在判断一个 object 的数据的时候只能告诉我们这个数据�
 ```js
 typeof undefined; // "undefined"
 typeof true; // "boolean"
-typeof function() {}; // "function"
+typeof function () {}; // "function"
 typeof {}; // "object"
 typeof []; // "object"
 typeof null; // "object"
-typeof new String('abc'); // "object"
+typeof new String("abc"); // "object"
 typeof new Date(); // "object"
 ```
 
@@ -510,9 +450,9 @@ typeof new Date(); // "object"
 
 ```js
 Object.prototype.toString.call(1); // "[object Number]"
-Object.prototype.toString.call('hi'); // "[object String]"
-Object.prototype.toString.call({ a: 'hi' }); // "[object Object]"
-Object.prototype.toString.call([1, 'a']); // "[object Array]"
+Object.prototype.toString.call("hi"); // "[object String]"
+Object.prototype.toString.call({ a: "hi" }); // "[object Object]"
+Object.prototype.toString.call([1, "a"]); // "[object Array]"
 Object.prototype.toString.call(true); // "[object Boolean]"
 Object.prototype.toString.call(() => {}); // "[object Function]"
 Object.prototype.toString.call(null); // "[object Null]"
@@ -522,11 +462,15 @@ Object.prototype.toString.call(Symbol(1)); // "[object Symbol]"
 
 ```js
 let class2Type = {};
-[('Array', 'Date', 'RegExp', 'Error', 'Object')].forEach(type => (class2Type[`[object ${type}]`] = type.toLowerCase()));
+[("Array", "Date", "RegExp", "Error", "Object")].forEach(
+  (type) => (class2Type[`[object ${type}]`] = type.toLowerCase())
+);
 
 function type(obj) {
   if (obj === null) return String(null);
-  return typeof obj === 'object' ? class2Type[Object.prototype.toString.call(obj)] || 'object' : typeof obj;
+  return typeof obj === "object"
+    ? class2Type[Object.prototype.toString.call(obj)] || "object"
+    : typeof obj;
 }
 ```
 
@@ -622,7 +566,7 @@ function type(obj) {
     - 如果使用 g 标志，则将返回与完整正则表达式匹配的所有结果，但是不会返回捕获组，未匹配返回 null
 
       ```js
-      const str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+      const str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
       var regexp = /[A-E]/gi;
       var matches_array = str.match(regexp);
 
@@ -638,7 +582,7 @@ function type(obj) {
       > Input 为被解析的原始字符串
 
       ```js
-      var str = 'For more information, see Chapter 3.4.5.1';
+      var str = "For more information, see Chapter 3.4.5.1";
       var re = /see (chapter \d+(\.\d)*)/i;
       var found = str.match(re);
 
@@ -670,7 +614,7 @@ function type(obj) {
   - 不能校验原始类型值
 
     ```js
-    'a' instanceof String; // false
+    "a" instanceof String; // false
     ```
 
 - arr.constructor === Array
@@ -679,8 +623,8 @@ function type(obj) {
 ## call/apply 实现
 
 ```js
-Function.prototype.call = function(oThis, ...args) {
-  oThis = oThis || typeof window === 'undefined' ? global : window;
+Function.prototype.call = function (oThis, ...args) {
+  oThis = oThis || typeof window === "undefined" ? global : window;
   oThis.func = this;
 
   const result = oThis.func(...args);
@@ -690,8 +634,8 @@ Function.prototype.call = function(oThis, ...args) {
   return result;
 };
 
-Function.prototype.apply = function(oThis, args = []) {
-  oThis = oThis || typeof window === 'undefined' ? global : window;
+Function.prototype.apply = function (oThis, args = []) {
+  oThis = oThis || typeof window === "undefined" ? global : window;
 
   oThis.func = this;
   const result = oThis.func(...args);
@@ -705,7 +649,7 @@ Function.prototype.apply = function(oThis, args = []) {
 ## Array.prototype.reduce 实现
 
 ```js
-Array.prototype.reduce = function(callback) {
+Array.prototype.reduce = function (callback) {
   const o = Object(this);
 
   const len = o.length >>> 0;
@@ -722,7 +666,7 @@ Array.prototype.reduce = function(callback) {
 
     // If len is 0 and initialValue is not present, throw a TypeError exception.
     if (k >= len) {
-      throw new TypeError('Reduce of empty array with no initial value');
+      throw new TypeError("Reduce of empty array with no initial value");
     }
     value = o[k++];
   }
@@ -754,13 +698,15 @@ bind()方法创建一个新的函数，在调用时设置 this 关键字为提�
 
 ```js
 if (!Function.prototype.bind) {
-  Function.prototype.bind = function(oThis, ...args) {
-    if (typeof this !== 'function') {
-      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+  Function.prototype.bind = function (oThis, ...args) {
+    if (typeof this !== "function") {
+      throw new TypeError(
+        "Function.prototype.bind - what is trying to be bound is not callable"
+      );
     }
 
     var functionToBind = this,
-      functionBound = function(...bindArgs) {
+      functionBound = function (...bindArgs) {
         // this instanceof fBound === true时,说明返回的fBound被当做new的构造函数调用
         return functionToBind.apply(
           this instanceof functionBound ? this : oThis,
@@ -772,7 +718,7 @@ if (!Function.prototype.bind) {
     // 我们直接将 fBound.prototype = this.prototype，我们直接修改 fBound.prototype 的时候，也会直接修改绑定函数的 prototype。这个时候，我们可以通过一个空函数来进行中转：
 
     // 维护原型关系(原型链继承)
-    var fNOP = function() {};
+    var fNOP = function () {};
     if (this.prototype) {
       fNOP.prototype = this.prototype;
     }
@@ -793,7 +739,9 @@ if (!Function.prototype.bind) {
 ```js
 function curry(fn) {
   return function judge(...args) {
-    return args.length === fn.length ? fn(...args) : (...arg) => judge(...args, ...arg);
+    return args.length === fn.length
+      ? fn(...args)
+      : (...arg) => judge(...args, ...arg);
   };
 }
 ```
@@ -804,7 +752,7 @@ function curry(fn) {
 
 ```js
 function partial(func, ...args) {
-  return function(...arg) {
+  return function (...arg) {
     return func.call(this, ...args, ...arg);
   };
 }
@@ -812,7 +760,7 @@ function partial(func, ...args) {
  *  占位符版
  */
 function partial(fn, ...args) {
-  return function(...arg) {
+  return function (...arg) {
     let position = 0,
       len = args.length;
 
@@ -887,60 +835,6 @@ function _new(constructor, ...args) {
 
   > Note: 由于 runtime 不会污染全局空间，所以实例方法是无法工作的（因为这必须在原型链上添加这个方法，这是和 polyfill 最大的不同）
 
-## [前端基础进阶（二）：执行上下文详细图解](https://www.jianshu.com/p/a6d37c77e8db)
-
-- JS 运行环境大概包括三种情况：
-  - 全局环境： JavaScript 代码运行起来会首先进入该环境
-  - 函数环境：当函数被调用执行时，会进入当前函数中执行代码
-  - eval（不建议使用，可忽略）
-
-因此在一个 JavaScript 程序中，必定会产生多个执行上下文，在我的上一篇文章中也有提到，JavaScript 引擎会以栈的方式来处理它们，这个栈，我们称其为函数调用栈(call stack)。栈底永远都是全局上下文，而栈顶就是当前正在执行的上下文。
-
-- 全局上下文在浏览器窗口关闭后出栈。
-- 函数中，遇到 return 能直接终止可执行代码的执行，因此会直接将当前上下文弹出栈。
-
-### [JavaScript 深入之执行上下文](https://github.com/mqyqingfeng/Blog/issues/8)
-
-```js
-var scope = 'global scope';
-
-function checkScope() {
-  var scope = 'local scope';
-
-  function f() {
-    return scope;
-  }
-
-  return f();
-}
-
-checkScope(); // local scope
-```
-
-```js
-var scope = 'global scope';
-function checkScope() {
-  var scope = 'local scope';
-
-  function f() {
-    return scope;
-  }
-
-  return f;
-}
-
-checkScope()(); // local scope
-```
-
-### [什么是作用域和执行上下文](https://segmentfault.com/a/1190000009522006)
-
-### [前端基础进阶（六）：在 chrome 开发者工具中观察函数调用栈、作用域链与闭包](https://www.jianshu.com/p/73122bb3d262)
-
-- 闭包
-  - 本来函数外部是无权访问函数内部的函数或者变量，但是通过外部变量引用或者返回函数方式使得函数能够在外部调用，在调用时执行上下文创建和执行过程中保留了变量对象和作用域链使其不会被垃圾回收的过程就是闭包
-
-### [Javascript 函数声明的优先级高于变量声明的优先级，但不会覆盖变量赋值](https://blog.csdn.net/wy818/article/details/49247675)
-
 ## [Set 和 Map 数据结构](http://es6.ruanyifeng.com/#docs/set-map)
 
 - Set
@@ -964,7 +858,7 @@ checkScope()(); // local scope
     - entries()
 
       ```js
-      let set = new Set(['red', 'green', 'blue']);
+      let set = new Set(["red", "green", "blue"]);
 
       for (let item of set.entries()) {
         console.log(item);
@@ -979,7 +873,9 @@ checkScope()(); // local scope
 
       ```js
       let set = new Set([1, 4, 9]);
-      set.forEach((value, index, thisArgs) => console.log(indexs + ': ' + value));
+      set.forEach((value, index, thisArgs) =>
+        console.log(indexs + ": " + value)
+      );
       ```
 
 - WeakSet
@@ -1029,7 +925,7 @@ checkScope()(); // local scope
   ```js
   function Promise(executor) {
     var self = this;
-    self.status = 'pending';
+    self.status = "pending";
     self.value = undefined;
     self.onResolveCallback = [];
     self.onRejectCallback = [];
@@ -1038,9 +934,9 @@ checkScope()(); // local scope
       if (value instanceof Promise) {
         return value.then(resolve, reject);
       }
-      setTimeout(function() {
-        if (self.status === 'pending') {
-          self.status = 'fulfilled';
+      setTimeout(function () {
+        if (self.status === "pending") {
+          self.status = "fulfilled";
           self.value = value;
           for (var i = 0; i < self.onResolveCallback.length; i++) {
             self.onResolveCallback[i](value);
@@ -1050,9 +946,9 @@ checkScope()(); // local scope
     }
 
     function reject(reason) {
-      setTimeout(function() {
-        if (self.status === 'pending') {
-          self.status = 'rejected';
+      setTimeout(function () {
+        if (self.status === "pending") {
+          self.status = "rejected";
           self.value = reason;
           for (var i = 0; i < self.onRejectCallback.length; i++) {
             self.onRejectCallback[i](reason);
@@ -1073,12 +969,12 @@ checkScope()(); // local scope
     var thenCalledOrThrow = false;
 
     if (promise2 === x) {
-      return reject(new TypeError('Chaining cycle detected for promise!'));
+      return reject(new TypeError("Chaining cycle detected for promise!"));
     }
 
     if (x instanceof Promise) {
-      if (x.status === 'pending') {
-        x.then(function(value) {
+      if (x.status === "pending") {
+        x.then(function (value) {
           resolvePromise(promise2, value, resolve, reject);
         }, reject);
       } else {
@@ -1087,10 +983,10 @@ checkScope()(); // local scope
       return;
     }
 
-    if (x !== null && (typeof x === 'object' || typeof x === 'function')) {
+    if (x !== null && (typeof x === "object" || typeof x === "function")) {
       try {
         then = x.then;
-        if (typeof then === 'function') {
+        if (typeof then === "function") {
           then.call(
             x,
             function rs(y) {
@@ -1117,26 +1013,26 @@ checkScope()(); // local scope
     }
   }
 
-  Promise.prototype.then = function(onResolved, onRejected) {
+  Promise.prototype.then = function (onResolved, onRejected) {
     var self = this;
     var promise2;
 
     onResolved =
-      typeof onResolved === 'function'
+      typeof onResolved === "function"
         ? onResolved
-        : function(value) {
+        : function (value) {
             return value;
           };
     onRejected =
-      typeof onRejected === 'function'
+      typeof onRejected === "function"
         ? onRejected
-        : function(reason) {
+        : function (reason) {
             throw reason;
           };
 
-    if (self.status === 'fulfilled') {
-      return (promise2 = new Promise(function(resolve, reject) {
-        setTimeout(function() {
+    if (self.status === "fulfilled") {
+      return (promise2 = new Promise(function (resolve, reject) {
+        setTimeout(function () {
           try {
             var x = onResolved(self.value);
             resolvePromise(promise2, x, resolve, reject);
@@ -1147,9 +1043,9 @@ checkScope()(); // local scope
       }));
     }
 
-    if (self.status === 'rejected') {
-      return (promise2 = new Promise(function(resolve, reject) {
-        setTimeout(function() {
+    if (self.status === "rejected") {
+      return (promise2 = new Promise(function (resolve, reject) {
+        setTimeout(function () {
           try {
             var x = onReject(self.value);
             resolvePromise(promise2, x, resolve, reject);
@@ -1160,9 +1056,9 @@ checkScope()(); // local scope
       }));
     }
 
-    if (self.status === 'pending') {
-      return (promise2 = new Promise(function(resolve, reject) {
-        self.onResolvedCallback.push(function(value) {
+    if (self.status === "pending") {
+      return (promise2 = new Promise(function (resolve, reject) {
+        self.onResolvedCallback.push(function (value) {
           try {
             var x = onResolved(value);
             resolvePromise(promise2, x, resolve, reject);
@@ -1171,7 +1067,7 @@ checkScope()(); // local scope
           }
         });
 
-        self.onRejectedCallback.push(function(reason) {
+        self.onRejectedCallback.push(function (reason) {
           try {
             var x = onReject(reason);
             resolvePromise(promise2, x, resolve, reject);
@@ -1183,20 +1079,20 @@ checkScope()(); // local scope
     }
   };
 
-  Promise.prototype.catch = function(onReject) {
+  Promise.prototype.catch = function (onReject) {
     return this.then(null, onReject);
   };
 
-  Promise.deferred = Promise.defer = function() {
+  Promise.deferred = Promise.defer = function () {
     var dfd = {};
-    dfd.promise = new Promise(function(resolve, reject) {
+    dfd.promise = new Promise(function (resolve, reject) {
       dfd.resolve = resolve;
       dfd.reject = reject;
     });
     return dfd;
   };
 
-  Promise.prototype.all = function(promises) {
+  Promise.prototype.all = function (promises) {
     return new Promise((resolve, reject) => {
       promises = Array.from(promises);
       const len = promises.length;
@@ -1207,14 +1103,14 @@ checkScope()(); // local scope
         let resolvedCount = 0;
         for (let i = 0; i < len; i++) {
           Promise.resolve(promises[i]).then(
-            data => {
+            (data) => {
               result[i] = data;
               resolvedCount++;
               if (resolvedCount === len) {
                 resolve(result);
               }
             },
-            err => {
+            (err) => {
               return reject(err);
             }
           );
@@ -1223,7 +1119,7 @@ checkScope()(); // local scope
     });
   };
 
-  Promise.prototype.race = function(promises) {
+  Promise.prototype.race = function (promises) {
     return new Promise((resolve, reject) => {
       promises = Array.from(promises);
       const len = promises.length;
@@ -1248,7 +1144,7 @@ checkScope()(); // local scope
 
 ```js
 function spawn(genF) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     const gen = genF();
 
     function step(nextF) {
@@ -1263,20 +1159,20 @@ function spawn(genF) {
       }
 
       Promise.resolve(next.value).then(
-        function(v) {
-          step(function() {
+        function (v) {
+          step(function () {
             return gen.next(v);
           });
         },
-        function(err) {
-          step(function() {
+        function (err) {
+          step(function () {
             return gen.throw(err);
           });
         }
       );
     }
 
-    step(function() {
+    step(function () {
       return gen.next(undefined);
     });
   });
@@ -1304,7 +1200,7 @@ async...await 是 Generator 函数语法糖。
   ```js
   function debounce(fn, interval) {
     let timeout = null;
-    return function() {
+    return function () {
       clearTimeout(timeout);
 
       timeout = setTimeout(() => {
@@ -1323,7 +1219,7 @@ async...await 是 Generator 函数语法糖。
   ```js
   function throttle(fn, interval) {
     let canRun = true;
-    return function() {
+    return function () {
       if (!canRun) return;
 
       canRun = false;
@@ -1335,18 +1231,6 @@ async...await 是 Generator 函数语法糖。
     };
   }
   ```
-
-## this 指向
-
-- [彻底理解 js 中 this 的指向，不必硬背。](https://www.cnblogs.com/pssp/p/5216085.html)
-- [彻底理解 JavaScript 中的 this](https://juejin.im/post/5c049e6de51d45471745eb98)
-
-## [前端基础进阶：详细图解 JavaScript 内存空间](https://juejin.im/entry/589c29a9b123db16a3c18adf)
-
-在 JS 中，每一个数据都需要一个内存空间。内存空间又被分为两种，栈内存(stock)与堆内存(heap)。
-
-- 基础数据类型，这些值都有固定的大小，往往都保存在栈内存中，由系统自动分配存储空间。可以直接操作保存在栈内存空间的值，因此基础数据类型都是按值访问。
-- 引用数据类型，比如数组 Array，它们值的大小是不固定的。引用数据类型的值是保存在堆内存中的对象。JavaScript 不允许直接访问堆内存中的位置，因此我们不能直接操作对象的堆内存空间。在操作对象时，实际上是在操作对象的引用而不是实际的对象。因此，引用类型的值都是按引用访问的。这里的引用，我们可以粗浅地理解为保存在栈内存中的一个地址，该地址与堆内存的实际值相关联。
 
 ## script 属性 defer 和 async 区别
 
@@ -1378,9 +1262,9 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
      ```js
      let options = {
-       root: document.querySelector('#scrollArea'), // 指定根(root)元素，用于检查目标的可见性。必须是目标元素的父级元素。如果未指定或者为null，则默认为浏览器视窗。
-       rootMargin: '0px', // root元素的外边距。类似于css中的 margin 属性，比如 "10px 20px 30px 40px" (top, right, bottom, left)。如果有指定root参数，则rootMargin也可以使用百分比来取值。该属性值是用作root元素和target发生交集时候的计算交集的区域范围，使用该属性可以控制root元素每一边的收缩或者扩张。默认值为0。
-       threshold: 1.0 // 可以是单一的number也可以是number数组，target元素和root元素相交程度达到该值的时候IntersectionObserver注册的回调函数将会被执行。
+       root: document.querySelector("#scrollArea"), // 指定根(root)元素，用于检查目标的可见性。必须是目标元素的父级元素。如果未指定或者为null，则默认为浏览器视窗。
+       rootMargin: "0px", // root元素的外边距。类似于css中的 margin 属性，比如 "10px 20px 30px 40px" (top, right, bottom, left)。如果有指定root参数，则rootMargin也可以使用百分比来取值。该属性值是用作root元素和target发生交集时候的计算交集的区域范围，使用该属性可以控制root元素每一边的收缩或者扩张。默认值为0。
+       threshold: 1.0, // 可以是单一的number也可以是number数组，target元素和root元素相交程度达到该值的时候IntersectionObserver注册的回调函数将会被执行。
      };
      let observer = new IntersectionObserver(callback, options);
      ```
@@ -1388,11 +1272,11 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
   2. 为每个观察者配置一个目标
 
      ```js
-     let target = document.querySelector('#listItem');
+     let target = document.querySelector("#listItem");
      observer.observe(target);
 
-     let callback = function(entries, observer) {
-       entries.forEach(entry => {
+     let callback = function (entries, observer) {
+       entries.forEach((entry) => {
          // Each entry describes an intersection change for one observed
          // target element:
          //   entry.boundingClientRect
@@ -1441,7 +1325,7 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
   let t0 = window.performance.now();
   doSomething();
   let t1 = window.performance.now();
-  console.log('doSomething 函数执行了' + (t1 - t0) + '毫秒。');
+  console.log("doSomething 函数执行了" + (t1 - t0) + "毫秒。");
   ```
 
 - node.js 中有 `process.hrtime()`, 返回一个数组 `[seconds, nanoseconds]`
@@ -1457,13 +1341,13 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
   > 状态可能是 pending, 潜在的内存泄漏
 
 ```js
-(function() {
+(function () {
   const STOP = {};
 
   Promise.prototype._then = Promise.prototype.then;
 
-  Promise.prototype.then = function(onResolved, onRejected) {
-    return this._then(result => {
+  Promise.prototype.then = function (onResolved, onRejected) {
+    return this._then((result) => {
       if (result === STOP) {
         return result;
       } else {
@@ -1499,7 +1383,9 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 
     ```js
     function isObject(data) {
-      return data != null && (typeof data === 'object' || typeof data === 'function');
+      return (
+        data != null && (typeof data === "object" || typeof data === "function")
+      );
     }
 
     function deepClone(obj, hash = new WeakMap()) {
@@ -1522,8 +1408,10 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       let symbolKeys = Object.getOwnPropertySymbols(obj);
       // 拷贝所有 symbol 属性
       if (symbolKeys.length > 0) {
-        symbolKeys.forEach(symbolKey => {
-          cloneObj[symbolKey] = isObject(obj[symbolKey]) ? deepClone(obj[symbolKey], hash) : obj[symbolKey];
+        symbolKeys.forEach((symbolKey) => {
+          cloneObj[symbolKey] = isObject(obj[symbolKey])
+            ? deepClone(obj[symbolKey], hash)
+            : obj[symbolKey];
         });
       }
 
@@ -1554,15 +1442,21 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
       // 拷贝所有自有属性的属性描述符,来自于 MDN
       // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
       function completeAssign(target, ...sources) {
-        sources.forEach(source => {
+        sources.forEach((source) => {
           // 复制属性描述符
-          let descriptors = Object.keys(source).reduce((descriptors, curKey) => {
-            descriptors[curKeys] = Object.getOwnPropertyDescriptor(source, curKey);
-            return descriptors;
-          }, {});
+          let descriptors = Object.keys(source).reduce(
+            (descriptors, curKey) => {
+              descriptors[curKeys] = Object.getOwnPropertyDescriptor(
+                source,
+                curKey
+              );
+              return descriptors;
+            },
+            {}
+          );
 
           // 复制可枚举的 symbols 属性
-          Object.getOwnPropertySymbols(source).forEach(sym => {
+          Object.getOwnPropertySymbols(source).forEach((sym) => {
             let descriptor = Object.getOwnPropertyDescriptor(source, sym);
             if (descriptor.enumerable) {
               descriptors[sym] = descriptor;
@@ -1586,7 +1480,10 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 ```js
 // polyfill
 function flattenDeep(arr) {
-  return arr.reduce((accu, val) => accu.concat(Array.isArray(val) ? flattenDeep(val) : val), []);
+  return arr.reduce(
+    (accu, val) => accu.concat(Array.isArray(val) ? flattenDeep(val) : val),
+    []
+  );
 }
 ```
 
@@ -1614,7 +1511,7 @@ function flatten(input) {
 
 ```js
 function flatten(input) {
-  return Array.isArray(input) ? input.toString().split(',') : input;
+  return Array.isArray(input) ? input.toString().split(",") : input;
 }
 ```
 
@@ -1643,8 +1540,8 @@ function flatten(input) {
   - 字符串合并的时候使用简单的'+'和'+='操作符。
 
     ```js
-    str += 'abc' + 'efg'; // 2个以上的字符串拼接，会产生临时字符串
-    str = str + 'abc' + 'efg'; //推荐，提速10%~40%
+    str += "abc" + "efg"; // 2个以上的字符串拼接，会产生临时字符串
+    str = str + "abc" + "efg"; //推荐，提速10%~40%
     ```
 
   - [正则表达式工作原理, 回溯](https://blog.csdn.net/c_kite/article/details/77875328)
