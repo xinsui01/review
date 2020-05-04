@@ -148,7 +148,7 @@
 
   - 创建布局树
     - 遍历 DOM 树中的所有可见节点， 并把这些节点加到布局树中
-    - 不可见的节点会被忽略掉，如 head 标签下的全部内容，再比如属性包含 `display: none`, 所以这些元素也没有被包进布局树
+    - 不可见的节点会被忽略掉，如 head 标签下的全部内容，script 标签，再比如属性包含 `display: none`, 所以这些元素也没有被包进布局树
   - 布局计算
     > 执行布局操作的时候，会把布局运算结果重新写回布局树中，所以布局树即是输入内容，也是输出内容，这是布局阶段一个不合理的地方，因为在布局阶段并没有清晰的将输入内容和输出内容区分开来。针对这个问题，Chrome 团队正在重构布局代码，下一代布局系统叫 LayoutNG，试图更清晰的分离输入和输出，从而让新设计的布局算法更加简单。
 
@@ -563,3 +563,269 @@ checkScope()(); // local scope
   如果有⼀段第⼀次执⾏的字节码，解释器 Ignition 会逐条解释执⾏。到了这⾥，相信你已经发现了，解释器 Ignition 除了负责⽣成字节码之外，它还有另外⼀个作⽤，就是解释执⾏字节码。在 Ignition 执⾏字节码的过程中，如果发现有热点代码（HotSpot），⽐如⼀段代码被重复执⾏多次，这种就称为热点代码，那么后台的编译器 TurboFan 就会把该段热点的字节码编译为⾼效的机器码，然后当再次执⾏这段被优化的代码时，只需要执⾏编译后的机器码就可以了，这样就⼤⼤提升了代码的执⾏效率。
 
 ![即时编译（JIT）技术](../imgs/即时编译（JIT）技术.png)
+
+> bytecode 会比源文件大得多，会增加 loading 时间，v8 团队认为没必要
+
+> 热点代码编译为机器码后以哈希表的形式存在 v8 的堆内存中
+
+## 消息队列和事件循环
+
+### 消息队列
+
+消息队列是一种数据结构，可以存放要执行的任务。符合队列先进先出的特点
+
+### 事件循环
+
+#### setTimeout
+
+<!-- 存放 setTimeout 任务的队列其实是一个 hashmap 结构，等到执行这个结构的时候，会计算 hashmap 中的每个任务是否到期了，到期了就去执⾏，直到所有到期的任务都执⾏结束，才会进⼊下⼀轮循环 -->
+
+定时器线程负责计时，到点了就把回调函数 push 到队列中
+
+- 如果 setTimeout 存在嵌套调用，那么系统会设置最短时间间隔为 4 毫秒
+- 未激活的⻚⾯，setTimeout 执⾏最⼩间隔是 1000 毫秒（⽬的是为了优化后台⻚⾯的加载损耗以及降低耗电量）
+- 延时执⾏时间有最⼤值
+
+  Chrome、Safari、Firefox 都是以 32 个 bit 来存储延时值的，32bit 最⼤只能存放的数字是 2147483647 毫秒，这就意味着，如果 setTimeout 设置的延迟值⼤于 2147483647 毫秒（⼤约 24.8 天）时就会溢出，那么相当于延时值被设置为 0 了，这导致定时器会被⽴即执⾏。
+
+  ```js
+  function showName() {
+    console.log("showName called");
+  }
+  var timeID = setTimeout(showName, 2147483648); //会被立即调⽤执⾏
+  ```
+
+## 渲染流水线下的 CSS
+
+![含有 CSS 的⻚⾯渲染流⽔线](../imgs/含有CSS的页面渲染流水线.jpg)
+
+⾸先是发起主⻚⾯的请求，这个发起请求⽅可能是渲染进程，也有可能是浏览器进程，发起的请求被送到⽹络进程中去执⾏。⽹络进程接收到返回的 HTML 数据之后，将其发送给渲染进程，渲染进程会解析 HTML 数据并构建 DOM。这⾥你需要特别注意下，请求 HTML 数据和构建 DOM 中间有⼀段空闲时间，这个空闲时间有可能成为⻚⾯渲染的瓶颈。
+
+当渲染进程接收 HTML ⽂件字节流时，会先开启⼀个**预解析线程**，如果遇到 JavaScript ⽂件或者 CSS ⽂件，那么预解析线程会提前下载这些数据。对于上⾯的代码，预解析线程会解析出来⼀个外部的 theme.css ⽂件，并发起 theme.css 的下载。这⾥也有⼀个空闲时间需要你注意⼀下，就是在 DOM 构建结束之后、theme.css ⽂件还未下载完成的这段时间内，渲染流⽔线⽆事可做，因为下⼀步是合成布局树，⽽合成布局树需要 CSSOM 和 DOM，所以这⾥需要等待 CSS 加载结束并解析成 CSSOM。
+
+和 DOM ⼀样，CSSOM 也具有两个作⽤，第⼀个是**提供给 JavaScript 操作样式表的能⼒**，第⼆个是**为布局树的合成提供基础的样式信息**。这个 CSSOM 体现在 DOM 中就是 document.styleSheets。
+
+在执⾏ JavaScript 脚本之前，如果⻚⾯中包含了外部 CSS ⽂件的引⽤，或者通过 style 标签内置了 CSS 内容，那么渲染引擎还需要将这些内容转换为 CSSOM，因为 JavaScript 有修改 CSSOM 的能⼒，所以在执⾏ JavaScript 之前，还需要依赖 CSSOM。也就是说 CSS 在部分情况下也会阻塞 DOM 的⽣成。
+
+```css
+// theme.css
+div {
+  color: green;
+  background-color: black;
+}
+```
+
+```js
+// foo.js
+console.log('script)
+```
+
+```html
+<html>
+  <head>
+    <link href="theme.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div>geekbang com</div>
+    <script src="foo.js"></script>
+    <div>geekbang com</div>
+  </body>
+</html>
+```
+
+![含有 JavaScript ⽂件和 CSS ⽂件⻚⾯的渲染流⽔线](../imgs/含有%20JavaScript%20⽂件和%20CSS%20⽂件⻚⾯的渲染流⽔线.png)
+
+在接收到 HTML 数据之后的预解析过程中，HTML 预解析器识别出来了有 CSS ⽂件和 JavaScript ⽂件需要下载，然后就同时发起这两个⽂件的下载请求，需要注意的是，这两个⽂件的下载过程是重叠的，所以下载时间按照最久的那个⽂件来算。
+
+### 缩短白屏时间
+
+- 通过内联 JavaScript、内联 CSS 来移除这两种类型的⽂件下载，这样获取到 HTML ⽂件之后就可以直接开始渲染流程了。
+- 但并不是所有的场合都适合内联，那么还可以尽量减少⽂件⼤⼩，⽐如通过 webpack 等⼯具移除⼀些不必要的注释，并压缩 JavaScript ⽂件。
+- 将⼀些不需要在解析 HTML 阶段使⽤的 JavaScript 标记上 sync 或者 defer。
+- 对于⼤的 CSS ⽂件，可以通过媒体查询属性，将其拆分为多个不同⽤途的 CSS ⽂件，这样只有在特定的场景下才会加载特定的 CSS ⽂件。
+
+## 分层和合成机制：为什么 CSS 动画⽐ JavaScript ⾼效
+
+- 显示器是怎么显示图像的
+
+  每个显示器都有固定的刷新频率，通常是 60HZ，也就是每秒更新 60 张图⽚，更新的图⽚都来⾃于显卡中⼀个叫**前缓冲区**的地⽅，显示器所做的任务很简单，就是每秒固定读取 60 次前缓冲区中的图像，并将读取的图像显示到显示器上。
+
+- 显卡做什么
+
+  显卡的职责就是合成新的图像，并将图像保存到**后缓冲区**中，⼀旦显卡把合成的图像写到后缓冲区，系统就会让后缓冲区和前缓冲区互换，这样就能保证显示器能读取到最新显卡合成的图像。通常情况下，显卡的更新频率和显示器的刷新频率是⼀致的。但有时候，在⼀些复杂的场景中，显卡处理⼀张图⽚的速度会变慢，这样就会造成视觉上的卡顿。
+
+- 帧 VS 帧率
+
+  通过滚动条滚动⻚⾯，或者通过⼿势缩放⻚⾯时，屏幕上就会产⽣动画的效果。之所以能感觉到有动画的效果，是因为在滚动或者缩放操作时，渲染引擎会通过渲染流⽔线⽣成新的图⽚，并发送到显卡的后缓冲区。
+
+  我们把渲染流⽔线⽣成的每⼀副图⽚称为⼀帧，把渲染流⽔线每秒更新了多少帧称为帧率。
+
+### Chrome 中的合成技术，可以⽤三个词来概括总结：分层、分块和合成
+
+- 分层和合成
+
+  一些复杂的动效，如果没有采用分层机制，从布局树直接生成目标图片的话，那么每次页面有很小的变化时，都会触发重排或者重绘机制，这中绘制策略会严重影响页面的渲染效率。
+
+  为了提升每帧的渲染效率，Chrome 引入了分层和合成的机制。
+
+  需要重点关注的是，合成操作是在合成线程上完成的，这也就意味着在执⾏合成操作时，是不会影响到主线程执⾏的。这就是为什么经常主线程卡住了，但是 CSS 动画依然能执⾏的原因。
+
+- 分块
+
+  如果说分层是从宏观上提升了渲染效率，那么分块则是从微观层⾯提升了渲染效率。
+
+  合成线程会将每个图层分割为⼤⼩固定的图块，然后优先绘制靠近视⼝的图块，这样
+  就可以⼤⼤加速⻚⾯的显示速度。即使只绘制那些优先级最⾼的图块，也要耗费不少的时间，因为涉及到⼀个很关键的因素——纹理上传，这是因为从计算机内存上传到 GPU 内存的操作会⽐较慢。
+
+  为了解决这个问题，Chrome ⼜采取了⼀个策略：在⾸次合成图块的时候使⽤⼀个低分辨率的图⽚。⽐如可以是正常分辨率的⼀半，分辨率减少⼀半，纹理就减少了四分之三。在⾸次显示⻚⾯内容的时候，将这个低分辨率的图⽚显示出来，然后合成器继续绘制正常⽐例的⽹⻚内容，当正常⽐例的⽹⻚内容绘制完成后，再替换掉当前显示的低分辨率内容。这种⽅式尽管会让⽤户在开始时看到的是低分辨率的内容，但是也⽐⽤户在开始时什么都看不到要好。
+
+### 利⽤分层技术优化代码
+
+```css
+.box {
+  will-change: transform, opacity;
+}
+```
+
+这段代码就是提前告诉渲染引擎 box 元素将要做⼏何变换和透明度变换操作，这时候渲染引擎会将该元素单独实现⼀层，等这些变换发⽣时，渲染引擎会通过合成线程直接去处理变换，这些变换并没有涉及到主线程，这样就⼤⼤提升了渲染的效率。这也是 CSS 动画⽐ JavaScript 动画⾼效的原因。
+
+每当渲染引擎为⼀个元素准备⼀个独⽴层的时候，它占⽤的内存也会⼤⼤增加，因为从层树开始，后续每个阶段都会多⼀个层结构，这些都需要额外的内存，所以你需要恰当地使⽤ will-change。
+
+## 优化⻚⾯性能
+
+### 加载阶段
+
+减少关键资源个数， 降低关键资源⼤⼩，降低关键资源的 RTT（Round Trip Time）次数。
+
+- RTT：表示从发送端发送数据开始，到发送端收到来⾃接收端的确认，总共经历的时延
+
+### 交互阶段
+
+- 减少 JavaScript 脚本执⾏时间
+  - 将⼀次执⾏的函数分解为多个任务，使得每次的执⾏时间不要过久。
+  - 采⽤ Web Workers。你可以把 Web Workers 当作主线程之外的⼀个线程，在
+    Web Workers 中是可以执⾏ JavaScript 脚本的，不过 Web Workers 中没有 DOM、CSSOM 环境，这意味着在 Web Workers 中是⽆法通过 JavaScript 来访问 DOM 的，所以我们可以把⼀些和 DOM 操作⽆关且耗时的任务放到 Web Workers 中去执⾏。
+- 避免强制同步布局
+
+  main_div.offsetHeight， 如果要获取到 main_div 的⾼度，就需要重新布局
+
+- 避免布局抖动
+
+  所谓布局抖动，是指在⼀次 JavaScript 执⾏过程中，多次执⾏强制布局和抖动操作。
+
+  ```js
+  function foo() {
+    let time_li = document.getElementById("time_li");
+    for (let i = 0; i < 100; i++) {
+      let main_div = document.getElementById("mian_div");
+      let new_node = document.createElement("li");
+      let textnode = document.createTextNode("time.geekbang");
+      new_node.appendChild(textnode);
+      new_node.offsetHeight = time_li.offsetHeight;
+      document.getElementById("mian_div").appendChild(new_node);
+    }
+  }
+  ```
+
+  我们在⼀个 for 循环语句⾥⾯不断读取属性值，每次读取属性值之前都要进⾏计算样式和布局。
+
+- 合理利⽤ CSS 合成动画
+
+## vDOM
+
+### 双缓存
+
+使⽤双缓存，可以让你先将计算的中间结果存放在另⼀个缓冲区中，等全部的计算结束，该缓冲区已经存储了完整的图形之后，再将该缓冲区的图形数据⼀次性复制到显示缓冲区，这样就使得整个图像的输出⾮常稳定。
+
+虚拟 DOM 看成是 DOM 的⼀个 buffer，和图形显示⼀样，它会在完成⼀次完整的操作之后，再把结果应⽤到 DOM 上，这样就能减少⼀些不必要的更新，同时还能保证 DOM 的稳定输出。
+
+### 基于 React 和 Redux 构建 MVC 模型
+
+![基于 React 和 Redux 构建 MVC 模型](../imgs/基于%20React%20和%20Redux%20构建%20MVC%20模型.png)
+
+## PWA
+
+通过引⼊ Service Worker 来试着解决离线存储和消息推送的问题，通过引⼊ manifest.json 来解决⼀级⼊⼝的问题
+
+- Service Worker
+  在⻚⾯和⽹络之间增加⼀个拦截器，⽤来缓存和拦截请求。
+
+  Web Worker 的⽬的是让 JavaScript 能够运⾏在⻚⾯主线程之外，不过由于 Web Worker 中是没有当前⻚⾯的 DOM 环境的，所以在 Web Worker 中只能执⾏⼀些和 DOM ⽆关的 JavaScript 脚本，并通过 postMessage ⽅法将执⾏的结果返回给主线程.
+
+  在 Chrome 中， Web Worker 其实就是在渲染进程中开启的⼀个新线程，它的⽣命周期是和⻚⾯关联的。
+
+  “让其运⾏在主线程之外”就是 Service Worker 来⾃ Web Worker 的⼀个核⼼思想。
+
+  Web Worker 是临时的，每次 JavaScript 脚本执⾏完成之后都会退出，执⾏结果也不能保存下来，如果下次还有同样的操作，就还得重新来⼀遍。所以 Service Worker 需要在 Web Worker 的基础之上加上储存功能。
+
+  由于 Service Worker 还需要会为多个⻚⾯提供服务，所以还不能把 Service
+  Worker 和单个⻚⾯绑定起来
+
+  要使站点⽀持 Service Worker，⾸先必要的⼀步就是要将站点升级到 HTTPS。除了必须要使⽤ HTTPS，Service Worker 还需要同时⽀持 Web ⻚⾯默认的安全策略、同源策略、内容安全策略（CSP）等
+
+## WebComponent
+
+- 阻碍前端组件化的因素
+  - CSS 是影响全局的
+  - ⻚⾯中只有⼀个 DOM，任何地⽅都可以直接读取和修改 DOM
+- WebComponent 给出了解决思路，它提供了对局部视图封装能⼒，可以让 DOM、
+  CSSOM 和 JavaScript 运⾏在局部环境中，这样就使得局部的 CSS 和 DOM 不会影响到全局。
+- WebComponent 是⼀套技术的组合，具体涉及到了 Custom elements（⾃定义元素）、Shadow DOM（影⼦ DOM）和 HTML templates（HTML 模板）
+
+```html
+<!DOCTYPE html>
+<html>
+  <body>
+    <!--
+⼀：定义模板
+⼆：定义内部CSS样式
+三：定义JavaScript⾏为
+-->
+    <template id="geekbang-t">
+      <style>
+        p {
+          background-color: brown;
+          color: cornsilk;
+        }
+        div {
+          width: 200px;
+          background-color: bisque;
+          border: 3px solid chocolate;
+          border-radius: 10px;
+        }
+      </style>
+      <div>
+        <p>time.geekbang.org</p>
+        <p>time1.geekbang.org</p>
+      </div>
+      <script>
+        function foo() {
+          console.log("inner log");
+        }
+      </script>
+    </template>
+    <script>
+      class GeekBang extends HTMLElement {
+        constructor() {
+          super();
+          //获取组件模板
+          const content = document.querySelector("#geekbang-t").content;
+          //创建影⼦DOM节点
+          const shadowDOM = this.attachShadow({ mode: "open" });
+          //将模板添加到影⼦DOM上
+          shadowDOM.appendChild(content.cloneNode(true));
+        }
+      }
+      customElements.define("geek-bang", GeekBang);
+    </script>
+    <geek-bang></geek-bang>
+    <div>
+      <p>time.geekbang.org</p>
+      <p>time1.geekbang.org</p>
+    </div>
+    <geek-bang></geek-bang>
+  </body>
+</html>
+```
+
+- ShadowDOM 的作⽤是将模板中的内容与全局 DOM 和 CSS 进⾏隔离，这样我们就可以实现元素和样式的私有化了
