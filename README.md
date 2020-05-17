@@ -32,6 +32,8 @@
 
 ## 算法
 
+## [数据结构与算法之美](./content/algorithm.md)
+
 - [前端笔试&面试爬坑系列---算法](https://juejin.im/post/5b72f0caf265da282809f3b5)
 
 ## Others
