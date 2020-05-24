@@ -13,7 +13,7 @@
     var num = 234982347.73;
     num
       .toString()
-      .replace(/^\d+/, m => m.replace(/(\d{1,3})(?=(?:\d{3})+$)/g, "$1,"));
+      .replace(/^\d+/, (m) => m.replace(/(\d{1,3})(?=(?:\d{3})+$)/g, "$1,"));
     ```
 
 - 有如下对象 testData, 请将该对象所有 key 从下划线转换为大驼峰
@@ -21,21 +21,21 @@
   ```js
   var testData = {
     aa_bb: 123,
-    bb_cc_dd: [1, 2, 3]
+    bb_cc_dd: [1, 2, 3],
   };
 
   testData.cc = [
     { abc_xy: testData },
     { aa_bb_cc: testData.bb_cc_dd },
     1,
-    "st_ri_n_g"
+    "st_ri_n_g",
   ];
   testData.dd_xyz_cc_bb_ax = {
     c: testData.cc,
     xy: [1, 2, 3, null, undefined, false],
     z: undefined,
     is_string: false,
-    is_array: function() {}
+    is_array: function () {},
   };
 
   ////////////////////// 解答  ///////////////////////////
@@ -61,7 +61,7 @@
 
       let obj = {};
       map.set(data, obj);
-      Object.keys(data).forEach(key => {
+      Object.keys(data).forEach((key) => {
         const _key = strToCamelCase(key);
         obj[_key] = _mapKeysToCamelCase(data[key], map);
       });
@@ -69,16 +69,16 @@
       return obj;
     }
 
-    const isBaseType = (function() {
+    const isBaseType = (function () {
       const baseTypes = [
         "Number",
         "String",
         "Boolean",
         "Null",
         "Undefined",
-        "Function"
-      ].map(item => `[object ${item}]`);
-      return val => {
+        "Function",
+      ].map((item) => `[object ${item}]`);
+      return (val) => {
         const tp = Object.prototype.toString.call(val);
         return baseTypes.includes(tp);
       };
@@ -87,8 +87,8 @@
     function strToCamelCase(key) {
       return key
         .split("_")
-        .map(key =>
-          key.replace(/\b(\w)(\w*)/g, function($0, $1, $2) {
+        .map((key) =>
+          key.replace(/\b(\w)(\w*)/g, function ($0, $1, $2) {
             return $1.toUpperCase() + $2.toLowerCase();
           })
         )
@@ -114,7 +114,7 @@
     // );
 
     let obj = {};
-    ("" + str).replace(/./g, letter => {
+    ("" + str).replace(/./g, (letter) => {
       obj[letter] = (obj[letter] || 0) + 1;
       return letter;
     });
@@ -147,7 +147,7 @@
     } else {
       arr = arr[1].split("#");
       arr = arr[0].split("&");
-      arr.forEach(item => {
+      arr.forEach((item) => {
         const [key, value] = item.split("=");
         result[key] = value;
       });
@@ -204,7 +204,7 @@
       const child = children[i];
 
       if (child.nodeType === 1) {
-        child.onmouseover = function(evt) {
+        child.onmouseover = function (evt) {
           if (evt && evt.stopPropagation) {
             evt.stopPropagation();
           } else {
@@ -213,7 +213,7 @@
           this.style.border = "1px solid #ccc";
         };
 
-        child.onmouseout = function() {
+        child.onmouseout = function () {
           this.style.border = "";
         };
 
@@ -237,130 +237,6 @@
   | Node.DOCUMENT_NODE               | 9   | 一个 Document 节点。                                                              |
   | Node.DOCUMENT_TYPE_NODE          | 10  | 描述文档类型的 DocumentType 节点。例如 `<!DOCTYPE html>` 就是用于 HTML5 的。      |
   | Node.DOCUMENT_FRAGMENT_NODE      | 11  | 一个 DocumentFragment 节点                                                        |
-
-- 排序算法
-
-  - 冒泡排序
-
-    ```js
-    /**
-     * 每次比较相邻两个值
-     */
-    function bubbleSort(arr) {
-      if (arr === null || arr.length === 0) return arr;
-
-      const length = arr.length;
-
-      /**
-       * 从前往后冒泡
-       */
-      // for(let i=0; i < length -1; i++) {
-      //   for(let j=0; j < length - 1 - i; j++){
-      //     if(arr[j]>arr[j+1]){
-      //       swap(arr, j, j+1);
-      //     }
-      //   }
-      // }
-
-      /**
-       * 从后往前冒泡
-       */
-      for (let i = 0, len = length - 1; i < len; i++) {
-        for (let j = length - 1; j > i; j--) {
-          if (arr[j] < arr[j - 1]) {
-            swap(arr, j, j - 1);
-          }
-        }
-      }
-
-      function swap(arr, i, j) {
-        // let temp = arr[i];
-        // arr[i] = arr[j];
-        // arr[j] = temp;
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-
-      return arr;
-    }
-    ```
-
-  - 选择排序
-
-    ```js
-    function selectSort(arr) {
-      if (arr === null || arr.length === 0) return arr;
-
-      for (let i = 0, len = arr.length - 1; i < len; i++) {
-        let minIndex = i;
-        for (let j = i + 1, len = arr.length; j < len; j++) {
-          if (arr[minIndex] > arr[j]) {
-            minIndex = j;
-          }
-        }
-
-        if (minIndex !== i) {
-          swap(arr, i, minIndex);
-        }
-      }
-
-      function swap(arr, i, j) {
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-    ```
-
-  - 插入排序
-
-    ```js
-    function insertSort(arr) {
-      if (arr === null || arr.length === 0) return arr;
-
-      for (let i = 1, len = arr.length; i < len; i++) {
-        // 假设第一个数是正确的
-        let j = i,
-          target = arr[i]; //待插入的
-
-        //后移
-        while (j > 0 && target < arr[j - 1]) {
-          arr[j] = arr[j - 1];
-          j--;
-        }
-
-        //插入
-        arr[j] = target;
-      }
-
-      return arr;
-    }
-    ```
-
-  - 快速排序
-
-    ```js
-    /**
-     * 1. 选择一个基准元素
-     * 2. 将所有小于基准值得元素放在基准值的左边，所有大于基准值的元素放在基准值的右边
-     * 3. 对分割后的两个子序列重复上述步骤
-     */
-    function quickSort(arr) {
-      if (arr === null || arr.length === 0) return arr;
-
-      let left = [],
-        right = [],
-        current = arr.splice(0, 1); // 注意splice 后数据的长度少了一个
-
-      for (let i = 0, len = arr.length; i < len; i++) {
-        if (arr[i] < current) {
-          left.push(arr[i]); // 放在左边
-        } else {
-          right.push(arr[i]); // 放在右边
-        }
-      }
-
-      return quickSort(left).concat(current, quickSort(right)); // 递归
-    }
-    ```
 
 - 二分查找
 
@@ -450,7 +326,7 @@
   ```js
   function unique(arr) {
     let obj = {};
-    return arr.filter(item => {
+    return arr.filter((item) => {
       if (obj[item]) {
         return false;
       }
@@ -522,7 +398,7 @@
     const validItems = getValidItems(arr);
     const result = {};
 
-    validItems.forEach(item => {
+    validItems.forEach((item) => {
       result[item.type]
         ? result[item.type].push(item)
         : (result[item.type] = [item]);
@@ -538,7 +414,9 @@
   }
 
   function getValidItems(arr) {
-    return arr.filter(item => isPureObject(item) && item.type && item.content);
+    return arr.filter(
+      (item) => isPureObject(item) && item.type && item.content
+    );
   }
 
   function isPureObject(obj) {
@@ -546,7 +424,7 @@
   }
 
   function resultFormat(obj) {
-    return Object.keys(obj).map(type => {
+    return Object.keys(obj).map((type) => {
       return { type, contents: obj[type] };
     });
   }
@@ -598,7 +476,7 @@
 - 使用 promise 4 秒后打印’A’，然后经过 3 秒打印’B’，再经过 2 秒打印’C’，再经过一秒打印’D’。
 
   ```js
-  let promise = new Promise(resolve => {
+  let promise = new Promise((resolve) => {
     setTimeout(() => {
       console.log("A");
       resolve();
@@ -607,7 +485,7 @@
 
   promise
     .then(() => {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           console.log("B");
           resolve();
@@ -615,7 +493,7 @@
       });
     })
     .then(() => {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           console.log("C");
           resolve();
@@ -623,7 +501,7 @@
       });
     })
     .then(() => {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           console.log("D");
           resolve();
@@ -636,8 +514,8 @@
 
   ```js
   function sequenceTasks(arr) {
-    return arr.reduce(function(prevPromise, promiseFn, index) {
-      return prevPromise.then(function() {
+    return arr.reduce(function (prevPromise, promiseFn, index) {
+      return prevPromise.then(function () {
         return promiseFn();
       });
     }, Promise.resolve());
@@ -647,8 +525,8 @@
   ```js
   function sequenceTasks(arr) {
     let p = Promise.resolve();
-    arr.forEach(promiseFn => {
-      p = p.then(function() {
+    arr.forEach((promiseFn) => {
+      p = p.then(function () {
         return promiseFn();
       });
     });
@@ -714,17 +592,15 @@
 - 字符串 repeat 实现
 
   ```js
-  String.prototype.repeat = function(count) {
-    return Array(count)
-      .fill(this)
-      .join("");
+  String.prototype.repeat = function (count) {
+    return Array(count).fill(this).join("");
   };
 
-  String.prototype.repeat = function(count) {
+  String.prototype.repeat = function (count) {
     return Array(count + 1).join(this);
   };
 
-  String.prototype.repeat = function(count) {
+  String.prototype.repeat = function (count) {
     let rpt = "";
     let str = "" + this;
     for (;;) {
@@ -752,7 +628,7 @@
     }, 0);
   }
 
-  CodingMan.prototype.sleep = function(time) {
+  CodingMan.prototype.sleep = function (time) {
     const curTime = Date.now();
     const delay = time * 1000;
     setTimeout(() => {
@@ -762,7 +638,7 @@
     return this;
   };
 
-  CodingMan.prototype.sleepFirst = function(time) {
+  CodingMan.prototype.sleepFirst = function (time) {
     const curTime = Date.now();
     const delay = time * 1000;
     while (Date.now() - curTime < delay) {}
@@ -770,7 +646,7 @@
     return this;
   };
 
-  CodingMan.prototype.eat = function(food) {
+  CodingMan.prototype.eat = function (food) {
     setTimeout(() => {
       console.log(`Eat ${food}~~`);
     }, 0);
@@ -799,16 +675,16 @@
     a: 1,
     valueOf() {
       return this.a++;
-    }
+    },
   };
   ```
 
   ```js
   let a = {
     a: 1,
-    [Symbol.toPrimitive]: function() {
+    [Symbol.toPrimitive]: function () {
       return this.a++;
-    }
+    },
   };
   ```
 
@@ -818,9 +694,9 @@
   let a = new Proxy(
     { i: 1 },
     {
-      get: function(target) {
+      get: function (target) {
         return () => target.i++;
-      }
+      },
     }
   );
   ```
@@ -878,7 +754,7 @@
         Object.prototype.toString.call(obj)
       )
     ) {
-      const maxArr = Object.values(obj).map(val => getDepth(val, max + 1));
+      const maxArr = Object.values(obj).map((val) => getDepth(val, max + 1));
       return Math.max(...maxArr, max);
     }
     return max;
@@ -889,10 +765,10 @@
 
   ```js
   let a1 = ["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2"];
-  let a2 = ["A", "B", "C", "D"].map(item => {
+  let a2 = ["A", "B", "C", "D"].map((item) => {
     return item + 3;
   });
-  let a3 = [...a1, ...a2].sort().map(item => item.replace(/3$/, ""));
+  let a3 = [...a1, ...a2].sort().map((item) => item.replace(/3$/, ""));
   ```
 
 - 改造下面的代码，使之输出 0 - 9，写出你能想到的所有解法。
@@ -917,7 +793,7 @@
 
   ```js
   for (let i = 0; i < 10; i++) {
-    (i =>
+    ((i) =>
       setTimeout(() => {
         console.log(i);
       }, 1000))(i);
@@ -934,7 +810,7 @@
    */
   for (let i = 0; i < 10; i++) {
     setTimeout(
-      i => {
+      (i) => {
         console.log(i);
       },
       1000,
@@ -950,7 +826,7 @@
     const brackets = {
       "(": ")",
       "[": "]",
-      "{": "}"
+      "{": "}",
     };
 
     const stack = [],

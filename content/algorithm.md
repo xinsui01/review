@@ -411,3 +411,366 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
   - 如何实现无锁并发队列
 
     cas + 数组
+
+## 递归
+
+## 排序
+
+[十大经典排序算法（动图演示）](https://www.cnblogs.com/onepixel/articles/7674659.html)
+
+- 冒泡
+
+  比较相邻的两个数。一次冒泡会让至少一个元素移动到它应该在的位置。
+
+  最好时间复杂度 O(n), 最坏时间复杂度 O(n²), 平均时间复杂度 O(n²)。
+
+  ```js
+  function bubbleSort(
+    arr: Array<number>,
+    compare: (a: number, b: number): number
+  ) {
+    const { length: len } = arr;
+    if (len < 2) return;
+
+    // 从前往后排序
+    // for (let i = 0; i < len - 1; i++) {
+    //   let flag: boolean = false;
+    //   // 最后一个元素下标 len - 1, 每循环一次就绪一个数，内层循环上限 - 1（即第i次循环 - i）
+    //   for (let j = 0; j < len - 1 - i; j++) {
+    //     if (compare(arr[j], arr[j + 1]) > 0) {
+    //       swap(arr, j, j+1);
+    //       flag = true; // 有数据交换
+    //     }
+    //   }
+
+    //   if (!flag) break;
+    // }
+
+    // 从后往前排序
+    for(let i = 0; i < len - 1; i++) {
+      let flag = false;
+      for(let j = len - 1; j > i; j--) {
+        if(compare(arr[j-1], arr[j])>0) {
+          swap(arr, j-1, j);
+          flag = true;
+        }
+      }
+      if(!flag) break;
+    }
+
+    function swap(arr, i, j) {
+      let tmp = arr[j];
+      arr[j] = arr[i];
+      arr[i] = tmp;
+
+      // [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+
+  }
+
+  ```
+
+- 插入排序
+
+  将数组中的数据分为两个区间，已排序区间和未排序区间。初始已排序区间是数组中的第一个元素。取未排序元素在已排序区间中找到合适的位置插入，并保证已排序区间的数据一直有序。重复步骤，直到未排序区间中元素为空。
+
+  最好时间复杂度 O(n), 最坏时间复杂度 O(n²), 平均时间复杂度 O(n²)。
+
+  ```js
+  function insertionSort(arr: Array<number>) {
+    const { length: len } = arr;
+    if (len < 2) return;
+    for (let i = 1; i < len; i++) {
+      const target = a[i]; //待插入的值
+      let j = i - 1;
+      for (; j >= 0; j--) {
+        if (a[j] > target) {
+          a[j + 1] = a[j]; // 数据后移
+        } else {
+          break; //前面已经有序，所以 break 循环
+        }
+      }
+      a[j + 1] = target; // 插入数据
+    }
+  }
+  ```
+
+  ```js
+  function insertionSort(arr: Array<number>) {
+    const { length: len } = arr;
+    if (len < 2) return;
+    for (let i = 1; i < len; i++) {
+      const target = a[i]; //待插入的值
+      let j = i - 1;
+      while (j >= 0 && a[j] > target) {
+        a[j + 1] = a[j]; // 数据后移
+        j--;
+      }
+      a[j + 1] = target; // 插入数据
+    }
+  }
+  ```
+
+- 选择排序
+
+  将数据分为已排序区间和未排序区间。初始已排序区间为空。每次从未排序区间中选出最小的元素插入已排序区间的末尾，直到未排序区间为空。
+
+  最好时间复杂度 O(n²), 最坏时间复杂度 O(n²), 平均时间复杂度 O(n²)。
+
+  ```js
+  function selectionSort(arr: Array<number>) {
+    const { length: len } = arr;
+    if (len < 2) return;
+
+    let minIndex; // 存储最小数索引
+    // 跑 len - 1 次就可就绪
+    for (let i = 0; i < len - 1; i++) {
+      minIndex = i;
+      for (let j = i + 1; j < len; j++) {
+        // 寻找最小数
+        if (arr[j] < arr[minIndex]) {
+          minIndex = j; // 将最小数的索引保存
+        }
+      }
+      if (minIndex !== i) {
+        swap(arr, i, minIndex);
+      }
+    }
+
+    function swap(arr, i, j) {
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+  ```
+
+- 归并排序(分治思想)
+
+  我们先把数组从中间分成前后两部分，然后对前后两部分分别排序，再将排好序的两部分合并在一起，这样整个数组就都有序了。
+
+  最好情况、最坏情况，还是平均情况，时间复杂度都是 O(nlogn)。非原地排序，空间复杂度 O(n)。稳定排序
+
+  ```js
+  function mergeSort(arr: Array<number>) {
+    const { length: len } = arr;
+    if (len < 2) return arr;
+
+    const middle = Math.floor(len / 2),
+      left = arr.slice(0, middle),
+      right = arr.slice(middle);
+    return merge(mergeSort(left), mergeSort(right));
+
+    function merge(left: Array<number>, right: Array<number>) {
+      let result = [];
+      while (left.length > 0 && right.length > 0) {
+        if (left[0] <= right[0]) {
+          result.push(left.shift());
+        } else {
+          result.push(right.shift());
+        }
+      }
+
+      while (left.length) {
+        result.push(left.shift());
+      }
+
+      while (right.length) {
+        result.push(right.shift());
+      }
+      return result;
+    }
+  }
+  ```
+
+- 快速排序(分治思想)
+
+  非稳定排序
+
+  ```js
+  /**
+   * 1. 选择一个“基准”（pivot）元素
+   * 2. 将所有小于基准值的元素放在基准值的左边，所有大于基准值的元素放在基准值的右边
+   * 3. 对分割后的两个子序列重复上述步骤
+   */
+  function quickSort(arr: Array<T>, compare: (a: T, b: T): number): Array<T> {
+    if (arr.length < 2) return arr;
+    let left: Array<T> = [],
+      right: Array<T> = [],
+      current: T = arr.splice(0, 1); // 取第一个作为基准
+
+    for (let i = 0, len = arr.length; i < len; i++) {
+      if (compare(arr[i], current)> 0) {
+        left.push(arr[i]);
+      } else {
+        right.push(arr[i]);
+      }
+    }
+
+    return quickSort(left, compare).concat(current, quickSort(right, compare));
+  }
+  ```
+
+  ```js
+  /**
+   * 原地快排
+   **/
+  function quickSort(arr: Array<T>, left?: number, right?: number) {
+    const { length: len } = arr;
+    if (len < 2) return arr;
+    let partitionIndex,
+      left = typeof left !== "number" ? 0 : left,
+      right = typeof right !== "number" ? len - 1 : right;
+
+    if (left < right) {
+      partitionIndex = partition(arr, left, right);
+      quickSort(arr, left, partitionIndex - 1);
+      quickSort(arr, partitionIndex + 1, right);
+    }
+
+    function partition(arr: Array<T>, left?: number, right?: number) {
+      let pivot = left,
+        index = pivot + 1; // 记录小于基准值的右界线（不包括index）
+
+      // 循环找到所有小于基准值的数据，依次放到基准值后面
+      for (let i = index; i <= right; i++) {
+        if (arr[i] < arr[pivot]) {
+          swap(arr, i, index);
+          index++;
+        }
+      }
+
+      swap(arr, pivot, index - 1); // 交换基准值和最后一个小于基准值的位置
+      return index - 1; // 基准值位置
+    }
+
+    function swap(arr, i, j) {
+      const tmp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = tmp;
+    }
+  }
+  ```
+
+- 桶排序（Bucket sort)
+
+  假设输入数据服从均匀分布，将数据分到有限数量的桶里，每个桶再分别排序（有可能再使用别的排序算法或是以递归方式继续使用桶排序进行排）。
+
+  将要排序的数据分到几个有序的桶里，每个桶里的数据再单独进行排序。桶内排完序之后，再把每个桶里的数据按照顺序依次取出，组成的序列就是有序的了。
+
+  如果要排序的数据有 n 个，我们把它们均匀地划分到 m 个桶内，每个桶里就有 k=n/m 个元素。每个桶内部使用快速排序，时间复杂度为 `O(k _ logk)`。m 个桶排序的时间复杂度就是 `O(m _ k * logk)`，因为`k=n/m`，所以整个桶排序的时间复杂度就是`O(n*log(n/m))`。当桶的个数 m 接近数据个数 n 时，`log(n/m)` 就是一个非常小的常量，这个时候桶排序的时间复杂度接近 O(n)。
+
+  ![桶排序（Bucket sort）](../imgs/algorithm/桶排序.png)
+
+  要排序的数据需要很容易就能划分成 m 个桶，并且，桶与桶之间有着天然的大小顺序。这样每个桶内的数据都排序完之后，桶与桶之间的数据不需要再进行排序。
+
+  其次，数据在各个桶之间的分布是比较均匀的。如果数据经过桶的划分之后，有些桶里的数据非常多，有些非常少，很不平均，那桶内数据排序的时间复杂度就不是常量级了。在极端情况下，如果数据都被划分到一个桶里，那就退化为 O(nlogn) 的排序算法了。
+
+  **桶排序比较适合用在外部排序中。所谓的外部排序就是数据存储在外部磁盘中，数据量比较大，内存有限，无法将数据全部加载到内存中。**
+
+  ```js
+  function bucketSort(arr, bucketSize) {
+    const { length: len } = arr;
+    if (len === 0) return arr;
+
+    let minValue = arr[0],
+      maxValue = arr[0];
+    // 找出最大最小值
+    for (let i = 1; i < len; i++) {
+      if (arr[i] < minValue) {
+        minValue = arr[i];
+      } else if (arr[i] > maxValue) {
+        maxValue = arr[i];
+      }
+    }
+
+    // 桶初始化
+    let DEFAULT_BUCKET_SIZE = 5;
+    bucketSize = bucketSize || DEFAULT_BUCKET_SIZE; // 桶容量
+    const bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1; // 桶数量
+    const buckets = new Array(bucketCount);
+    for (let i = 0; i < bucketCount; i++) {
+      buckets[i] = [];
+    }
+
+    // 利用映射函数将数据分配到各个桶中
+    for (let i = 0; i < len; i++) {
+      buckets[math.floor((arr[i] - minValue) / bucketSize)].push(arr[i]);
+    }
+
+    for (let i = 0; i < buckets.length; i++) {
+      insertionSort(buckets[i]); // 对每个桶进行排序，这里使用了插入排序
+      for (let j = 0; j < buckets[i].length; j++) {
+        arr.push(buckets[i][j]);
+      }
+    }
+
+    return arr;
+  }
+  ```
+
+- 计数排序（Counting Sort）
+
+  不是基于比较的排序算法，核心在于将输入的数据值转化为键存储在额外开辟的数组空间中。
+
+  作为一种线性时间复杂度的排序，计数排序要求输入的数据必须是有确定范围的整数。
+
+  > 场景：考生的满分是 900 分，最小是 0 分，这个数据的范围很小，所以我们可以分成 901 个桶，对应分数从 0 分到 900 分。根据考生的成绩，我们将这 50 万考生划分到这 901 个桶里。桶内的数据都是分数相同的考生，所以并不需要再进行排序。我们只需要依次扫描每个桶，将桶内的考生依次输出到一个数组中，就实现了 50 万考生的排序。因为只涉及扫描遍历操作，所以时间复杂度是 O(n)。
+
+  > 计数排序只能用在数据范围不大的场景中，如果数据范围 k 比要排序的数据 n 大很多，就不适合用计数排序了。而且，计数排序只能给非负整数排序，如果要排序的数据是其他类型的，要将其在不改变相对大小的情况下，转化为非负整数。
+
+  ```js
+  /**
+   * 1. 找出待排序的数组中最大和最小的元素；
+   * 2. 统计数组中每个值为i的元素出现的次数，存入数组C的第i项；
+   * 3. 对所有的计数累加（从C中的第一个元素开始，每一项和前一项相加）；
+   * 4. 反向填充目标数组：将每个元素i放在新数组的第C(i)项，每放一个元素就将C(i)减去1。
+   */
+  function countingSort(arr: Array<number>) {
+    const { length: len } = arr;
+    if (len === 0) return arr;
+
+    // 计算最大值
+    let maxValue = arr[0];
+    for(let i=1; i< len; i++) {
+      if(maxValue < arr[i]) {
+        maxValue = arr[i];
+      }
+    }
+
+    const bucketCount = maxValue + 1;
+    let buckets = new Array(bucketCount),
+
+    // 统计数组中每个值为arr[i]的元素出现的次数
+    for (let i = 0; i < len; i++) {
+      const value = arr[i];
+      if (!buckets[value]) {
+        buckets[value] = 0; // 初始化计数
+      }
+      buckets[value]++;
+    }
+
+    // 依次累加
+    for(let i=1; i< bucketCount; i++) {
+      buckets[i] = buckets[i-1]+ buckets[i];
+    }
+
+    // 临时数组 r, 存储排序之后的结果
+    let r = new Array(len)
+    for(let i = len - 1; i >=0; i--) {
+      const value = arr[i];
+      const index = buckets[value] - 1; // 计算位置
+      r[index] = value; //值存储到相应的位置
+      buckets[value]--; // 值放到相应位置后，计数减一
+    }
+
+    // 将结果拷贝给 arr 数组
+    for(let i=0; i< len; i++) {
+      arr[i] = r[i];
+    }
+
+    return arr;
+  }
+  ```
+
+- 基数排序（Radix Sort）
+- 希尔排序
+- 堆排序
