@@ -511,6 +511,35 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
   }
   ```
 
+- 希尔排序（Shell sort)
+
+  第一个突破 O(n2)的排序算法，是简单插入排序的改进版。它与插入排序的不同之处在于，它会优先比较距离较远的元素。希尔排序又叫缩小增量排序。
+
+  先计算 gap（间隔），如 10 个数，gap 就是 5，依次比较 `a[0]和a[5]`,`a[1]和a[6]`, `a[2]和a[7]`...如果`a[5]<a[0]`,那么`a[0]=a[5]`,继续向前间隔比较
+
+  一轮比较结束后，重新计算间隔 gap = Math.floor(gap/2), 依次比较`a[0]和a[2]`,`a[1]和a[3]`, `a[2]和a[4]`...如果`a[4]<a[2]`,那么`a[2]=a[4]`，继续向前间隔比较， 如果`a[2]<a[0]`,那么`a[0]=a[2]`，继续向前间隔比较
+
+  直到间隔为 0 时，退出比较，排序结束
+
+  ```js
+  function shellSort(arr) {
+    const { length: len } = arr;
+    for (let gap = Math.floor(len / 2); gap > 0; gap = Math.floor(gap / 2)) {
+      for (let i = gap; i < len; i++) {
+        let j = i;
+        const current = arr[i];
+        while (j - gap >= 0 && current < arr[j - gap]) {
+          // swap
+          arr[j] = arr[j - gap];
+          j = j - gap;
+        }
+        arr[j] = current;
+      }
+    }
+    return arr;
+  }
+  ```
+
 - 选择排序
 
   将数据分为已排序区间和未排序区间。初始已排序区间为空。每次从未排序区间中选出最小的元素插入已排序区间的末尾，直到未排序区间为空。
@@ -772,5 +801,102 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
   ```
 
 - 基数排序（Radix Sort）
-- 希尔排序
-- 堆排序
+
+  按照低位先排序，然后收集；再按照高位排序，然后再收集；依次类推，直到最高位。有时候有些属性是有优先级顺序的，先按低优先级排序，再按高优先级排序。最后的次序就是高优先级高的在前，高优先级相同的低优先级高的在前。
+
+  时间复杂度: 最好 O(n), 最坏 O(nlogn), 平均 O(n)
+
+  空间复杂度: O(n+k)，其中 k 为桶的数量。一般来说 n>>k，因此额外空间需要大概 n 个左右
+
+  稳定排序。
+
+  > 场景： 有 10 万个手机号码，希望将这 10 万个手机号码从小到大排序
+
+  > 场景： 排序牛津字典中的 20 万个英文单词，最短的只有 1 个字母，最长的有 45 个字母。我们可以把所有的单词补齐到相同长度，位数不够的可以在后面补“0”，因为根据 ASCII 值，所有字母都大于“0”，所以补“0”不会影响到原有的大小顺序。
+
+  基数排序对要排序的数据是有要求的，需要可以分割出独立的“位”来比较，而且位之间有递进的关系，如果 a 数据的高位比 b 数据大，那剩下的低位就不用比较了。除此之外，每一位的数据范围不能太大，要可以用线性排序算法来排序，否则，基数排序的时间复杂度就无法做到 O(n) 了。
+
+  ```js
+  /**
+   *
+   * @params {maxDigit} 最大位数
+   */
+  function radixSort(arr, maxDigit) {
+    let mod = 10,
+      dev = 1;
+    // 从低位到高位排序
+    for (let i = 0; i < maxDigit; i++, dev *= 10, mod *= 10) {
+      // 桶排序
+      let counter = [];
+      for (let j = 0; j < arr.length; j++) {
+        const value = arr[j];
+        // value % mod 得到后 i 位数， 再除以 dev 得到 倒数 i 位置的数
+        const bucket = parseInt((value % mod) / dev);
+        if (!counter[bucket]) {
+          counter[bucket] = [];
+        }
+        counter[bucket].push(value);
+      }
+      // 回填基于低位排序后的数据，回填完成后继续循环高位排序
+      let pos = 0;
+      for (let j = 0, len = counter.length; j < len; j++) {
+        let value = null;
+        if (counter[j]) {
+          while (!!(value = counter[j].shift())) {
+            arr[pos++] = value;
+          }
+        }
+      }
+    }
+    return arr;
+  }
+  ```
+
+- 堆排序(Heap sort)
+
+  ```js
+  function heapSort(arr) {
+    let { length: len } = arr;
+
+    buildMaxHeap(arr);
+
+    for (let i = len - 1; i > 0; i--) {
+      swap(arr, 0, i);
+      len--;
+      heapify(arr, 0);
+    }
+
+    function buildMaxHeap(arr) {
+      // 建立大顶堆
+      for (let i = Math.floor(len / 2); i >= 0; i--) {
+        heapify(arr, i);
+      }
+    }
+
+    function heapify(arr, i) {
+      // 堆调整
+      const left = 2 * i + 1,
+        right = 2 * i + 2;
+      let largest = i;
+
+      if (left < len && arr[left] > arr[largest]) {
+        largest = left;
+      }
+
+      if (right < len && arr[right] > arr[largest]) {
+        largest = right;
+      }
+
+      if (largest != i) {
+        swap(arr, i, largest);
+        heapify(arr, largest);
+      }
+    }
+
+    function swap(arr, i, j) {
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+
+    return arr;
+  }
+  ```
