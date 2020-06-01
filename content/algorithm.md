@@ -854,16 +854,20 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
 
 - 堆排序(Heap sort)
 
+  - 构建大顶堆
+  - 交换堆顶元素和最后一个叶子节点
+  - 继续构建次大顶堆
+
   ```js
   function heapSort(arr) {
     let { length: len } = arr;
 
-    buildMaxHeap(arr);
+    buildMaxHeap(arr); // 构建大顶堆
 
     for (let i = len - 1; i > 0; i--) {
-      swap(arr, 0, i);
+      swap(arr, 0, i); // 交换堆顶元素和最后一个叶子节点
       len--;
-      heapify(arr, 0);
+      heapify(arr, 0); // 继续构建次大顶堆
     }
 
     function buildMaxHeap(arr) {
@@ -887,7 +891,7 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
         largest = right;
       }
 
-      if (largest != i) {
+      if (largest !== i) {
         swap(arr, i, largest);
         heapify(arr, largest);
       }
