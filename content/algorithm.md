@@ -1166,3 +1166,254 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
   针对字典攻击，我们可以引入一个盐（salt），跟用户的密码组合在一起，增加密码的复杂度。
 
   安全和攻击是一种博弈关系，不存在绝对的安全。所有的安全措施，只是增加攻击的成本而已。
+
+## 二叉树
+
+- 树
+
+  - 根节点
+  - 叶子节点
+  - 父节点
+  - 子节点
+  - 兄弟节点
+  - 高度
+  - 深度
+  - 层（level)
+
+  ![树相关概念](../imgs/algorithm/树相关概念.png)
+
+- 二叉树（Binary Tree）
+
+  每个节点最多有两个“叉”，也就是两个子节点，分别是左子节点和右子节点。
+
+  - 满二叉树
+
+    叶子节点全都在最底层，除了叶子节点之外，每个节点都有左右两个子节点，这种二叉树就叫作满二叉树。
+
+  - 完全二叉树
+
+    叶子节点都在最底下两层，最后一层的叶子节点都靠左排列，并且除了最后一层，其他层的节点个数都要达到最大，这种二叉树叫作完全二叉树。
+
+  - 存储一棵二叉树：
+
+    - 基于指针或者引用的二叉链式存储法
+
+      ![链式存储法](../imgs/algorithm/链式存储法.png)
+
+    - 基于数组的顺序存储法
+
+      ![顺序存储法](../imgs/algorithm/顺序存储法.png)
+
+      如果某棵二叉树是一棵完全二叉树，那用数组存储无疑是最节省内存的一种方式。如果是非完全二叉树，其实会浪费比较多的数组存储空间。
+
+      堆其实就是一种完全二叉树，最常用的存储方式就是数组。
+
+  - 二叉树的遍历
+
+    > 前、中、后序，表示的是节点与它的左右子树节点遍历打印的先后顺序。
+
+    > 时间复杂度： O(n)
+
+    - 前序遍历
+
+      先打印这个节点，然后再打印它的左子树，最后打印它的右子树。
+
+      `preOrder(r) = print r -> preOrder(r -> left) -> preOrder(r -> right)`
+
+      ```js
+      function preOrder(root) {
+        if (root === null) return;
+        console.log(root.data);
+        preOrder(root.left);
+        preOrder(root.right);
+      }
+      ```
+
+    - 中序遍历
+
+      先打印它的左子树，然后再打印它本身，最后打印它的右子树。
+
+      `inOrder(r) = inOrder(r -> left) -> print r -> inOrder(r -> right)`
+
+      ```js
+      function inOrder(root) {
+        if (root === null) return;
+        inOrder(root.left);
+        console.log(root.data);
+        inOrder(root.right);
+      }
+      ```
+
+    - 后续遍历
+
+      先打印它的左子树，然后再打印它的右子树，最后打印这个节点本身。
+
+      `postOrder(r) = postOrder(r -> left) -> postOrder(r -> right) -> print r`
+
+      ```js
+      function preOrder(root) {
+        if (root === null) return;
+        preOrder(root.left);
+        preOrder(root.right);
+        console.log(root.data);
+      }
+      ```
+
+    - 层次遍历
+
+      ```js
+      function levelOrder(root) {
+        if (root === null) return;
+        let queue = [root];
+        while (queue.length) {
+          const curNode = queue.pop();
+          console.log(curNode.data);
+          if (cruNode.left !== null) {
+            queue.push(curNode.left);
+          }
+          if (cruNode.right !== null) {
+            queue.push(curNode.right);
+          }
+        }
+      }
+      ```
+
+- 二叉查找树（Binary Search Tree）
+
+  二叉查找树要求，在树中的任意一个节点，其左子树中的每个节点的值，都要小于这个节点的值，而右子树节点的值都大于这个节点的值。
+
+  - 查找
+
+    先取根节点，如果它等于我们要查找的数据，那就返回。如果要查找的数据比根节点的值小，那就在左子树中递归查找；如果要查找的数据比根节点的值大，那就在右子树中递归查找。
+
+    ```js
+    class Node<T>{
+      private data: T;
+      private left: Node;
+      private right: Node;
+
+      constructor(data: T) {
+        this.data = data;
+      }
+    }
+
+    class BinarySearchTree<T> {
+      private tree: Node<T>;
+
+      constructor(tree: Node) {
+        this.tree = tree;
+      }
+
+      public find(data: T) {
+        let p = tree;
+        while(p !== null) {
+          if(data < p.data) p = p.left;
+          else if(data > p.data) p = p.right;
+          else return p;
+        }
+        return null;
+      }
+    }
+    ```
+
+  - 插入
+
+    从根节点开始，依次比较要插入的数据和节点的大小关系。如果要插入的数据比节点的数据大，并且节点的右子树为空，就将新数据直接插到右子节点的位置；如果不为空，就再递归遍历右子树，查找插入位置。同理，如果要插入的数据比节点数值小，并且节点的左子树为空，就将新数据插入到左子节点的位置；如果不为空，就再递归遍历左子树，查找插入位置。
+
+    ```js
+    class BinarySearchTree<T> {
+      public insert(data: T) {
+        if(tree === null) {
+          tree = new Node(data);
+          return;
+        }
+
+        let p: Node = tree;
+        while(p !== null) {
+          if(data === p.data) {
+            return;
+          }else if(data > p.data) {
+            if(p.right === null) {
+              p.right = new Node(data);
+              return;
+            }
+            p = p.right;
+          } else {
+            if(p.left === null) {
+              p.left = new Node(data);
+              return;
+            }
+            p = p.left;
+          }
+        }
+      }
+    }
+    ```
+
+  - 删除
+
+    1. 如果要删除的节点没有子节点，我们只需要直接将父节点中指向要删除节点的指针置为 null。
+
+    2. 如果要删除的节点只有一个子节点（只有左子节点或者右子节点），我们只需要更新父节点中指向要删除节点的指针，让它指向要删除节点的子节点就可以了。
+
+    3. 如果要删除的节点有两个子节点，这就比较复杂了。我们需要找到这个节点的右子树中的最小节点，把它替换到要删除的节点上。然后再删除掉这个最小节点，因为最小节点肯定没有左子节点（如果有左子结点，那就不是最小节点了），所以，我们可以应用上面两条规则来删除这个最小节点。
+
+    ```js
+    class BinarySearchTree<T> {
+      public delete(data: T) {
+        let p: Node = tree; // p 指向要删除的节点，初始化指向根节点
+        let pParent: Node = null; // pp 记录的是p的父节点
+        while(p !== null && p.data !== data) {
+          pParent = p;
+          if(data > p.data) p = p.right;
+          else p = p.left;
+        }
+        if(p === null) return ;// 没有找到
+
+        // 如果要删除的节点有两个子节点
+        if(p.left !== null && p.right !== null) {
+          let minP = p.right;
+          let minPParent = p;
+          // 找到最小的节点
+          while(minP.left !== null) {
+            minPParent = minP;
+            minP = minP.left
+          }
+          p.data = minP.data; // 将minP的数据替换到p中
+          p = minP; // 下面就变成了删除minP了
+          pParent = minPParent;
+        }
+
+        // 删除节点是叶子节点或者仅有一个子节点
+        let child: Node;
+        if(p.left !== null) child = p.left;
+        else if(p.right !== null) child = p.right;
+        else child = null;
+
+        if(pParent === null) tree = child; // 删除的是根节点
+        else if(pParent.left == p) pParent.left = child;
+        else pParent.right = child;
+      }
+    }
+
+    ```
+
+  - 查找最大节点和最小节点
+  - 查找前驱节点和后继节点
+
+  - 中序遍历二叉查找树，可以输出有序的数据序列，时间复杂度是 O(n)，非常高效。
+
+  - 复杂度
+    - 时间复杂度
+      - 最坏： 退化成链表了，O(n)
+      - 最好：完全二叉树，O(height)。 平衡二叉查找树的高度接近 logn,所以插入、删除、查找操作的时间复杂度也是比较稳定，是 O(logn)。
+
+- 散列表和二叉查找树优劣：
+
+  - 散列表中的数据是无序存储的，如果要输出有序的数据，需要先进行排序。而对于二叉查找树来说，我们只需要中序遍历，就可以在 O(n) 的时间复杂度内，输出有序的数据序列。
+  - 散列表扩容耗时很多，而且当遇到散列冲突时，性能不稳定，尽管二叉查找树的性能不稳定，但是在工程中，我们最常用的平衡二叉查找树的性能非常稳定，时间复杂度稳定在 O(logn)。
+  - 笼统地来说，尽管散列表的查找等操作的时间复杂度是常量级的，但因为哈希冲突的存在，这个常量不一定比 logn 小，所以实际的查找速度可能不一定比 O(logn) 快。加上哈希函数的耗时，也不一定就比平衡二叉查找树的效率高。
+  - 散列表的构造比二叉查找树要复杂，需要考虑的东西很多。比如散列函数的设计、冲突解决办法、扩容、缩容等。平衡二叉查找树只需要考虑平衡性这一个问题，而且这个问题的解决方案比较成熟、固定。
+  - 为了避免过多的散列冲突，散列表装载因子不能太大，特别是基于开放寻址法解决冲突的散列表，不然会浪费一定的存储空间。
+
+- 求一棵二叉树的确切高度
