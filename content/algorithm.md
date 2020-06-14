@@ -1169,244 +1169,245 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
 
 ## 二叉树
 
-- 树
+### 树
 
-  - 根节点
-  - 叶子节点
-  - 父节点
-  - 子节点
-  - 兄弟节点
-  - 高度
-  - 深度
-  - 层（level)
+- 根节点
+- 叶子节点
+- 父节点
+- 子节点
+- 兄弟节点
+- 高度
+- 深度
+- 层（level)
 
-  ![树相关概念](../imgs/algorithm/树相关概念.png)
+![树相关概念](../imgs/algorithm/树相关概念.png)
 
-- 二叉树（Binary Tree）
+### 二叉树（Binary Tree）
 
-  每个节点最多有两个“叉”，也就是两个子节点，分别是左子节点和右子节点。
+每个节点最多有两个“叉”，也就是两个子节点，分别是左子节点和右子节点。
 
-  - 满二叉树
+- 满二叉树
 
-    叶子节点全都在最底层，除了叶子节点之外，每个节点都有左右两个子节点，这种二叉树就叫作满二叉树。
+  叶子节点全都在最底层，除了叶子节点之外，每个节点都有左右两个子节点，这种二叉树就叫作满二叉树。
 
-  - 完全二叉树
+- 完全二叉树
 
-    叶子节点都在最底下两层，最后一层的叶子节点都靠左排列，并且除了最后一层，其他层的节点个数都要达到最大，这种二叉树叫作完全二叉树。
+  叶子节点都在最底下两层，最后一层的叶子节点都靠左排列，并且除了最后一层，其他层的节点个数都要达到最大，这种二叉树叫作完全二叉树。
 
-  - 存储一棵二叉树：
+- 存储一棵二叉树：
 
-    - 基于指针或者引用的二叉链式存储法
+  - 基于指针或者引用的二叉链式存储法
 
-      ![链式存储法](../imgs/algorithm/链式存储法.png)
+    ![链式存储法](../imgs/algorithm/链式存储法.png)
 
-    - 基于数组的顺序存储法
+  - 基于数组的顺序存储法
 
-      ![顺序存储法](../imgs/algorithm/顺序存储法.png)
+    ![顺序存储法](../imgs/algorithm/顺序存储法.png)
 
-      如果某棵二叉树是一棵完全二叉树，那用数组存储无疑是最节省内存的一种方式。如果是非完全二叉树，其实会浪费比较多的数组存储空间。
+    如果某棵二叉树是一棵完全二叉树，那用数组存储无疑是最节省内存的一种方式。如果是非完全二叉树，其实会浪费比较多的数组存储空间。
 
-      堆其实就是一种完全二叉树，最常用的存储方式就是数组。
+    堆其实就是一种完全二叉树，最常用的存储方式就是数组。
 
-  - 二叉树的遍历
+- 二叉树的遍历
 
-    > 前、中、后序，表示的是节点与它的左右子树节点遍历打印的先后顺序。
+  > 前、中、后序，表示的是节点与它的左右子树节点遍历打印的先后顺序。
 
-    > 时间复杂度： O(n)
+  > 时间复杂度： O(n)
 
-    - 前序遍历
+  - 前序遍历
 
-      先打印这个节点，然后再打印它的左子树，最后打印它的右子树。
+    先打印这个节点，然后再打印它的左子树，最后打印它的右子树。
 
-      `preOrder(r) = print r -> preOrder(r -> left) -> preOrder(r -> right)`
-
-      ```js
-      function preOrder(root) {
-        if (root === null) return;
-        console.log(root.data);
-        preOrder(root.left);
-        preOrder(root.right);
-      }
-      ```
-
-    - 中序遍历
-
-      先打印它的左子树，然后再打印它本身，最后打印它的右子树。
-
-      `inOrder(r) = inOrder(r -> left) -> print r -> inOrder(r -> right)`
-
-      ```js
-      function inOrder(root) {
-        if (root === null) return;
-        inOrder(root.left);
-        console.log(root.data);
-        inOrder(root.right);
-      }
-      ```
-
-    - 后续遍历
-
-      先打印它的左子树，然后再打印它的右子树，最后打印这个节点本身。
-
-      `postOrder(r) = postOrder(r -> left) -> postOrder(r -> right) -> print r`
-
-      ```js
-      function preOrder(root) {
-        if (root === null) return;
-        preOrder(root.left);
-        preOrder(root.right);
-        console.log(root.data);
-      }
-      ```
-
-    - 层次遍历
-
-      ```js
-      function levelOrder(root) {
-        if (root === null) return;
-        let queue = [root];
-        while (queue.length) {
-          const curNode = queue.pop();
-          console.log(curNode.data);
-          if (cruNode.left !== null) {
-            queue.push(curNode.left);
-          }
-          if (cruNode.right !== null) {
-            queue.push(curNode.right);
-          }
-        }
-      }
-      ```
-
-- 二叉查找树（Binary Search Tree）
-
-  二叉查找树要求，在树中的任意一个节点，其左子树中的每个节点的值，都要小于这个节点的值，而右子树节点的值都大于这个节点的值。
-
-  - 查找
-
-    先取根节点，如果它等于我们要查找的数据，那就返回。如果要查找的数据比根节点的值小，那就在左子树中递归查找；如果要查找的数据比根节点的值大，那就在右子树中递归查找。
+    `preOrder(r) = print r -> preOrder(r -> left) -> preOrder(r -> right)`
 
     ```js
-    class Node<T>{
-      private data: T;
-      private left: Node;
-      private right: Node;
-
-      constructor(data: T) {
-        this.data = data;
-      }
+    function preOrder(root) {
+      if (root === null) return;
+      console.log(root.data);
+      preOrder(root.left);
+      preOrder(root.right);
     }
+    ```
 
-    class BinarySearchTree<T> {
-      private tree: Node<T>;
+  - 中序遍历
 
-      constructor(tree: Node) {
-        this.tree = tree;
-      }
+    先打印它的左子树，然后再打印它本身，最后打印它的右子树。
 
-      public find(data: T) {
-        let p = tree;
-        while(p !== null) {
-          if(data < p.data) p = p.left;
-          else if(data > p.data) p = p.right;
-          else return p;
+    `inOrder(r) = inOrder(r -> left) -> print r -> inOrder(r -> right)`
+
+    ```js
+    function inOrder(root) {
+      if (root === null) return;
+      inOrder(root.left);
+      console.log(root.data);
+      inOrder(root.right);
+    }
+    ```
+
+  - 后续遍历
+
+    先打印它的左子树，然后再打印它的右子树，最后打印这个节点本身。
+
+    `postOrder(r) = postOrder(r -> left) -> postOrder(r -> right) -> print r`
+
+    ```js
+    function preOrder(root) {
+      if (root === null) return;
+      preOrder(root.left);
+      preOrder(root.right);
+      console.log(root.data);
+    }
+    ```
+
+  - 层次遍历
+
+    ```js
+    function levelOrder(root) {
+      if (root === null) return;
+      let queue = [root];
+      while (queue.length) {
+        const curNode = queue.pop();
+        console.log(curNode.data);
+        if (cruNode.left !== null) {
+          queue.push(curNode.left);
         }
-        return null;
+        if (cruNode.right !== null) {
+          queue.push(curNode.right);
+        }
       }
     }
     ```
 
-  - 插入
+### 二叉查找树（Binary Search Tree）
 
-    从根节点开始，依次比较要插入的数据和节点的大小关系。如果要插入的数据比节点的数据大，并且节点的右子树为空，就将新数据直接插到右子节点的位置；如果不为空，就再递归遍历右子树，查找插入位置。同理，如果要插入的数据比节点数值小，并且节点的左子树为空，就将新数据插入到左子节点的位置；如果不为空，就再递归遍历左子树，查找插入位置。
+二叉查找树要求，在树中的任意一个节点，其左子树中的每个节点的值，都要小于这个节点的值，而右子树节点的值都大于这个节点的值。
 
-    ```js
-    class BinarySearchTree<T> {
-      public insert(data: T) {
-        if(tree === null) {
-          tree = new Node(data);
+- 查找
+
+  先取根节点，如果它等于我们要查找的数据，那就返回。如果要查找的数据比根节点的值小，那就在左子树中递归查找；如果要查找的数据比根节点的值大，那就在右子树中递归查找。
+
+  ```js
+  class Node<T>{
+    private data: T;
+    private left: Node;
+    private right: Node;
+
+    constructor(data: T) {
+      this.data = data;
+    }
+  }
+
+  class BinarySearchTree<T> {
+    private tree: Node<T>;
+
+    constructor(tree: Node) {
+      this.tree = tree;
+    }
+
+    public find(data: T) {
+      let p = tree;
+      while(p !== null) {
+        if(data < p.data) p = p.left;
+        else if(data > p.data) p = p.right;
+        else return p;
+      }
+      return null;
+    }
+  }
+  ```
+
+- 插入
+
+  从根节点开始，依次比较要插入的数据和节点的大小关系。如果要插入的数据比节点的数据大，并且节点的右子树为空，就将新数据直接插到右子节点的位置；如果不为空，就再递归遍历右子树，查找插入位置。同理，如果要插入的数据比节点数值小，并且节点的左子树为空，就将新数据插入到左子节点的位置；如果不为空，就再递归遍历左子树，查找插入位置。
+
+  ```js
+  class BinarySearchTree<T> {
+    public insert(data: T) {
+      if(tree === null) {
+        tree = new Node(data);
+        return;
+      }
+
+      let p: Node = tree;
+      while(p !== null) {
+        if(data === p.data) {
           return;
-        }
-
-        let p: Node = tree;
-        while(p !== null) {
-          if(data === p.data) {
+        }else if(data > p.data) {
+          if(p.right === null) {
+            p.right = new Node(data);
             return;
-          }else if(data > p.data) {
-            if(p.right === null) {
-              p.right = new Node(data);
-              return;
-            }
-            p = p.right;
-          } else {
-            if(p.left === null) {
-              p.left = new Node(data);
-              return;
-            }
-            p = p.left;
           }
+          p = p.right;
+        } else {
+          if(p.left === null) {
+            p.left = new Node(data);
+            return;
+          }
+          p = p.left;
         }
       }
     }
-    ```
+  }
+  ```
 
-  - 删除
+- 删除
 
-    1. 如果要删除的节点没有子节点，我们只需要直接将父节点中指向要删除节点的指针置为 null。
+  1. 如果要删除的节点没有子节点，我们只需要直接将父节点中指向要删除节点的指针置为 null。
 
-    2. 如果要删除的节点只有一个子节点（只有左子节点或者右子节点），我们只需要更新父节点中指向要删除节点的指针，让它指向要删除节点的子节点就可以了。
+  2. 如果要删除的节点只有一个子节点（只有左子节点或者右子节点），我们只需要更新父节点中指向要删除节点的指针，让它指向要删除节点的子节点就可以了。
 
-    3. 如果要删除的节点有两个子节点，这就比较复杂了。我们需要找到这个节点的右子树中的最小节点，把它替换到要删除的节点上。然后再删除掉这个最小节点，因为最小节点肯定没有左子节点（如果有左子结点，那就不是最小节点了），所以，我们可以应用上面两条规则来删除这个最小节点。
+  3. 如果要删除的节点有两个子节点，这就比较复杂了。我们需要找到这个节点的右子树中的最小节点，把它替换到要删除的节点上。然后再删除掉这个最小节点，因为最小节点肯定没有左子节点（如果有左子结点，那就不是最小节点了），所以，我们可以应用上面两条规则来删除这个最小节点。
 
-    ```js
-    class BinarySearchTree<T> {
-      public delete(data: T) {
-        let p: Node = tree; // p 指向要删除的节点，初始化指向根节点
-        let pParent: Node = null; // pp 记录的是p的父节点
-        while(p !== null && p.data !== data) {
-          pParent = p;
-          if(data > p.data) p = p.right;
-          else p = p.left;
-        }
-        if(p === null) return ;// 没有找到
-
-        // 如果要删除的节点有两个子节点
-        if(p.left !== null && p.right !== null) {
-          let minP = p.right;
-          let minPParent = p;
-          // 找到最小的节点
-          while(minP.left !== null) {
-            minPParent = minP;
-            minP = minP.left
-          }
-          p.data = minP.data; // 将minP的数据替换到p中
-          p = minP; // 下面就变成了删除minP了
-          pParent = minPParent;
-        }
-
-        // 删除节点是叶子节点或者仅有一个子节点
-        let child: Node;
-        if(p.left !== null) child = p.left;
-        else if(p.right !== null) child = p.right;
-        else child = null;
-
-        if(pParent === null) tree = child; // 删除的是根节点
-        else if(pParent.left == p) pParent.left = child;
-        else pParent.right = child;
+  ```js
+  class BinarySearchTree<T> {
+    public delete(data: T) {
+      let p: Node = tree; // p 指向要删除的节点，初始化指向根节点
+      let pParent: Node = null; // pp 记录的是p的父节点
+      while(p !== null && p.data !== data) {
+        pParent = p;
+        if(data > p.data) p = p.right;
+        else p = p.left;
       }
+      if(p === null) return ;// 没有找到
+
+      // 如果要删除的节点有两个子节点
+      if(p.left !== null && p.right !== null) {
+        let minP = p.right;
+        let minPParent = p;
+        // 找到最小的节点
+        while(minP.left !== null) {
+          minPParent = minP;
+          minP = minP.left
+        }
+        p.data = minP.data; // 将minP的数据替换到p中
+        p = minP; // 下面就变成了删除minP了
+        pParent = minPParent;
+      }
+
+      // 删除节点是叶子节点或者仅有一个子节点
+      let child: Node;
+      if(p.left !== null) child = p.left;
+      else if(p.right !== null) child = p.right;
+      else child = null;
+
+      if(pParent === null) tree = child; // 删除的是根节点
+      else if(pParent.left == p) pParent.left = child;
+      else pParent.right = child;
     }
+  }
 
-    ```
+  ```
 
-  - 查找最大节点和最小节点
-  - 查找前驱节点和后继节点
+- 查找最大节点和最小节点
+- 查找前驱节点和后继节点
 
-  - 中序遍历二叉查找树，可以输出有序的数据序列，时间复杂度是 O(n)，非常高效。
+- 中序遍历二叉查找树，可以输出有序的数据序列，时间复杂度是 O(n)，非常高效。
 
-  - 复杂度
-    - 时间复杂度
-      - 最坏： 退化成链表了，O(n)
-      - 最好：完全二叉树，O(height)。 平衡二叉查找树的高度接近 logn,所以插入、删除、查找操作的时间复杂度也是比较稳定，是 O(logn)。
+- 复杂度
+
+  - 时间复杂度
+    - 最坏： 退化成链表了，O(n)
+    - 最好：完全二叉树，O(height)。 平衡二叉查找树的高度接近 logn,所以插入、删除、查找操作的时间复杂度也是比较稳定，是 O(logn)。
 
 - 散列表和二叉查找树优劣：
 
@@ -1417,3 +1418,244 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
   - 为了避免过多的散列冲突，散列表装载因子不能太大，特别是基于开放寻址法解决冲突的散列表，不然会浪费一定的存储空间。
 
 - 求一棵二叉树的确切高度
+
+### 平衡二叉查找树
+
+二叉树中任何一个节点的左右子树的高度相差不能大于 1。
+
+平衡二叉查找树的初衷，是为了解决二叉查找树因为动态更新导致的性能退化问题。
+
+平衡二叉查找树中“平衡”的意思，其实就是让整棵树左右看起来比较“对称”、比较“平衡”，不要出现左子树很高、右子树很矮的情况。这样就能让整棵树的高度相对来说低一些，相应的插入、删除、查找等操作的效率高一些。
+
+- 红黑树
+
+  一种不严格的平衡二叉查找树
+
+  - 红黑树需要满足的要求：
+    - 根节点是黑色的
+    - 每个叶子节点都是黑色的空节点（null），也就是说，叶子节点不存储数据
+    - 任何相邻的节点都不能同时为红色，也就是说，红色节点是被黑色节点隔开的
+    - 每个节点，从该节点到达其科大叶子节点的所有路径，都包含相同数目的黑色节点
+  - 左旋，右旋
+
+### 递归树
+
+- 分析快速排序的时间复杂度
+- 分析斐波那契数列的时间复杂度
+- 分析全排列的时间复杂度
+
+### 堆（Heap）
+
+堆是一种特殊的树。
+
+- 满足条件
+
+  - 堆是一个完全二叉树
+  - 堆中每一个节点的值都必须大于等于（或小于等于）其子树中每个节点的值。
+
+- 大顶堆
+
+  对于每个节点的值都大于等于子树中每个节点值的堆
+
+- 小顶堆
+
+  对于每个节点的值都小于等于子树中每个节点值的堆
+
+- 往堆中插入一个元素
+
+  - 堆化（heapify）： 新插入的元素放到堆的最后，需要进行调整，让其重新满足堆的特性，这个过程就叫堆化。
+    - 从下往上
+    - 从上往下
+
+  ```js
+  class Heap {
+    let a;
+    let n;
+    let count;
+
+    constructor(capacity) {
+      a = new Array(capacity+1);
+      n = capacity;
+      count = 0;
+    }
+
+    insert(data) {
+      if(count >= n) return;
+      ++count;
+      a[count] = data;
+      let i = count;
+      while(i/2 > 0 && a[i] > a[i/2]) {// 自下往上堆化
+        swap(a, i, i/2);
+        i = i/2;
+      }
+    }
+  }
+  ```
+
+- 删除堆顶元素
+- 堆排序
+
+## 图
+
+图中的元素我们就叫作**顶点（vertex）**。图中的一个顶点可以与任意其他顶点建立连接关系。我们把这种建立的关系叫作**边（edge）**。
+
+- 有向图
+  - 入度（in-degree）：有多少条边指向这个顶点。（粉丝）
+  - 出度（out-degree）：有多少条边是以这个顶点为起点指向其他顶点。（关注）
+- 无向图
+  度： 每个顶点有多少条边，就是顶点的**度（degree）**
+- 带权图： 每条边都有权重。（亲密度）
+- 稀疏图： 顶点很多，每个顶点的边并不多。
+
+- 图的存储方法
+
+  - 邻接矩阵（Adjacency Matrix）
+
+    用二维数组来存储。对于无向图来说，如果顶点 i 与顶点 j 之间有边，我们就将 A[i][j]和 A[j][i]标记为 1；对于有向图来说，如果顶点 i 到顶点 j 之间，有一条箭头从顶点 i 指向顶点 j 的边，那我们就将 A[i][j]标记为 1。如果有一条箭头从顶点 j 指向顶点 i 的边，我们就将 A[j][i]标记为 1。对于带权图，数组中就存储相应的权重。
+
+    - 缺点
+
+      - 浪费存储空间
+
+        如果是无向图，以对角线分为上一半或者下一半空间，只需要利用上一半或者下一半空间就足够了。稀疏图更加浪费存储空间。（比如微信有好几亿的用户，对应到图上就是好几亿的顶点。但是每个用户的好友并不会很多，一般也就三五百个而已。如果我们用邻接矩阵来存储，那绝大部分的存储空间都被浪费了。）
+
+    - 优点
+      - 邻接矩阵的存储方式简单、直接，因为基于数组，所以在获取两个顶点的关系时，就非常高效。
+      - 用邻接矩阵存储图的另外一个好处是方便计算。这是因为，用邻接矩阵的方式存储图，可以将很多图的运算转换成矩阵之间的运算。
+
+  - 邻接表（Adjacency List）
+
+    每个顶点对应一条链表，链表中存储的是与这个顶点相连接的其他顶点。
+
+    邻接表存储起来比较节省空间，但是使用起来就比较耗时间。链表的存储方式对缓存不友好。所以，比起邻接矩阵的存储方式，在邻接表中查询两个顶点之间的关系就没那么高效了。
+
+    为了提高查找效率，我们可以将链表换成其他更加高效的数据结构，比如平衡二叉查找树等。
+
+    ![邻接表的图](../imgs/algorithm/邻接表的图.png)
+
+    ```ts
+    // 无向图
+    class Graph<number> {
+      vertices: number; // 顶点的个数
+      adj: Array<Array<number>>;
+
+      constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adj = new Array(this.vertices);
+        for (let i = 0; i < this.vertices; i++) {
+          this.adj[i] = [];
+        }
+      }
+
+      addEdge(s: number, t: number) {
+        // 无向图一条边存两次
+        this.adj[s].push(t);
+        this.adj[t].push(s);
+      }
+    }
+    ```
+
+- 社交网络[六度分割理论](https://zh.wikipedia.org/wiki/%E5%85%AD%E5%BA%A6%E5%88%86%E9%9A%94%E7%90%86%E8%AE%BA)
+- 广度优先搜索（BFS: Breadth-First-Search）
+
+  寻找社交用户的所有三度好友关系
+
+  ![广度优先搜索（Breadth-First-Search）](../imgs/algorithm/广度优先搜索（Breadth-First-Search）.png)
+
+  ```ts
+  class Graph<number> {
+    /**
+     * 搜索一条从 S 到 T 的路径，得到的路径就是从 S 到 T 的最短路径
+     */
+    bfs(s: number, t: number) {
+      if (s === t) return;
+      let visited = new Array(this.vertices); // 记录已经被访问的顶点，用来避免顶点被重复访问
+      let queue = []; // 存储已经被访问、但相连的顶点还没有被访问的顶点
+      let prev = new Array(this.vertices); // 用来记录搜索路径
+      for (let i = 0; i < this.vertices; i++) {
+        prev[i] = -1;
+      }
+
+      visited[s] = true;
+      queue.push(s);
+
+      while (queue.length) {
+        const curVertice = queue.shift();
+        const relatedVertices = this.adj[curVertice];
+        for (let j = 0, len = relatedVertices.length; j < len; j++) {
+          let v = relatedVertices[j];
+          if (!visited[v]) {
+            prev[v] = curVertice; // prev[w]存储的是，顶点 w 是从哪个前驱顶点遍历过来的
+            if (v === t) {
+              this.print(prev, s, t);
+              return;
+            }
+            visited[v] = true;
+            queue.push(v);
+          }
+        }
+      }
+    }
+
+    print(prev: number[], s: number, t: number) {
+      // 递归打印
+      if (prev[t] !== -1 && t !== s) {
+        print(prev, s, t);
+      }
+      console.log(t + " ");
+    }
+  }
+  ```
+
+  最坏情况下，终止顶点 t 离起始顶点 s 很远，需要遍历完整个图才能找到。这个时候，每个顶点都要进出一遍队列，每个边也都会被访问一次，所以，广度优先搜索的时间复杂度是 O(V+E)，其中，V 表示顶点的个数，E 表示边的个数。当然，对于一个连通图来说，也就是说一个图中的所有顶点都是连通的，E 肯定要大于等于 V-1，所以，广度优先搜索的时间复杂度也可以简写为 O(E)。
+
+  广度优先搜索的空间消耗主要在几个辅助变量 visited 数组、queue 队列、prev 数组上。这三个存储空间的大小都不会超过顶点的个数，所以空间复杂度是 O(V)。
+
+- 深度优先搜索（DFS: Depth-First-Search)--回溯思想
+
+  走迷宫
+
+  ```ts
+  class Graph {
+    dfs(s: number, t: number) {
+      let found = false;
+      let visited = new Array(this.vertices);
+      let prev = [];
+      for (let i = 0; i < this.vertices; i++) {
+        prev[i] = -1;
+      }
+
+      _dfs(s, t, visited, prev);
+      this.print(prev, s, t);
+
+      function _dfs(v, t, visited, prev) {
+        if (found === true) return;
+        visited[v] = true;
+        if (v === t) {
+          found = true;
+          return;
+        }
+        const relatedVertices = this.adj[v];
+        for (let j = 0, len = relatedVertices.length; j < len; j++) {
+          const nextV = relatedVertices[j];
+          if (!visited[nextV]) {
+            prev[nextV] = v;
+            _dfs(nextV, t, visited, prev);
+          }
+        }
+      }
+    }
+
+    print(prev: number[], s: number, t: number) {
+      // 递归打印
+      if (prev[t] !== -1 && t !== s) {
+        print(prev, s, t);
+      }
+      console.log(t + " ");
+    }
+  }
+  ```
+
+  每条边最多会被访问两次，一次是遍历，一次是回退。所以，图上的深度优先搜索算法的时间复杂度是 O(E)，E 表示边的个数。
+
+  深度优先搜索算法的消耗内存主要是 visited、prev 数组和递归调用栈。visited、prev 数组的大小跟顶点的个数 V 成正比，递归调用栈的最大深度不会超过顶点的个数，所以总的空间复杂度就是 O(V)。
