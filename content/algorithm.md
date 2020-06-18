@@ -1898,3 +1898,150 @@ Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前
   - 要求字符串的前缀重合比较多，不然空间消耗会变大很多。
   - 通过指针串起来的数据块是不连续的，而 Trie 树中用到了指针，所以，对缓存并不友好，性能上会打个折扣。
   - 如果要用 Trie 树解决问题，那我们就要自己从零开始实现一个 Trie 树，还要保证没有 bug，这个在工程上是将简单问题复杂化，除非必须，一般不建议这样做。
+
+## 分治算法(divide and conquer)
+
+- 求出一组数据的有序对个数或者逆序对个数?
+
+  ```js
+  /**
+   * 逆序对个数
+   */
+  function count(arr) {
+    let num = 0;
+    mergeSortCounting(arr, 0, arr.length - 1);
+    return num;
+
+    function mergeSortCounting(arr, left, right) {
+      if (left >= right) return;
+      const mid = Math.floor((left + right) / 2);
+      mergeSortCounting(arr, left, mid);
+      mergeSortCounting(arr, mid + 1, right);
+      merge(arr, left, mid, right);
+
+      function merge(arr, left, mid, right) {
+        let i = left,
+          j = mid + 1,
+          k = 0;
+        let tmp = new Array(right - left + 1);
+        while (i <= mid && j <= right) {
+          if (arr[i] <= arr[j]) {
+            tmp[k++] = arr[i++];
+          } else {
+            num += mid - i + 1; // i 后面的都大于arr[j]
+            tmp[k++] = arr[j++];
+          }
+        }
+
+        while (i <= mid) {
+          tmp[k++] = arr[i++];
+        }
+
+        while (j <= right) {
+          tmp[k++] = arr[j++];
+        }
+
+        for (let i = 0, { length: len } = tmp; i < len; i++) {
+          arr[left + i] = tmp[i];
+        }
+      }
+    }
+  }
+  ```
+
+- 二维平面上有 n 个点，如何快速计算出两个距离最近的点对？
+- 有两个 `n*n` 的矩阵 A，B，如何快速求解两个矩阵的乘积 `C=A*B`？
+
+## 回溯算法
+
+- 八皇后问题
+
+  有一个 8x8 的棋盘，希望往里放 8 个棋子（皇后），每个棋子所在的行、列、对角线都不能有另一个棋子。
+
+  ```js
+  class EightQueens {
+    result = new Array(8); // 下标表示行，值表示 queen 存储在那一列
+    calc8Queens(row = 0) {
+      if (row === 8) {
+        // 八个棋子都放置好了，打印结果
+        this.printQueens();
+        return;
+      }
+
+      for (let column = 0; column < 8; column++) {
+        // 方法是否满足要求
+        if (this.isOK(row, column)) {
+          this.result[row] = column; //第 row 行棋子放到 column 列
+          this.calc8Queens(row + 1); // 继续下一行
+        }
+      }
+    }
+
+    /**
+     * 判断 row 行 column 列放置是否合适
+     */
+    isOK(row, column) {
+      // 左上角，右上角
+      let leftUp = column - 1,
+        rightUp = column + 1;
+      // 逐行往上检查每一行
+      for (let i = row - 1; i >= 0; i--) {
+        if (this.result[i] === column) return false; // 第 i 行的 column 是不是有棋子
+        if (leftUp >= 0) {
+          if (this.result[i] === leftUp) return false; // 左上角是否有棋子
+        }
+        if (rightUp < 8) {
+          if (this.result[i] === rightUp) return false; // 右上角是否有棋子
+        }
+        leftUp--;
+        rightUp++;
+      }
+      return true;
+    }
+
+    printQueens() {
+      let str = "";
+      for (let row = 0; row < 8; row++) {
+        for (let column = 0; column < 8; column++) {
+          if (this.result[row] === column) {
+            str += "Q ";
+          } else {
+            str += "* ";
+          }
+        }
+        str += "\n";
+      }
+      console.log(str, "\n");
+    }
+  }
+  ```
+
+- `0-1`背包
+
+  有一个背包，背包总的承载重量是 Wkg。现在我们有 n 个物品，每个物品的重量不等，并且不可分割。我们现在期望选择几件物品，装载到背包中。在不超过背包所能装载重量的前提下，如何让背包中物品的总重量最大？
+
+  ```js
+  /**
+   * cw表示当前已经装进去的物品的重量和；i表示考察到哪个物品了；
+   * w背包重量；items表示每个物品的重量；n表示物品个数
+   * 假设背包可承受重量100，物品个数10，物品重量存储在数组a中，那可以这样调用函数：
+   * f(0, 0, a, 10, 100)
+   */
+  let maxW = 0;
+  function f(i, cw, items, n, w) {
+    if (cw === w || i === n) {
+      if (cw > maxW) maxW = cw;
+      return;
+    }
+
+    f(i + 1, cw, items, n, w);
+    if (cw + items[i] <= w) {
+      f(i + 1, cw + items[i], items, n, w);
+    }
+  }
+  ```
+
+- 正则表达式
+
+  ```js
+  ```
