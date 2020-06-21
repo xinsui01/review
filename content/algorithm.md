@@ -1954,6 +1954,8 @@ Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前
 
 ## 回溯算法
 
+为了避免生成那些不可能产生最佳解的问题状态，要不断地利用限界函数(bounding function)来处死那些实际上不可能产生所需解的活结点，以减少问题的计算量。这种具有限界函数的深度优先生成法称为回溯法。
+
 - 八皇后问题
 
   有一个 8x8 的棋盘，希望往里放 8 个棋子（皇后），每个棋子所在的行、列、对角线都不能有另一个棋子。
@@ -2018,25 +2020,48 @@ Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前
 
 - `0-1`背包
 
-  有一个背包，背包总的承载重量是 Wkg。现在我们有 n 个物品，每个物品的重量不等，并且不可分割。我们现在期望选择几件物品，装载到背包中。在不超过背包所能装载重量的前提下，如何让背包中物品的总重量最大？
+  有 n 个物品，它们有各自的体积和价值，现有给定容量的背包，如何让背包里装入的物品具有最大的价值总和？
+
+  eg：number ＝ 4，capacity ＝ 8
 
   ```js
-  /**
-   * cw表示当前已经装进去的物品的重量和；i表示考察到哪个物品了；
-   * w背包重量；items表示每个物品的重量；n表示物品个数
-   * 假设背包可承受重量100，物品个数10，物品重量存储在数组a中，那可以这样调用函数：
-   * f(0, 0, a, 10, 100)
-   */
+  const items = [2, 2, 4, 6, 3];
   let maxW = 0;
-  function f(i, cw, items, n, w) {
-    if (cw === w || i === n) {
+  // cw 表示当前已经装进去的物品的重量和；i 表示考察到哪个物品了；
+  // w 背包重量；items 表示每个物品的重量；n 表示物品个数
+  // 假设背包可承受重量 9，物品重量存储在数组 items 中，那可以这样调用函数：
+  // f(0, 0, items, 5, 9)
+  function f(i, cw, items, w) {
+    if (cw === w || i === items.length) {
       if (cw > maxW) maxW = cw;
       return;
     }
 
-    f(i + 1, cw, items, n, w);
+    f(i + 1, cw, items, w); // 当前物品不放进背包
     if (cw + items[i] <= w) {
-      f(i + 1, cw + items[i], items, n, w);
+      f(i + 1, cw + items[i], items, w); // 当前物品装进背包
+    }
+  }
+  ```
+
+  ```js
+  /**
+   * 引入价值
+   * items 物品重量
+   * values 物品价值
+   * n 物品个数
+   * w 背包承受的最大重量
+   * f(0, 0, 0, )
+   */
+  let maxV = 0;
+  function f(i, cw, cv, items, w) {
+    if (cw === w || i === items.length) {
+      if (cv > maxV) maxV = cv;
+      return;
+    }
+    f(i + 1, cw, cv, items, w);
+    if (cw + items[i] <= w) {
+      f(i + 1, cw + items[i], cv + values[i], items, w);
     }
   }
   ```
@@ -2044,4 +2069,160 @@ Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前
 - 正则表达式
 
   ```js
+  class Pattern {
+    matched = false;
+    pattern; // 正则表达式
+    pLen; // 正则表达式长度
+
+    constructor(pattern) {
+      this.pattern = pattern;
+      this.pLen = pattern.length;
+    }
+
+    match(text) {
+      // 文本串及长度
+      this.matched = false;
+      const { length: len } = text;
+      this.rMatch(0, 0, text, len);
+      return this.matched;
+    }
+
+    rMatch(ti, pj, text, tLen) {
+      if (this.matched) return; // 如果已经匹配了就不需要继续递归了
+      if (pj === this.pLen) {
+        // 正则表达式到结尾了
+        if (ti === tLen) this.matched = true; // 文本串也到结尾了
+        return;
+      }
+      if (this.pattern[pj] == "*") {
+        // *匹配任意个字符
+        for (let k = 0; k <= tLen - ti; k++) {
+          this.rMatch(ti + k, pj + 1, text, tLen);
+        }
+      } else if (this.pattern[pj] == "?") {
+        // ?匹配0个或者1个字符
+        this.rMatch(ti, pj + 1, text, tLen);
+        this.rMatch(ti + 1, pj + 1, text, tLen);
+      } else if (ti < tLen && this.pattern[pj] === text[ti]) {
+        // 纯字符匹配才行
+        this.rMatch(ti + 1, pj + 1, text, tLen);
+      }
+    }
+  }
+  ```
+
+## 动态规划
+
+- `0-1` 背包问题
+
+  ```js
+  /**
+   * items 物品重量
+   * n 物品个数
+   * w 背包承受的最大重量
+   */
+  function knapsack(items, n, w) {
+    let states = new Array(w + 1);
+    // 第一行的数据要特殊处理，可以利用哨兵优化
+    states[0] = true;
+    if (items[0] <= w) {
+      states[items[0]] = true;
+    }
+
+    // 动态规划
+    for (let i = 1; i < n; i++) {
+      //把第i个物品放入背包
+      for (let j = w - items[i]; j >= 0; j--) {
+        if (states[j] === true) states[j + items[i]] = true;
+      }
+    }
+
+    // 输出结果
+    for (let i = w; i >= 0; i--) {
+      if (states[i] === true) return i;
+    }
+    return 0;
+  }
+  ```
+
+  ```js
+  /**
+   * 引入价值
+   */
+  function knapsack(items, values, n, w) {
+    let states = new Array(n);
+    for (let i = 0; i < n; i++) {
+      states[i] = new Array(w + 1);
+      for (let j = 0; j < w + 1; j++) {
+        states[i][j] = -1;
+      }
+    }
+
+    states[0][0] = 0;
+    if (items[0] < w) {
+      states[0][items[0]] = values[0];
+    }
+
+    for (let i = 1; i < n; i++) {
+      for (let j = 0; j <= w; j++) {
+        if (states[i - 1][j] >= 0) states[i][j] = states[i - 1][j];
+      }
+      for (let j = 0; i < w - items[i]; j++) {
+        if (states[i - 1][j] >= 0) {
+          let v = states[i - 1][j] + values[i];
+          if (v > states[i][j + items[i]]) {
+            states[i][j + items[i]] = v;
+          }
+        }
+      }
+    }
+
+    let maxV = -1;
+    for (let j = 0; j <= w; j++) {
+      if (states[n - 1][j] > maxV) maxV = states[n - 1][j];
+    }
+    return maxV;
+  }
+  ```
+
+- 淘宝的“双十一”购物节有各种促销活动，比如“满 200 元减 50 元”。假设你女朋友的购物车中有 n 个（n>100）想买的商品，她希望从里面选几个，在凑够满减条件的前提下，让选出来的商品价格总和最大程度地接近满减条件（200 元），这样就可以极大限度地“薅羊毛”。
+
+  ```js
+  // items商品价格，n商品个数, w表示满减条件，比如200
+  function double11advance(items, n, w) {
+    let states = new Array(n);
+    for (let i = 0; i < n; i++) {
+      states[i] = new Array(3 * w + 1); //超过3倍就没有薅羊毛的价值了
+    }
+
+    states[0][0] = true; // 第一行的数据要特殊处理
+
+    if (items[0] <= 3 * w) {
+      states[0][items[0]] = true;
+    }
+    for (let i = 1; i < n; i++) {
+      // 动态规划
+      for (let j = 0; j <= 3 * w; j++) {
+        // 不购买第i个商品
+        if (states[i - 1][j] === true) states[i][j] = states[i - 1][j];
+      }
+      for (let j = 0; j <= 3 * w - items[i]; j++) {
+        //购买第i个商品
+        if (states[i - 1][j] === true) states[i][j + items[i]] = true;
+      }
+    }
+    let j;
+    for (j = w; j < 3 * w + 1; j++) {
+      if (states[n - 1][j] === true) break; // 输出结果大于等于w的最小值
+    }
+    if (j === 3 * w + 1) return; // 没有可行解
+    for (let i = n - 1; i >= 1; i--) {
+      // i表示二维数组中的行，j表示列
+      if (j - items[i] >= 0 && states[i - 1][j - items[i]] === true) {
+        console.log(items[i] + " "); // 购买这个商品
+        j = j - items[i];
+      } // else 没有购买这个商品，j不变。
+    }
+    if (j !== 0) console.log(items[0]);
+  }
   ```
