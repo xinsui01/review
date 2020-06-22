@@ -2116,30 +2116,62 @@ Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前
 - `0-1` 背包问题
 
   ```js
-  /**
-   * items 物品重量
-   * n 物品个数
-   * w 背包承受的最大重量
-   */
-  function knapsack(items, n, w) {
-    let states = new Array(w + 1);
-    // 第一行的数据要特殊处理，可以利用哨兵优化
-    states[0] = true;
-    if (items[0] <= w) {
-      states[items[0]] = true;
+  function knapsack(weight, n, w) {
+    let states = new Array(n);
+    for (let i = 0; i < n; i++) {
+      states[i] = new Array(w + 1);
     }
 
-    // 动态规划
-    for (let i = 1; i < n; i++) {
-      //把第i个物品放入背包
-      for (let j = w - items[i]; j >= 0; j--) {
-        if (states[j] === true) states[j + items[i]] = true;
+    states[0][0] = true; // 未放第一个
+    if (weight[0] <= w) {
+      states[0][weight[0]] = true; // 放入第一个
+    }
+
+    for (let i = 0; i < n; i++) {
+      // 不放如第i个物品的情况
+      for (let j = 0; j <= w; j++) {
+        if (states[i - 1][j]) states[i][j] = states[i - 1][j];
+      }
+
+      // 放入第i个物品的情况
+      for (let j = 0; j <= w - weight[i]; j++) {
+        if (states[i - 1][j]) states[i][j + weight[i]] = true;
       }
     }
 
     // 输出结果
     for (let i = w; i >= 0; i--) {
-      if (states[i] === true) return i;
+      if (states[n - 1][i]) return i;
+    }
+    return 0;
+  }
+  ```
+
+  ```js
+  /**
+   * weight 物品重量
+   * n 物品个数
+   * w 背包承受的最大重量
+   */
+  function knapsack2(weight, n, w) {
+    let states = new Array(w + 1);
+    // 第一行的数据要特殊处理，可以利用哨兵优化
+    states[0] = true;
+    if (weight[0] <= w) {
+      states[weight[0]] = true;
+    }
+
+    // 动态规划
+    for (let i = 1; i < n; i++) {
+      //把第i个物品放入背包
+      for (let j = w - weight[i]; j >= 0; j--) {
+        if (states[j]) states[j + weight[i]] = true;
+      }
+    }
+
+    // 输出结果
+    for (let i = w; i >= 0; i--) {
+      if (states[i]) return i;
     }
     return 0;
   }
@@ -2148,8 +2180,9 @@ Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前
   ```js
   /**
    * 引入价值
+   * 时间复杂度 O(n*w), 空间复杂度 O(n*w)
    */
-  function knapsack(items, values, n, w) {
+  function knapsack3(weight, values, n, w) {
     let states = new Array(n);
     for (let i = 0; i < n; i++) {
       states[i] = new Array(w + 1);
@@ -2159,19 +2192,19 @@ Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前
     }
 
     states[0][0] = 0;
-    if (items[0] < w) {
-      states[0][items[0]] = values[0];
+    if (weight[0] < w) {
+      states[0][weight[0]] = values[0];
     }
 
     for (let i = 1; i < n; i++) {
       for (let j = 0; j <= w; j++) {
         if (states[i - 1][j] >= 0) states[i][j] = states[i - 1][j];
       }
-      for (let j = 0; i < w - items[i]; j++) {
+      for (let j = 0; i < w - weight[i]; j++) {
         if (states[i - 1][j] >= 0) {
           let v = states[i - 1][j] + values[i];
-          if (v > states[i][j + items[i]]) {
-            states[i][j + items[i]] = v;
+          if (v > states[i][j + weight[i]]) {
+            states[i][j + weight[i]] = v;
           }
         }
       }
@@ -2185,32 +2218,70 @@ Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前
   }
   ```
 
+  ```js
+  /**
+   * 引入价值
+   * 时间复杂度 O(n*w), 空间复杂度 O(w)
+   */
+  function knapsack4(weight, values, n, w) {
+    let states = new Array(w + 1);
+    for (let i = 0; i < w + 1; i++) {
+      states[i] = -1;
+    }
+
+    states[0] = 0;
+    if (weight[0] <= w) {
+      states[weight[0]] = values[0];
+    }
+
+    for (let i = 0; i < n; i++) {
+      for (let j = w - weight[i]; j >= 0; i--) {
+        if (states[j] > 0) {
+          let v = states[j] + values[i];
+          if (v > states[j + weight[i]]) {
+            states[j + weight[i]] = v;
+          }
+        }
+      }
+    }
+
+    let maxV = -1;
+    for (let j = w; j >= 0; j--) {
+      if (states[j] > maxV) {
+        maxV = states[j];
+      }
+    }
+    return maxV;
+  }
+  ```
+
 - 淘宝的“双十一”购物节有各种促销活动，比如“满 200 元减 50 元”。假设你女朋友的购物车中有 n 个（n>100）想买的商品，她希望从里面选几个，在凑够满减条件的前提下，让选出来的商品价格总和最大程度地接近满减条件（200 元），这样就可以极大限度地“薅羊毛”。
 
   ```js
-  // items商品价格，n商品个数, w表示满减条件，比如200
-  function double11advance(items, n, w) {
+  // price商品价格，n商品个数, w表示满减条件，比如200
+  function double11advance(price, n, w) {
     let states = new Array(n);
     for (let i = 0; i < n; i++) {
       states[i] = new Array(3 * w + 1); //超过3倍就没有薅羊毛的价值了
     }
 
     states[0][0] = true; // 第一行的数据要特殊处理
-
-    if (items[0] <= 3 * w) {
-      states[0][items[0]] = true;
+    if (price[0] <= 3 * w) {
+      states[0][price[0]] = true;
     }
+
     for (let i = 1; i < n; i++) {
       // 动态规划
       for (let j = 0; j <= 3 * w; j++) {
         // 不购买第i个商品
         if (states[i - 1][j] === true) states[i][j] = states[i - 1][j];
       }
-      for (let j = 0; j <= 3 * w - items[i]; j++) {
+      for (let j = 0; j <= 3 * w - price[i]; j++) {
         //购买第i个商品
-        if (states[i - 1][j] === true) states[i][j + items[i]] = true;
+        if (states[i - 1][j] === true) states[i][j + price[i]] = true;
       }
     }
+
     let j;
     for (j = w; j < 3 * w + 1; j++) {
       if (states[n - 1][j] === true) break; // 输出结果大于等于w的最小值
@@ -2218,11 +2289,11 @@ Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前
     if (j === 3 * w + 1) return; // 没有可行解
     for (let i = n - 1; i >= 1; i--) {
       // i表示二维数组中的行，j表示列
-      if (j - items[i] >= 0 && states[i - 1][j - items[i]] === true) {
-        console.log(items[i] + " "); // 购买这个商品
-        j = j - items[i];
+      if (j - price[i] >= 0 && states[i - 1][j - price[i]] === true) {
+        console.log(price[i] + " "); // 购买这个商品
+        j = j - price[i];
       } // else 没有购买这个商品，j不变。
     }
-    if (j !== 0) console.log(items[0]);
+    if (j !== 0) console.log(price[0]);
   }
   ```
