@@ -1511,7 +1511,7 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
 
   - 邻接矩阵（Adjacency Matrix）
 
-    用二维数组来存储。对于无向图来说，如果顶点 i 与顶点 j 之间有边，我们就将 A[i][j]和 A[j][i]标记为 1；对于有向图来说，如果顶点 i 到顶点 j 之间，有一条箭头从顶点 i 指向顶点 j 的边，那我们就将 A[i][j]标记为 1。如果有一条箭头从顶点 j 指向顶点 i 的边，我们就将 A[j][i]标记为 1。对于带权图，数组中就存储相应的权重。
+    用二维数组来存储。对于无向图来说，如果顶点 i ����� 顶点 j 之间有边，我们就将 A[i][j]和 A[j][i]标记为 1；对于有向图来说，如果顶点 i 到顶点 j 之间，有一条箭头从顶点 i 指向顶点 j 的边，那我们就将 A[i][j]标记为 1。如果有一条箭头从顶点 j 指向顶点 i 的边，我们就将 A[j][i]标记为 1。对于带权图，数组中就存储相应的权重。
 
     - 缺点
 
@@ -2295,5 +2295,243 @@ Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前
       } // else 没有购买这个商品，j不变。
     }
     if (j !== 0) console.log(price[0]);
+  }
+  ```
+
+- 有一个 n 乘以 n 的矩阵 w[n][n]。矩阵存储的都是正整数。棋子起始位置在左上角，终止位置在右下角。我们将棋子从左上角移动到右下角。每次只能向右或者向下移动一位。从左上角到右下角，会有很多不同的路径可以走。我们把每条路径经过的数字加起来看作路径的长度。那从左上角移动到右下角的最短路径长度是多少呢？
+
+  ```js
+  //回溯
+  let minDist = Number.MAX_VALUE;
+
+  function minDistBackTracing(i, j, dist, w) {
+    const { length: len } = w;
+    // 到达了 n-1, n-1 这个位置了，
+    if (i === n || j === n) {
+      if (dist < minDist) minDist = dist;
+      return;
+    }
+
+    if (i < n) {
+      // 往下走，更新i=i+1, j = j
+      minDistBackTracing(i + 1, j, dist + w[i][j], w);
+    }
+
+    if (j < n) {
+      // 往右走，更新i = i, j = j+1
+      minDistBackTracing(i, j + 1, dist + w[i][j], w);
+    }
+  }
+  ```
+
+  ```js
+  // 状态表转移法
+  function minDistDp(matrix) {
+    const { length: len } = matrix;
+
+    let states = new Array(len);
+    for (let i = 0; i < len; i++) {
+      states[i] = new Array(len);
+    }
+
+    // 初始化首行首列
+    let sum1 = 0,
+      sum2 = 0;
+    for (let j = 0; j < len; j++) {
+      // 初始化states第一行数据
+      sum1 += matrix[0][j];
+      states[0][j] = sum1;
+      // 初始化states第一列数据
+      sum2 += matrix[j][0];
+      states[j][0] = sum2;
+    }
+
+    for (let i = 1; i < len; i++) {
+      for (let j = 1; j < len; j++) {
+        states[i][j] =
+          matrix[i][j] + Math.min(states[i - 1][j], states[i][j - 1]);
+      }
+    }
+    return states[n - 1][n - 1];
+  }
+  ```
+
+  ```js
+  // 状态转移方程法
+  const matrix = [[1,3,5,9], [2,1,3,4],[5,2,6,7],[6,8,4,3]];
+  let mem = new Array(4);// 缓存
+  for(let i=0; i<4;i++) {
+    mem[i] = new Array(4);
+  }
+
+  function minDist(i, j) {
+    if (i === 0 && j === 0) {
+      return matrix[0][0];
+    }
+    if(mem[i][j] > 0) return mem[i][j];
+    let minLeft = Number.MAX_VALUE;
+    if(j-1 > =0) {
+      minLeft = minDist(i, j-1);
+    }
+    let minUp = Number.MAX_VALUE;
+    if(i-1>=0) {
+      minUp = minDist(i-1, j);
+    }
+
+    let curMinDist = matrix[i][j] + Math.min(minLeft, minUp);
+    mem[i][j] = curMinDist;
+    return curMinDist;
+  }
+  ```
+
+- 实现搜索引擎中的拼写纠错功能
+
+  - 如何量化两个字符串的相似度--编辑距离（Edit Distance）
+
+    指的就是，将一个字符串转化成另一个字符串，需要的最少编辑操作次数（比如增加一个字符、删除一个字符、替换一个字符）。编辑距离越大，说明两个字符串的相似程度越小；相反，编辑距离就越小，说明两个字符串的相似程度越大。对于两个完全相同的字符串来说，编辑距离就是 0。
+
+  - 莱文斯坦距离（Levenshtein distance）
+
+    - 允许增加、删除、替换字符这三个编辑操作
+    - 莱文斯坦距离的大小，表示两个字符串差异的大小；
+
+  - 最长公共子串长度（Longest common substring length）
+
+    - 只允许增加、删除字符这两个编辑操作
+    - 最长公共子串的大小，表示两个字符串相似程度的大小。
+
+  ![莱文斯坦距离_最长公共子串长度](../imgs/algorithm/莱文斯坦距离_最长公共子串长度.png)
+
+- 计算莱文斯坦距离
+
+  ```js
+  /**
+   * 回溯
+   */
+  const a = "mitcmu",
+    b = "mtacnu",
+    lenA = a.length,
+    lenB = b.length;
+  let minDist = Number.MAX_VALUE;
+  // 调用方式 lwstBT(0, 0, 0);
+  function lwstBT(i, j, eDist) {
+    if (i === lenA || j === lenB) {
+      if (j < lenA) eDist += lenA - i;
+      if (j < lenB) eDist += lenB - j;
+      if (eDist < minDist) minDist = eDist;
+      return;
+    }
+
+    if (a[i] === b[j]) {
+      // 两个字符串匹配
+      lwstBT(i + 1, j + 1, eDist);
+    } else {
+      // 两个字符串不匹配
+      lwstBT(i + 1, j, eDist + 1); // 删除a[i]或者b[j]前添加一个字符
+      lwstBT(i, j + 1, eDist + 1); // 删除b[j]或者在a[i]前添加一个字符
+      lwstBT(i + 1, j + 1, eDist + 1); // 将a[i] 和 b[j] 替换为相同字符
+    }
+  }
+  ```
+
+  ```js
+  function lwstDP(a, b) {
+    const lenA = a.length,
+      lenB = b.length;
+    let minDist = new Array(lenA);
+    for (let i = 0; i < lenA; i++) {
+      minDist[i] = new Array(lenB);
+    }
+
+    for (let j = 0; j < lenB; j++) {
+      if (a[0] === b[j]) minDist[0][j] = j;
+      else if (j !== 0) minDist[0][j] = minDist[0][j - 1] + 1;
+      else minDist[0][j] = 1;
+    }
+
+    for (let i = 0; i < lenA; i++) {
+      if (a[i] === b[0]) minDist[i][0] = i;
+      else if (i !== 0) minDist[i][0] = minDist[i - 1][0] + 1;
+      else minDist[i][0] = 1;
+    }
+
+    for (let i = 1; i < lenA; i++) {
+      for (let j = 0; j < lenB; j++) {
+        if (a[i] === b[j]) {
+          minDist[i][j] = min(
+            minDist[i - 1][j] + 1,
+            minDist[i][j - 1] + 1,
+            minDist[i - 1][j - 1]
+          );
+        } else {
+          minDist[i][j] = min(
+            minDist[i - 1][j] + 1,
+            minDist[i][j - 1] + 1,
+            minDist[i - 1][j - 1] + 1
+          );
+        }
+      }
+    }
+    return minDist[lenA - 1][lenB - 1];
+  }
+
+  function min(x, y, z) {
+    let minV = Number.MAX_VALUE;
+    if (x < minV) minV = x;
+    if (y < minV) minV = y;
+    if (z < minV) minV = z;
+    return minV;
+  }
+  ```
+
+- 计算最长公共子串长度
+
+  ```js
+  function lcs(a, b) {
+    const lenA = a.length,
+      lenB = b.length;
+    let maxLcs = new Array(lenA);
+    for (let i = 0; i < lenA; i++) {
+      maxLcs[i] = new Array(lenB);
+    }
+
+    for (let j = 0; i < lenB; j++) {
+      if (a[0] === b[j]) maxLcs[0][j] = 1;
+      else if (j !== 0) maxLcs[0][j] = maxLcs[0][j - 1];
+      else maxLcs[0][j] = 0;
+    }
+
+    for (let i = 0; i < lenA; i++) {
+      if (a[i] === b[0]) maxLcs[i][0] = 1;
+      else if (i !== 0) maxLcs[i][0] = maxLcs[i - 1][0];
+      else maxLcs[i][0] = 0;
+    }
+
+    for (let i = 1; i < lenA; i++) {
+      for (let j = 1; j < lenB; j++) {
+        if (a[i] === b[j]) {
+          maxLcs[i][j] = max(
+            maxLcs[i - 1][j],
+            maxLcs[i][j - 1],
+            maxLcs[i - 1][j - 1] + 1
+          );
+        } else {
+          maxLcs[i][j] = max(
+            maxLcs[i - 1][j],
+            maxLcs[i][j - 1],
+            maxLcs[i - 1][j - 1]
+          );
+        }
+      }
+    }
+    return maxLcs[lenA - 1][lenB - 1];
+  }
+
+  function max(x, y, z) {
+    let maxV = Number.MIN_VALUE;
+    if (x < maxV) maxV = x;
+    if (y < maxV) maxV = y;
+    if (z < maxV) maxV = z;
+    return maxV;
   }
   ```
