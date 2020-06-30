@@ -292,20 +292,138 @@
 - 二维数组查找
 
   ```js
-  function binarySearch(arr, target) {
-    let i = 0;
-    let j = arr[i].length - 1;
+  var findNumberIn2DArray = function (matrix, target) {
+    const { length: rows } = matrix;
+    if (rows === 0 || matrix[0].length === 0) return false;
 
-    while (i < arr.length && j >= 0) {
-      if (target < arr[i][j]) {
+    let i = 0,
+      j = matrix[i].length - 1;
+    while (i < rows && j >= 0) {
+      if (target < matrix[i][j]) {
         j--;
-      } else if (target > arr[i][j]) {
+      } else if (target > matrix[i][j]) {
         i++;
       } else {
-        return [i, j];
+        return true;
       }
     }
-    return -1;
+    return false;
+  };
+  ```
+
+  ```js
+  /**
+   * 在一个 n * m 的二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
+   * @param {number[][]} matrix
+   * @param {number} target
+   * @return {boolean}
+   * 给定 target = 5，返回 true。
+   * 给定 target = 20，返回 false。
+   * 时间复杂度： O(logk!), k = min(m, n)
+   * 空间复杂度： O(1)
+   */
+
+  var matrix = [
+    [1, 4, 7, 11, 15],
+    [2, 5, 8, 12, 19],
+    [3, 6, 9, 16, 22],
+    [10, 13, 14, 17, 24],
+    [18, 21, 23, 26, 30],
+  ];
+
+  var findNumberIn2DArray = function (matrix, target) {
+    const { length: n } = matrix; // 行
+    const { length: m } = matrix[0] || []; // 列
+
+    if (m === 0 || matrix[0][0] > target || matrix[n - 1][m - 1] < target)
+      return false;
+
+    for (let i = 0, minLen = Math.min(n, m); i < minLen; i++) {
+      const vFound = binarySearch(matrix, target, i, true); // 垂直方向是否找到
+      const hFound = binarySearch(matrix, target, i, false); // 水平是否找到
+      if (vFound || hFound) {
+        return true;
+      }
+    }
+    return false;
+
+    function binarySearch(matrix, target, start, vertical) {
+      let low = start,
+        high = vertical ? matrix.length - 1 : matrix[0].length - 1;
+      while (low <= high) {
+        let mid = Math.floor(low + ((high - low) >> 1));
+        let val = vertical ? matrix[mid][start] : matrix[start][mid];
+        if (vertical) {
+          if (val === target) {
+            return true;
+          } else if (val > target) {
+            high = mid - 1;
+          } else {
+            low = mid + 1;
+          }
+        } else {
+          if (val === target) {
+            return true;
+          } else if (val > target) {
+            high = mid - 1;
+          } else {
+            low = mid + 1;
+          }
+        }
+      }
+    }
+  };
+  ```
+
+- 找出数组中的第一个重复项
+
+  ```js
+  /**
+   * const nums = [0, 1, 2, 3, 4, 11, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+   * @param {number[]} nums
+   * @return {number}
+   */
+  function findRepeatNumber(nums) {
+    let set = new Set();
+    for (let i = 0, { length: len } = nums; i < len; i++) {
+      const { size } = set;
+      set.add(nums[i]);
+      if (set.size === size) return nums[i];
+    }
+  }
+
+  /**
+   * 使用哈希表
+   * const nums = [0, 1, 2, 3, 4, 11, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+   * @param {number[]} nums
+   * @return {number}
+   */
+  function findRepeatNumber(nums) {
+    const map = {};
+    for (let num of nums) {
+      if (!map[num]) {
+        map[num] = true;
+      } else {
+        return num;
+      }
+    }
+  }
+  /**
+   * 原地哈希
+   * const nums = [0, 1, 2, 3, 4, 11, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+   * @param {number[]} nums
+   * @return {number}
+   */
+  function findRepeatNumber(nums) {
+    for (let i = 0, { length: len } = nums; i < len; i++) {
+      // 检查下标为 i 的元素是否放在了 nums[i] 位置
+      while ((num = nums[i]) !== i) {
+        if (num === nums[num]) {
+          return num;
+        }
+        [nums[nums[i]], nums[i]] = [nums[i], nums[nums[i]]];
+      }
+    }
   }
   ```
 
