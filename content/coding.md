@@ -238,143 +238,6 @@
   | Node.DOCUMENT_TYPE_NODE          | 10  | 描述文档类型的 DocumentType 节点。例如 `<!DOCTYPE html>` 就是用于 HTML5 的。      |
   | Node.DOCUMENT_FRAGMENT_NODE      | 11  | 一个 DocumentFragment 节点                                                        |
 
-- 二分查找
-
-  ```js
-  /**
-   * 递归
-   */
-  function binarySearch(arr, target, start = 0, end = arr.length) {
-    if (start > end) {
-      return -1;
-    }
-    let midIndex = Math.floor((start + end) / 2);
-    let mid = arr[midIndex];
-
-    if (target === mid) {
-      return midIndex;
-    }
-
-    if (target < mid) {
-      return binarySearch(arr, target, 0, midIndex - 1);
-    }
-
-    if (target > mid) {
-      return binarySearch(arr, target, midIndex + 1, end);
-    }
-
-    return -1;
-  }
-  ```
-
-  ```js
-  /**
-   * 非递归
-   */
-  function binarySearch(arr, target) {
-    let min = 0;
-    let max = arr.length - 1;
-
-    while (min <= max) {
-      let mid = Math.floor((min + max) / 2);
-      if (target < arr[mid]) {
-        max = mid - 1;
-      } else if (target > arr[mid]) {
-        min = mid + 1;
-      } else {
-        return mid;
-      }
-    }
-    return -1;
-  }
-  ```
-
-- 二维数组查找
-
-  ```js
-  var findNumberIn2DArray = function (matrix, target) {
-    const { length: rows } = matrix;
-    if (rows === 0 || matrix[0].length === 0) return false;
-
-    let i = 0,
-      j = matrix[i].length - 1;
-    while (i < rows && j >= 0) {
-      if (target < matrix[i][j]) {
-        j--;
-      } else if (target > matrix[i][j]) {
-        i++;
-      } else {
-        return true;
-      }
-    }
-    return false;
-  };
-  ```
-
-  ```js
-  /**
-   * 在一个 n * m 的二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
-   * @param {number[][]} matrix
-   * @param {number} target
-   * @return {boolean}
-   * 给定 target = 5，返回 true。
-   * 给定 target = 20，返回 false。
-   * 时间复杂度： O(logk!), k = min(m, n)
-   * 空间复杂度： O(1)
-   */
-
-  var matrix = [
-    [1, 4, 7, 11, 15],
-    [2, 5, 8, 12, 19],
-    [3, 6, 9, 16, 22],
-    [10, 13, 14, 17, 24],
-    [18, 21, 23, 26, 30],
-  ];
-
-  var findNumberIn2DArray = function (matrix, target) {
-    const { length: n } = matrix; // 行
-    const { length: m } = matrix[0] || []; // 列
-
-    if (m === 0 || matrix[0][0] > target || matrix[n - 1][m - 1] < target)
-      return false;
-
-    for (let i = 0, minLen = Math.min(n, m); i < minLen; i++) {
-      const vFound = binarySearch(matrix, target, i, true); // 垂直方向是否找到
-      const hFound = binarySearch(matrix, target, i, false); // 水平是否找到
-      if (vFound || hFound) {
-        return true;
-      }
-    }
-    return false;
-
-    function binarySearch(matrix, target, start, vertical) {
-      let low = start,
-        high = vertical ? matrix.length - 1 : matrix[0].length - 1;
-      while (low <= high) {
-        let mid = Math.floor(low + ((high - low) >> 1));
-        let val = vertical ? matrix[mid][start] : matrix[start][mid];
-        if (vertical) {
-          if (val === target) {
-            return true;
-          } else if (val > target) {
-            high = mid - 1;
-          } else {
-            low = mid + 1;
-          }
-        } else {
-          if (val === target) {
-            return true;
-          } else if (val > target) {
-            high = mid - 1;
-          } else {
-            low = mid + 1;
-          }
-        }
-      }
-    }
-  };
-  ```
-
 - 找出数组中的第一个重复项
 
   ```js
@@ -452,6 +315,39 @@
       return (obj[item] = true);
     });
   }
+  ```
+
+- 替换空格
+
+  ```js
+  /**
+   * 请实现一个函数，把字符串 s 中的每个空格替换成"%20"。
+   * 输入：s = "We are happy."
+   * 输出："We%20are%20happy."
+   */
+  var replaceSpace = function (str) {
+    const { length: len } = str;
+    let newStr = "";
+    let i = 0;
+    while (i < len) {
+      const letter = str[i];
+      newStr += letter === " " ? "%20" : letter;
+      i++;
+    }
+    return newStr;
+  };
+  ```
+
+  ```js
+  /**
+   * 请实现一个函数，把字符串 s 中的每个空格替换成"%20"。
+   * 输入：s = "We are happy."
+   * 输出："We%20are%20happy."
+   */
+  var replaceSpace = function (str) {
+    if (!str) return str;
+    return (str || "").split(" ").join("%20");
+  };
   ```
 
 - 字符串去重

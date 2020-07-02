@@ -135,27 +135,218 @@
 //   .pipe(objToStr)
 //   .pipe(process.stdout)
 
-const fs = require("fs");
-const zlib = require("zlib");
-const file = process.argv[2];
-console.log("argv: ", process.argv);
+// const fs = require("fs");
+// const zlib = require("zlib");
+// const file = process.argv[2];
+// console.log("argv: ", process.argv);
 
-const { Transform } = require("stream");
-const { exception } = require("console");
+// const { Transform } = require("stream");
+// const { exception } = require("console");
 
-const transform = new Transform({
-  transform(chunk, encoding, callback) {
-    process.stdout.write(".");
-    callback(null, chunk);
-  },
-});
+// const transform = new Transform({
+//   transform(chunk, encoding, callback) {
+//     process.stdout.write(".");
+//     callback(null, chunk);
+//   },
+// });
 
-fs.createReadStream(file)
-  .pipe(zlib.createGzip())
-  // .on('data', () => {
-  //   process.stdout.write('.')
-  // })
-  .pipe(transform)
-  .pipe(fs.createWriteStream(file.split(".")[0] + ".gz"))
-  .on("finish", () => process.stdout.write("\ndone"));
+// fs.createReadStream(file)
+//   .pipe(zlib.createGzip())
+//   // .on('data', () => {
+//   //   process.stdout.write('.')
+//   // })
+//   .pipe(transform)
+//   .pipe(fs.createWriteStream(file.split(".")[0] + ".gz"))
+//   .on("finish", () => process.stdout.write("\ndone"));
 
+// var findRepeatNumber = function (nums) {
+//   let caches = {};
+//   for (let i = 0, { length: len } = nums; i < len; i++) {
+//     let val = nums[i];
+//     console.log(val, caches[val] > 1);
+//     if (caches[val] > 1) return val;
+//     caches[val] = (caches[val] || 0) + 1;
+//   }
+// };
+
+// const ret = findRepeatNumber([2, 3, 1, 0, 2, 5, 3]);
+// console.log(ret);
+
+// let nums = [0, 1, 2, 3, 4, 11, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+
+// // var findRepeatNumber = function (nums) {
+// //   let set = new Set();
+// //   for (let val of nums) {
+// //     const { size } = set;
+// //     set.add(val);
+// //     if (set.size === size) return val;
+// //   }
+// // };
+
+// function findRepeatNumber(nums) {
+//   for (let i = 0, { length: len } = nums; i < len; i++) {
+//     // 检查下标为 i 的元素是否放在了 nums[i] 位置
+//     while ((num = nums[i]) !== i) {
+//       if (num === nums[num]) {
+//         return num;
+//       }
+//       [nums[nums[i]], nums[i]] = [nums[i], nums[nums[i]]];
+//     }
+//   }
+// }
+
+// console.log(findRepeatNumber(nums));
+
+// var matrix = [
+//   [1, 4, 7, 11, 15],
+//   [2, 5, 8, 12, 19],
+//   [3, 6, 9, 16, 22],
+//   [10, 13, 14, 17, 24],
+//   [18, 21, 23, 26, 30],
+// ];
+
+// var findNumberIn2DArray = function (matrix, target) {
+//   const { length: n } = matrix; // 行
+//   const { length: m } = matrix[0] || []; // 列
+
+//   if (m === 0 || matrix[0][0] > target || matrix[n - 1][m - 1] < target)
+//     return false;
+
+//   for (let i = 0; i < n; i++) {
+//     if (binarySearch(matrix[i], target)) {
+//       return true;
+//     }
+//   }
+//   return false;
+
+//   function binarySearch(arr, target) {
+//     let low = 0,
+//       high = arr.length - 1;
+//     if (arr[low] > target || arr[high] < target) {
+//       return false;
+//     }
+//     if (arr[low] === target || arr[high] === target) {
+//       return true;
+//     }
+//     while (low <= high) {
+//       let mid = Math.floor(low + ((high - low) >> 1));
+//       if (arr[mid] === target) {
+//         return true;
+//       } else if (arr[mid] > target) {
+//         high = mid - 1;
+//       } else {
+//         low = mid + 1;
+//       }
+//     }
+//   }
+// };
+
+// var findNumberIn2DArray = function (matrix, target) {
+//   const { length: n } = matrix; // 行
+//   const { length: m } = matrix[0] || []; // 列
+
+//   if (m === 0 || matrix[0][0] > target || matrix[n - 1][m - 1] < target)
+//     return false;
+
+//   for (let i = 0, minLen = Math.min(n, m); i < minLen; i++) {
+//     const vFound = binarySearch(matrix, target, i, true); // 垂直方向是否找到
+//     const hFound = binarySearch(matrix, target, i, false); // 水平是否找到
+//     if (vFound || hFound) {
+//       return true;
+//     }
+//   }
+//   return false;
+
+//   function binarySearch(matrix, target, start, vertical) {
+//     let low = start,
+//       high = vertical ? matrix.length - 1 : matrix[0].length - 1;
+//     while (low <= high) {
+//       let mid = Math.floor(low + ((high - low) >> 1));
+//       let val = vertical ? matrix[mid][start] : matrix[start][mid];
+//       if (vertical) {
+//         if (val === target) {
+//           return true;
+//         } else if (val > target) {
+//           high = mid - 1;
+//         } else {
+//           low = mid + 1;
+//         }
+//       } else {
+//         if (val === target) {
+//           return true;
+//         } else if (val > target) {
+//           high = mid - 1;
+//         } else {
+//           low = mid + 1;
+//         }
+//       }
+//     }
+//   }
+// };
+
+// matrix.forEach((i) => {
+//   i.forEach((it) => {
+//     console.log(findNumberIn2DArray(matrix, it));
+//   });
+// });
+// console.log(findNumberIn2DArray(matrix, 30));
+
+// for (let index = 0; index < array.length; index++) {
+//   const element = array[index];
+
+// }
+
+// for(let i = 0, len = ; i < len; i++) {}
+
+// var replaceSpace = function (str) {
+//   const { length: len } = str;
+//   let newStr = "";
+//   let i = 0;
+//   while (i < len) {
+//     const letter = str[i];
+//     newStr += letter === " " ? "%20" : letter;
+//     i++;
+//   }
+//   return newStr;
+// };
+
+// console.log(replaceSpace("We are happy."));
+
+function TreeNode(val) {
+  this.val = val;
+  this.left = this.right = null;
+}
+
+var buildBTree = function (preOrder, inOrder) {
+  if (preOrder.length === 0 || inOrder.length === 0) {
+    return null;
+  }
+  let root = new TreeNode(preOrder[0]);
+  let stack = [root];
+  let inOrderIndex = 0;
+  for (let i = 1, { length: len } = preOrder; i < len; i++) {
+    const preOrderVal = preOrder[i];
+    let node = stack.pop();
+    stack.push(node);
+    if (node.val !== inOrder[inOrderIndex]) {
+      node.left = new TreeNode(preOrderVal);
+      stack.push(node.left);
+    } else {
+      let _node;
+      while (
+        stack.length &&
+        stack.push((_node = stack.pop())) &&
+        _node.val === inOrder[inOrderIndex]
+      ) {
+        node = stack.pop();
+        inOrderIndex++;
+      }
+      node.right = new TreeNode(preOrderVal);
+      stack.push(node.right);
+    }
+  }
+  return root;
+};
+
+console.log(buildBTree([1, 2, 3], [2, 3, 1]));
+// console.log(buildBTree([3, 9, 20, 15, 7], [9, 3, 15, 20, 7]));

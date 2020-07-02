@@ -40,6 +40,57 @@
   - 数据
 - 循环链表
 
+- 从尾到头打印链表
+
+  - 递归法(栈溢出问题)
+
+    ```js
+    /**
+     * 输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）。
+     * 输入：head = [1,3,2]
+     * 输出：[2,3,1]
+     * function ListNode(val) {
+     *     this.val = val;
+     *     this.next = null;
+     * }
+     * @param {ListNode} head
+     * @return {number[]}
+     */
+    var reversePrint = function (head) {
+      return _reversePrint(head);
+      function _reversePrint(head, ret = []) {
+        if (head !== null) {
+          return _reversePrint(head.next, [head.val].concat(ret));
+        }
+        return ret;
+      }
+    };
+    ```
+
+  - 辅助栈法(数组代替了)
+
+    ```js
+    /**
+     * 输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）。
+     * 输入：head = [1,3,2]
+     * 输出：[2,3,1]
+     * function ListNode(val) {
+     *     this.val = val;
+     *     this.next = null;
+     * }
+     * @param {ListNode} head
+     * @return {number[]}
+     */
+    var reversePrint = function (head) {
+      let stack = [];
+      while (head !== null) {
+        stack.unshift(head.val);
+        head = head.next;
+      }
+      return stack;
+    };
+    ```
+
 ## 栈
 
 特定的数据结构是对特定场景的抽象，而且，数组或链表暴露了太多的操作接口，操作上的确灵活自由，但使用时就比较不可控，自然也就更容易出错。
@@ -907,6 +958,143 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
 
 ## 二分查找
 
+- 一维数组查找
+
+  ```js
+  /**
+   * 递归
+   */
+  function binarySearch(arr, target, start = 0, end = arr.length) {
+    if (start > end) {
+      return -1;
+    }
+    let midIndex = Math.floor((start + end) / 2);
+    let mid = arr[midIndex];
+
+    if (target === mid) {
+      return midIndex;
+    }
+
+    if (target < mid) {
+      return binarySearch(arr, target, 0, midIndex - 1);
+    }
+
+    if (target > mid) {
+      return binarySearch(arr, target, midIndex + 1, end);
+    }
+
+    return -1;
+  }
+  ```
+
+  ```js
+  /**
+   * 非递归
+   */
+  function binarySearch(arr, target) {
+    let min = 0;
+    let max = arr.length - 1;
+
+    while (min <= max) {
+      let mid = Math.floor((min + max) / 2);
+      if (target < arr[mid]) {
+        max = mid - 1;
+      } else if (target > arr[mid]) {
+        min = mid + 1;
+      } else {
+        return mid;
+      }
+    }
+    return -1;
+  }
+  ```
+
+- 二维数组查找
+
+  ```js
+  var findNumberIn2DArray = function (matrix, target) {
+    const { length: rows } = matrix;
+    if (rows === 0 || matrix[0].length === 0) return false;
+
+    let i = 0,
+      j = matrix[i].length - 1;
+    while (i < rows && j >= 0) {
+      if (target < matrix[i][j]) {
+        j--;
+      } else if (target > matrix[i][j]) {
+        i++;
+      } else {
+        return true;
+      }
+    }
+    return false;
+  };
+  ```
+
+  ```js
+  /**
+   * 在一个 n * m 的二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
+   * @param {number[][]} matrix
+   * @param {number} target
+   * @return {boolean}
+   * 给定 target = 5，返回 true。
+   * 给定 target = 20，返回 false。
+   * 时间复杂度： O(logk!), k = min(m, n)
+   * 空间复杂度： O(1)
+   */
+
+  var matrix = [
+    [1, 4, 7, 11, 15],
+    [2, 5, 8, 12, 19],
+    [3, 6, 9, 16, 22],
+    [10, 13, 14, 17, 24],
+    [18, 21, 23, 26, 30],
+  ];
+
+  var findNumberIn2DArray = function (matrix, target) {
+    const { length: n } = matrix; // 行
+    const { length: m } = matrix[0] || []; // 列
+
+    if (m === 0 || matrix[0][0] > target || matrix[n - 1][m - 1] < target)
+      return false;
+
+    for (let i = 0, minLen = Math.min(n, m); i < minLen; i++) {
+      const vFound = binarySearch(matrix, target, i, true); // 垂直方向是否找到
+      const hFound = binarySearch(matrix, target, i, false); // 水平是否找到
+      if (vFound || hFound) {
+        return true;
+      }
+    }
+    return false;
+
+    function binarySearch(matrix, target, start, vertical) {
+      let low = start,
+        high = vertical ? matrix.length - 1 : matrix[0].length - 1;
+      while (low <= high) {
+        let mid = Math.floor(low + ((high - low) >> 1));
+        let val = vertical ? matrix[mid][start] : matrix[start][mid];
+        if (vertical) {
+          if (val === target) {
+            return true;
+          } else if (val > target) {
+            high = mid - 1;
+          } else {
+            low = mid + 1;
+          }
+        } else {
+          if (val === target) {
+            return true;
+          } else if (val > target) {
+            high = mid - 1;
+          } else {
+            low = mid + 1;
+          }
+        }
+      }
+    }
+  };
+  ```
+
 ## 跳表
 
 动态数据结构，可以支持快速的插入、删除、查找操作。Redis 中的有序集合（Sorted Set）就是用跳表来实现的。
@@ -1277,6 +1465,128 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
       }
     }
     ```
+
+- 重建二叉树
+
+  输入某二叉树的前序遍历和中序遍历的结果，请重建该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。
+
+  ```js
+  /**
+   * 递归
+   * 前序遍历 preOrder = [3,9,20,15,7]
+   * 中序遍历 inOrder = [9,3,15,20,7]
+   *
+   * function TreeNode(val) {
+   *     this.val = val;
+   *     this.left = this.right = null;
+   * }
+   *
+   * @param {number[]} preOrder
+   * @param {number[]} inOrder
+   * @return {TreeNode}
+   */
+  function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+  }
+
+  var buildBTree = function (
+    preOrder,
+    preOrderStart,
+    preOrderEnd,
+    inOrder,
+    inOrderStart,
+    inOrderEnd
+  ) {
+    if (typeof preOrderStart !== "number") {
+      preOrderStart = 0;
+      preOrderEnd = preOrder.length - 1;
+      inOrderStart = 0;
+      inOrderEnd = inOrder.length - 1;
+    }
+    if (
+      preOrder.length === 0 ||
+      inOrder.length === 0 ||
+      preOrderStart > preOrderEnd ||
+      inOrderStart > inOrderEnd
+    ) {
+      return null;
+    }
+
+    const val = preOrder[preOrderStart];
+    let node = new TreeNode(val);
+    let idx = inOrder.indexOf(val);
+    node.left = buildBTree(
+      preOrder,
+      preOrderStart + 1,
+      preOrderStart + (idx - inOrderStart) /* 左子树的个数 */,
+      inOrder,
+      inOrderStart,
+      idx - 1
+    );
+    node.right = buildBTree(
+      preOrder,
+      preOrderStart + (idx - inOrderStart) /* 左子树的个数 */ + 1,
+      preOrderEnd,
+      inOrder,
+      idx + 1,
+      inOrderEnd
+    );
+    return node;
+  };
+  ```
+
+  ```js
+  /**
+   * 迭代
+   * 前序遍历 preOrder = [3,9,20,15,7]
+   * 中序遍历 inOrder = [9,3,15,20,7]
+   *
+   * function TreeNode(val) {
+   *     this.val = val;
+   *     this.left = this.right = null;
+   * }
+   *
+   * @param {number[]} preOrder
+   * @param {number[]} inOrder
+   * @return {TreeNode}
+   */
+  function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+  }
+
+  var buildBTree = function (preOrder, inOrder) {
+    if (preOrder.length === 0 || inOrder.length === 0) {
+      return null;
+    }
+    let root = new TreeNode(preOrder[0]);
+    let stack = [root];
+    let inOrderIndex = 0;
+    for (let i = 1, { length: len } = preOrder; i < len; i++) {
+      const preOrderVal = preOrder[i];
+      let node = stack.pop();
+      stack.push(node);
+      if (node.val !== inOrder[inOrderIndex]) {
+        node.left = new TreeNode(preOrderVal);
+        stack.push(node.left);
+      } else {
+        let _node;
+        while (
+          stack.length &&
+          stack.push((_node = stack.pop())) &&
+          _node.val === inOrder[inOrderIndex]
+        ) {
+          node = stack.pop();
+          inOrderIndex++;
+        }
+        node.right = new TreeNode(preOrderVal);
+        stack.push(node.right);
+      }
+    }
+    return root;
+  };
+  ```
 
 ### 二叉查找树（Binary Search Tree）
 
