@@ -445,6 +445,37 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
   }
   ```
 
+- 双栈实现队列
+
+  ```js
+  /**
+   * 用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 appendTail 和 deleteHead ，
+   * 分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，deleteHead 操作返回 -1 )
+   */
+  class Queue<T> {
+    private stack1: T[];
+    private stack2: T[];
+    constructor() {
+      this.stack1 = [];
+      this.stack2 = [];
+    }
+
+    appendTail(value: T) {
+      stack1.push(value);
+    }
+
+    deleteHead(): T || -1 {
+      if(this.stack2.length) {
+        return this.stack2.pop();
+      }
+      while(this.stack1.length) {
+        this.stack2.push(this.stack1.pop())
+      }
+      return this.stack2.pop() || -1
+    }
+  }
+  ```
+
 - 阻塞队列(生产者--消费者)
 
   阻塞队列其实就是在队列基础上增加了阻塞操作。
@@ -464,6 +495,101 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
     cas + 数组
 
 ## 递归
+
+- 斐波那契数列
+
+  ```js
+  /**
+   * 递归 + 备忘录
+   * 写一个函数，输入 n ，求斐波那契（Fibonacci）数列的第 n 项。斐波那契数列的定义如下：
+   * F(0) = 0,   F(1) = 1, F(2) = 1
+   * F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
+   * 斐波那契数列由 0 和 1 开始，之后的斐波那契数就是由之前的两数相加而得出。
+   */
+  function fibonacci(n, cache = [0, 1]) {
+    if (n < 2 || cache[n]) return cache[n];
+    cache[n] = fibonacci(n - 1, cache) + fibonacci(n - 2, cache);
+    return cache[n];
+  }
+  ```
+
+  ```js
+  /**
+   * 尾递归优化
+   * 写一个函数，输入 n ，求斐波那契（Fibonacci）数列的第 n 项。斐波那契数列的定义如下：
+   * F(0) = 0,   F(1) = 1
+   * F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
+   * 斐波那契数列由 0 和 1 开始，之后的斐波那契数就是由之前的两数相加而得出。
+   */
+  function fibonacci(n, a = 1, b = 1) {
+    if (n < 2) return n;
+    if (n === 2) return b;
+    return fibonacci(n - 1, b, a + b);
+  }
+  ```
+
+  ```js
+  /**
+   * 循环求余法
+   * 写一个函数，输入 n ，求斐波那契（Fibonacci）数列的第 n 项。斐波那契数列的定义如下：
+   * F(0) = 0,   F(1) = 1
+   * F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
+   * 斐波那契数列由 0 和 1 开始，之后的斐波那契数就是由之前的两数相加而得出。
+   */
+  function fibonacci(n) {
+    if (n < 2) return n;
+    let a = 0,
+      b = 1;
+    let i = 2;
+    while (i <= n) {
+      [a, b] = [b, a + b];
+      i++;
+    }
+    return b;
+  }
+  ```
+
+  ```js
+  /**
+   * 动态规划
+   * 写一个函数，输入 n ，求斐波那契（Fibonacci）数列的第 n 项。斐波那契数列的定义如下：
+   * F(0) = 0,   F(1) = 1
+   * F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
+   * 斐波那契数列由 0 和 1 开始，之后的斐波那契数就是由之前的两数相加而得出。
+   */
+  function fibonacci(n) {
+    if (n < 2) return n;
+    let dp = [0, 1];
+    for (let i = 2; i <= n; i++) {
+      dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    return dp[n];
+  }
+  ```
+
+- 青蛙跳台阶问题
+
+  ```js
+  /**
+   * 动态规划
+   * 一只青蛙一次可以跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个 n 级的台阶总共有多少种跳法。
+   * F(0) = 1, F(1) = 1, F(2)=2
+   *  动态规划解析：
+   * 状态定义： 设 dp 为一维数组，其中 dp[i] 的值代表 斐波那契数列第 i 个数字 。
+   * 转移方程： dp[i + 1] = dp[i] + dp[i - 1]，即对应数列定义 f(n + 1) = f(n) + f(n - 1)；
+   * 初始状态： dp[0] = 1, dp[1] = 1，即初始化前两个数字；
+   * 返回值： dp[n] ，即斐波那契数列的第 n 个数字。
+  
+   */
+  function numWays(n) {
+    if (n <= 1) return 1;
+    let dp = [1, 1, 2];
+    for (let i = 2; i <= n; i++) {
+      dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    return dp[n];
+  }
+  ```
 
 ## 排序
 
@@ -1006,6 +1132,48 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
       }
     }
     return -1;
+  }
+  ```
+
+- 旋转数组的最小数字
+
+  ```js
+  /**
+   * 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个
+   * 递增排序的数组的一个旋转，输出旋转数组的最小元素。例如，数组 [3,4,5,1,2]
+   * 为 [1,2,3,4,5] 的一个旋转，该数组的最小值为1。
+   */
+  function minArray(numbers) {
+    for (let i = 0, { length: len } = numbers; i < len; i++) {
+      if (numbers[i] < numbers[0]) return numbers[i];
+    }
+    return numbers[0];
+  }
+  ```
+
+  ```js
+  /**
+   * 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个
+   * 递增排序的数组的一个旋转，输出旋转数组的最小元素。例如，数组 [3,4,5,1,2]
+   * 为 [1,2,3,4,5] 的一个旋转，该数组的最小值为1。
+   */
+  function minArray(numbers) {
+    let i = 0,
+      j = numbers.length - 1;
+    while (i < j) {
+      const m = i + Math.floor((j - i) >> 1);
+      if (numbers[m] > numbers[j]) {
+        // m 在左排序数组
+        i = m + 1;
+      } else if (numbers[m] < numbers[j]) {
+        // m 在右排序数组，此处不能 m-1, 可能会刚好错过旋转点
+        j = m;
+      } else {
+        // numbers[m] === numbers[j]
+        j--;
+      }
+    }
+    return numbers[i];
   }
   ```
 
@@ -1923,52 +2091,146 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
 
 - 深度优先搜索（DFS: Depth-First-Search)--回溯思想
 
-  走迷宫
+  - 走迷宫
 
-  ```ts
-  class Graph {
-    dfs(s: number, t: number) {
-      let found = false;
-      let visited = new Array(this.vertices);
-      let prev = [];
-      for (let i = 0; i < this.vertices; i++) {
-        prev[i] = -1;
-      }
-
-      _dfs(s, t, visited, prev);
-      this.print(prev, s, t);
-
-      function _dfs(v, t, visited, prev) {
-        if (found === true) return;
-        visited[v] = true;
-        if (v === t) {
-          found = true;
-          return;
+    ```ts
+    class Graph {
+      dfs(s: number, t: number) {
+        let found = false;
+        let visited = new Array(this.vertices);
+        let prev = [];
+        for (let i = 0; i < this.vertices; i++) {
+          prev[i] = -1;
         }
-        const relatedVertices = this.adj[v];
-        for (let j = 0, len = relatedVertices.length; j < len; j++) {
-          const nextV = relatedVertices[j];
-          if (!visited[nextV]) {
-            prev[nextV] = v;
-            _dfs(nextV, t, visited, prev);
+
+        _dfs(s, t, visited, prev);
+        this.print(prev, s, t);
+
+        function _dfs(v, t, visited, prev) {
+          if (found === true) return;
+          visited[v] = true;
+          if (v === t) {
+            found = true;
+            return;
+          }
+          const relatedVertices = this.adj[v];
+          for (let j = 0, len = relatedVertices.length; j < len; j++) {
+            const nextV = relatedVertices[j];
+            if (!visited[nextV]) {
+              prev[nextV] = v;
+              _dfs(nextV, t, visited, prev);
+            }
           }
         }
       }
-    }
 
-    print(prev: number[], s: number, t: number) {
-      // 递归打印
-      if (prev[t] !== -1 && t !== s) {
-        print(prev, s, t);
+      print(prev: number[], s: number, t: number) {
+        // 递归打印
+        if (prev[t] !== -1 && t !== s) {
+          print(prev, s, t);
+        }
+        console.log(t + " ");
       }
-      console.log(t + " ");
     }
-  }
-  ```
+    ```
 
-  每条边最多会被访问两次，一次是遍历，一次是回退。所以，图上的深度优先搜索算法的时间复杂度是 O(E)，E 表示边的个数。
+    每条边最多会被访问两次，一次是遍历，一次是回退。所以，图上的深度优先搜索算法的时间复杂度是 O(E)，E 表示边的个数。
 
-  深度优先搜索算法的消耗内存主要是 visited、prev 数组和递归调用栈。visited、prev 数组的大小跟顶点的个数 V 成正比，递归调用栈的最大深度不会超过顶点的个数，所以总的空间复杂度就是 O(V)。
+    深度优先搜索算法的消耗内存主要是 visited、prev 数组和递归调用栈。visited、prev 数组的大小跟顶点的个数 V 成正比，递归调用栈的最大深度不会超过顶点的个数，所以总的空间复杂度就是 O(V)。
+
+  - 矩阵中的路径
+
+    ```js
+    /**
+     * 请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。路径可以从矩阵中的任意一格
+     * 开始，每一步可以在矩阵中向左、右、上、下移动一格。如果一条路径经过了矩阵的某一格，那么该路径不能再次进
+     * 入该格子。例如，在下面的3×4的矩阵中包含一条字符串“bfce”的路径（路径中的字母用加粗标出）。
+     * 输入：board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+     * 输出：true
+     */
+    function exist(board, word) {
+      const { length: xLen } = board;
+      const { length: yLen } = board[0];
+      for (let x = 0; x < xLen; x++) {
+        for (let y = 0; y < yLen; y++) {
+          if (_exist(board, word, x, y, 0, xLen, yLen)) return true;
+        }
+      }
+
+      return false;
+      //用于判断board[x][y]的上下左右是否有work[k+1]，若有返回true
+      function _exist(board, word, x, y, k, xLen, yLen) {
+        if (
+          x < 0 ||
+          x >= xLen ||
+          y < 0 ||
+          y >= yLen ||
+          board[x][y] !== word[k]
+        ) {
+          return false;
+        }
+        // word 到尾部了
+        if (k === word.length - 1) {
+          return true;
+        }
+        let tmp = board[x][y];
+        board[x][y] = "-"; // 当前元素暂时不能再访问
+        const isExist =
+          _exist(board, word, x - 1, y, k + 1, xLen, yLen) /* 上 */ ||
+          _exist(board, word, x + 1, y, k + 1, xLen, yLen) /* 下 */ ||
+          _exist(board, word, x, y - 1, k + 1, xLen, yLen) /* 左 */ ||
+          _exist(board, word, x, y + 1, k + 1, xLen, yLen); /* 右 */
+        board[x][y] = tmp;
+        return isExist;
+      }
+    }
+    ```
+
+  - 机器人的运动范围
+
+    ```js
+    /**
+     * 地上有一个m行n列的方格，从坐标 [0,0] 到坐标 [m-1,n-1] 。一个机器人从
+     * 坐标 [0, 0] 的格子开始移动，它每次可以向左、右、上、下移动一格（不能移动到方格外），\
+     * 也不能进入行坐标和列坐标的数位之和大于k的格子。例如，当k为18时，机器人能够进入方格 [35, 37] ，
+     * 因为3+5+3+7=18。但它不能进入方格 [35, 38]，因为3+5+3+8=19。请问该机器人能够到达多少个格子？
+     *
+     * 输入：m = 2, n = 3, k = 1        输入：m = 3, n = 1, k = 0
+     * 输出：3                          输出：1
+     */
+    function movingCount(m, n, k) {
+      let set = new Set();
+      return dfs(0, 0);
+
+      function dfs(x, y) {
+        let key = `${x}-${y}`;
+        if (
+          x < 0 ||
+          x >= m ||
+          y < 0 ||
+          y >= n ||
+          getSum(x, y) > k ||
+          set.has(key)
+        ) {
+          return 0;
+        }
+        set.add(key);
+        return 1 + dfs(x + 1, y) /* 下 */ + dfs(x, y + 1); /* 右 */
+      }
+
+      function getSum(...nums) {
+        let sum = 0;
+        for (let i = 0, { length: len } = nums; i < len; i++) {
+          let num = nums[i];
+          while (num) {
+            sum += num % 10;
+            num = Math.floor(num / 10);
+          }
+        }
+        return sum;
+      }
+    }
+    ```
 
 ## 字符串匹配
 

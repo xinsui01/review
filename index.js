@@ -312,41 +312,145 @@
 
 // console.log(replaceSpace("We are happy."));
 
-function TreeNode(val) {
-  this.val = val;
-  this.left = this.right = null;
+// function TreeNode(val) {
+//   this.val = val;
+//   this.left = this.right = null;
+// }
+
+// var buildBTree = function (preOrder, inOrder) {
+//   if (preOrder.length === 0 || inOrder.length === 0) {
+//     return null;
+//   }
+//   let root = new TreeNode(preOrder[0]);
+//   let stack = [root];
+//   let inOrderIndex = 0;
+//   for (let i = 1, { length: len } = preOrder; i < len; i++) {
+//     const preOrderVal = preOrder[i];
+//     let node = stack.pop();
+//     stack.push(node);
+//     if (node.val !== inOrder[inOrderIndex]) {
+//       node.left = new TreeNode(preOrderVal);
+//       stack.push(node.left);
+//     } else {
+//       let _node;
+//       while (
+//         stack.length &&
+//         stack.push((_node = stack.pop())) &&
+//         _node.val === inOrder[inOrderIndex]
+//       ) {
+//         node = stack.pop();
+//         inOrderIndex++;
+//       }
+//       node.right = new TreeNode(preOrderVal);
+//       stack.push(node.right);
+//     }
+//   }
+//   return root;
+// };
+
+// console.log(buildBTree([1, 2, 3], [2, 3, 1]));
+// // console.log(buildBTree([3, 9, 20, 15, 7], [9, 3, 15, 20, 7]));
+
+// function fibonacci(n) {
+//   if (n < 2) return n;
+//   let a = 0,
+//     b = 1;
+//   let i = 2;
+//   while (i <= n) {
+//     [a, b] = [b, (a + b) % 1000000007];
+//     i++;
+//   }
+//   return b;
+// }
+// function fibonacci(n, a = 1, b = 1) {
+//   if (n < 2) return n;
+//   if (n === 2) return b;
+//   return fibonacci(n - 1, b, (a + b) % 1000000007);
+// }
+// //107920472
+// console.log(fibonacci(3));
+
+// var numWays = function (n) {
+//   if (n <= 1) return 1;
+//   let dp = [1, 1, 2];
+//   for (let i = 2; i <= n; i++) {
+//     dp[i] = (dp[i - 1] + dp[i - 2]) % 1000000007;
+//   }
+//   return dp[n];
+// };
+
+// console.log(numWays(44));
+
+// function exist(board, word) {
+//   const { length: xLen } = board;
+//   const { length: yLen } = board[0];
+//   for (let x = 0; x < xLen; x++) {
+//     for (let y = 0; y < yLen; y++) {
+//       if (_exist(board, word, x, y, 0, xLen, yLen)) return true;
+//     }
+//   }
+
+//   return false;
+//   //用于判断board[x][y]的上下左右是否有work[k+1]，若有返回true
+//   function _exist(board, word, x, y, k, xLen, yLen) {
+//     if (x < 0 || x >= xLen || y < 0 || y >= yLen || board[x][y] !== word[k]) {
+//       return false;
+//     }
+//     // word 到尾部了
+//     if (k === word.length - 1) {
+//       return true;
+//     }
+//     let tmp = board[x][y];
+//     board[x][y] = "-"; // 当前元素暂时不能再访问
+//     const isExist =
+//       _exist(board, word, x - 1, y, k + 1, xLen, yLen) /* 上 */ ||
+//       _exist(board, word, x + 1, y, k + 1, xLen, yLen) /* 下 */ ||
+//       _exist(board, word, x, y - 1, k + 1, xLen, yLen) /* 左 */ ||
+//       _exist(board, word, x, y + 1, k + 1, xLen, yLen); /* 右 */
+//     board[x][y] = tmp;
+//     return isExist;
+//   }
+// }
+// let board = [
+//     ["A", "B", "C", "E"],
+//     ["S", "F", "C", "S"],
+//     ["A", "D", "E", "E"],
+//   ],
+//   word = "ABCCED";
+
+// console.log(exist(board, word));
+
+function movingCount(m, n, k) {
+  let set = new Set();
+  return dfs(0, 0);
+
+  function dfs(x, y) {
+    let key = `${x}-${y}`;
+    if (
+      x < 0 ||
+      x >= m ||
+      y < 0 ||
+      y >= n ||
+      getSum(x, y) > k ||
+      set.has(key)
+    ) {
+      return 0;
+    }
+    set.add(key);
+    return 1 + dfs(x + 1, y) /* 下 */ + dfs(x, y + 1); /* 右 */
+  }
+
+  function getSum(...nums) {
+    let sum = 0;
+    for (let i = 0, { length: len } = nums; i < len; i++) {
+      let num = nums[i];
+      while (num) {
+        sum += num % 10;
+        num = Math.floor(num / 10);
+      }
+    }
+    return sum;
+  }
 }
 
-var buildBTree = function (preOrder, inOrder) {
-  if (preOrder.length === 0 || inOrder.length === 0) {
-    return null;
-  }
-  let root = new TreeNode(preOrder[0]);
-  let stack = [root];
-  let inOrderIndex = 0;
-  for (let i = 1, { length: len } = preOrder; i < len; i++) {
-    const preOrderVal = preOrder[i];
-    let node = stack.pop();
-    stack.push(node);
-    if (node.val !== inOrder[inOrderIndex]) {
-      node.left = new TreeNode(preOrderVal);
-      stack.push(node.left);
-    } else {
-      let _node;
-      while (
-        stack.length &&
-        stack.push((_node = stack.pop())) &&
-        _node.val === inOrder[inOrderIndex]
-      ) {
-        node = stack.pop();
-        inOrderIndex++;
-      }
-      node.right = new TreeNode(preOrderVal);
-      stack.push(node.right);
-    }
-  }
-  return root;
-};
-
-console.log(buildBTree([1, 2, 3], [2, 3, 1]));
-// console.log(buildBTree([3, 9, 20, 15, 7], [9, 3, 15, 20, 7]));
+console.log(movingCount(2, 3, 1));
