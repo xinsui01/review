@@ -420,37 +420,46 @@
 
 // console.log(exist(board, word));
 
-function movingCount(m, n, k) {
-  let set = new Set();
-  return dfs(0, 0);
+// function movingCount(m, n, k) {
+//   let set = new Set();
+//   return dfs(0, 0);
 
-  function dfs(x, y) {
-    let key = `${x}-${y}`;
-    if (
-      x < 0 ||
-      x >= m ||
-      y < 0 ||
-      y >= n ||
-      getSum(x, y) > k ||
-      set.has(key)
-    ) {
-      return 0;
-    }
-    set.add(key);
-    return 1 + dfs(x + 1, y) /* 下 */ + dfs(x, y + 1); /* 右 */
+//   function dfs(x, y) {
+//     let key = `${x}-${y}`;
+//     if (
+//       x < 0 ||
+//       x >= m ||
+//       y < 0 ||
+//       y >= n ||
+//       getSum(x, y) > k ||
+//       set.has(key)
+//     ) {
+//       return 0;
+//     }
+//     set.add(key);
+//     return 1 + dfs(x + 1, y) /* 下 */ + dfs(x, y + 1); /* 右 */
+//   }
+
+//   function getSum(...nums) {
+//     let sum = 0;
+//     for (let i = 0, { length: len } = nums; i < len; i++) {
+//       let num = nums[i];
+//       while (num) {
+//         sum += num % 10;
+//         num = Math.floor(num / 10);
+//       }
+//     }
+//     return sum;
+//   }
+// }
+
+// console.log(movingCount(2, 3, 1));
+var hammingWeight = function (n) {
+  let res = 0;
+  while (n) {
+    n = n & (n - 1);
+    res++;
   }
-
-  function getSum(...nums) {
-    let sum = 0;
-    for (let i = 0, { length: len } = nums; i < len; i++) {
-      let num = nums[i];
-      while (num) {
-        sum += num % 10;
-        num = Math.floor(num / 10);
-      }
-    }
-    return sum;
-  }
-}
-
-console.log(movingCount(2, 3, 1));
+  return res;
+};
+console.log(hammingWeight(11111111111111111111111111111101));
