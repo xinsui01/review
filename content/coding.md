@@ -895,3 +895,21 @@
     return count;
   }
   ```
+
+- 数值的整数次方
+
+  实现函数 double Power(double base, int exponent)，求 base 的 exponent 次方。不得使用库函数，同时不需要考虑大数问题。
+
+  ```js
+  /**
+   * 二分法
+   */
+  function myPow(x, n) {
+    if (n === 0) return 1;
+    if (n === 1) return x;
+    if (n < 0) return 1 / myPow(x, -n);
+
+    if (n % 2 === 1) return x * myPow(x, n - 1);
+    return myPow(x * x, n / 2);
+  }
+  ```
