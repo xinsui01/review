@@ -913,3 +913,119 @@
     return myPow(x * x, n / 2);
   }
   ```
+
+- 打印从 1 到最大的 n 位数
+
+  ```js
+  /**
+   * 递归生成全排列
+   * 无论是 short / int / long ... 任意变量类型，数字的取值范围都是有限的。因此，大数的表示应用字符串 String 类型。
+   *
+   */
+  ```
+
+  ```js
+  // 大数越界
+  function printNumbers(n) {
+    let len = Math.pow(10, n) - 1;
+    return Array.from({ length: len }, (item, index) => index + 1);
+  }
+  ```
+
+- 删除链表的节点
+
+  ```js
+  /**
+   * 给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。返回删除后的链表的头节点。
+   *
+   */
+  class ListNode {
+    val: number;
+    next: ListNode;
+    constructor(val) {
+      this.val = val;
+      this.next = null;
+    }
+  }
+  function deleteNode(head: ListNode, val: number) {
+    if (head === null) return null;
+    if (head.val === val) return head.next;
+    let pre: ListNode = head,
+      cur: ListNode = head.next;
+
+    while (cur !== null && cur.val !== val) {
+      pre = cur;
+      cur = cur.next;
+    }
+    if (cur !== null) {
+      pre.next = cur.next;
+    }
+    return head;
+  }
+  ```
+
+  ```js
+  /**
+   *
+   * 添加哨兵
+   */
+  function deleteNode(head, val) {
+    let pre = new ListNode(-1); // 哨兵节点
+    pre.next = head;
+
+    let node = pre;
+    while (node.next) {
+      if (node.next.val === val) {
+        node.next = node.next.next;
+        break;
+      }
+      node = node.next;
+    }
+    return pre.next;
+  }
+  ```
+
+- 请实现一个函数用来匹配包含'. '和'_'的正则表达式。模式中的字符'.'表示任意一个字符，而'_'表示它前面的字符可以出现任意次（含 0 次）。在本题中，匹配是指字符串的所有字符匹配整个模式。例如，字符串"aaa"与模式"a.a"和"ab*ac*a"匹配，但与"aa.a"和"ab\*a"均不匹配。
+
+  ```js
+  function isMatch(s, p) {
+    let { length: n } = s,
+      { length: m } = p;
+
+    let dp = new Array(n + 1);
+    for (let i = 0; i <= n; i++) {
+      dp[i] = new Array(m + 1);
+    }
+
+    for (let i = 0; i <= n; i++) {
+      for (let j = 0; j <= m; j++) {
+        // 分成空正则和非空正则两种
+        if (j === 0) {
+          dp[i][j] = i === 0;
+        } else {
+          // 非空正则分为两种情况 * 和 非*
+          if (p[j - 1] !== "*") {
+            if (i > 0 && (s[i - 1] === p[j - 1] || p[j - 1] === ".")) {
+              dp[i][j] = dp[i - 1][j - 1];
+            }
+          } else {
+            //碰到 * 了，分为看和不看两种情况
+            //不看
+            if (j >= 2) {
+              dp[i][j] |= dp[i][j - 2];
+            }
+            //看
+            if (
+              i >= 1 &&
+              j >= 2 &&
+              (s[i - 1] === p[j - 2] || p[j - 2] === ".")
+            ) {
+              dp[i][j] |= dp[i - 1][j];
+            }
+          }
+        }
+      }
+    }
+    return dp[n][m];
+  }
+  ```
