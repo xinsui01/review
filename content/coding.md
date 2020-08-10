@@ -1039,3 +1039,88 @@ function exchange(nums) {
   return odd.concat(even);
 }
 ```
+
+- 顺时针打印矩阵
+
+输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。
+
+```js
+function spiralOrder(matrix) {
+  if (!matrix.length) return [];
+  let left = 0,
+    right = matrix[0].length - 1,
+    top = 0,
+    bottom = matrix.length - 1;
+  let res = [];
+  while (true) {
+    // left to right
+    for (let i = left; i <= right; i++) {
+      res.push(matrix[top][i]);
+    }
+    if (++top > bottom) break;
+
+    // top to bottom
+    for (let i = top; i <= bottom; i++) {
+      res.push(matrix[i][right]);
+    }
+    if (--right < left) break;
+
+    // right to left
+    for (let i = right; i >= left; i--) {
+      res.push(matrix[bottom][i]);
+    }
+    if (--bottom < top) break;
+
+    // bottom to top
+    for (let i = bottom; i >= top; i--) {
+      res.push(matrix[i][left]);
+    }
+    if (++left > right) break;
+  }
+  return res;
+}
+```
+
+- 包含 min 函数的栈
+
+  定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中，调用 min、push 及 pop 的时间复杂度都是 O(1)
+
+  > MinStack minStack = new MinStack();  
+  > minStack.push(-2);  
+  > minStack.push(0);  
+  > minStack.push(-3);  
+  > minStack.min(); --> 返回 -3.  
+  > minStack.pop();  
+  > minStack.top(); --> 返回 0.  
+  > minStack.min(); --> 返回 -2.
+
+  ```js
+  /**
+   * 双栈
+   *
+   */
+  function MinStack() {
+    this.stack = []; // 维护push, pop, top
+    this.minStack = []; // 非严格降序排列，保证栈顶元素最小
+  }
+
+  MinStack.prototype.push = function (x) {
+    if (!this.minStack.length || this.minStack[this.minStack.length - 1] >= x) {
+      this.minStack.push(x);
+    }
+    return this.stack.push(x);
+  };
+  MinStack.prototype.pop = function () {
+    let pop = this.stack.pop();
+    if (pop === this.minStack[this.minStack.length - 1]) {
+      this.minStack.pop();
+    }
+    return pop;
+  };
+  MinStack.prototype.top = function () {
+    return this.stack[this.stack.length - 1];
+  };
+  MinStack.prototype.min = function () {
+    return this.minStack[this.minStack.length - 1];
+  };
+  ```
