@@ -896,24 +896,6 @@
   }
   ```
 
-- 数值的整数次方
-
-  实现函数 double Power(double base, int exponent)，求 base 的 exponent 次方。不得使用库函数，同时不需要考虑大数问题。
-
-  ```js
-  /**
-   * 二分法
-   */
-  function myPow(x, n) {
-    if (n === 0) return 1;
-    if (n === 1) return x;
-    if (n < 0) return 1 / myPow(x, -n);
-
-    if (n % 2 === 1) return x * myPow(x, n - 1);
-    return myPow(x * x, n / 2);
-  }
-  ```
-
 - 打印从 1 到最大的 n 位数
 
   ```js
@@ -932,100 +914,128 @@
   }
   ```
 
-- 删除链表的节点
+- 表示数值的字符串
 
-  ```js
-  /**
-   * 给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。返回删除后的链表的头节点。
-   *
-   */
-  class ListNode {
-    val: number;
-    next: ListNode;
-    constructor(val) {
-      this.val = val;
-      this.next = null;
+请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。例如，字符串"+100"、"5e2"、"-123"、"3.1416"、"0123"都表示数值，但"12e"、"1a3.14"、"1.2.3"、"+-5"、"-1E-16"及"12e+5.4"都不是。
+
+[有限状态自动机](https://leetcode-cn.com/problems/biao-shi-shu-zhi-de-zi-fu-chuan-lcof/solution/mian-shi-ti-20-biao-shi-shu-zhi-de-zi-fu-chuan-y-2/)
+
+```js
+/**
+ *
+ * @param {string} s
+ * @return {boolean}
+ */
+function isNumber(str) {
+  const states = [
+    { " ": 0, s: 1, d: 2, ".": 4 }, // 0. start with 'blank'
+    { d: 2, ".": 4 }, // 1. 'sign' before 'e'
+    { d: 2, ".": 3, e: 5, " ": 8 }, // 2. 'digit' before 'dot'
+    { d: 3, e: 5, " ": 8 }, // 3. 'digit' after 'dot'
+    { d: 3 }, // 4. 'digit' after 'dot' (‘blank’ before 'dot')
+    { s: 6, d: 7 }, // 5. 'e'
+    { d: 7 }, // 6. 'sign' after 'e'
+    { d: 7, " ": 8 }, // 7. 'digit' after 'e'
+    { " ": 8 }, // 8. end with 'blank'
+  ];
+
+  let p = 0,
+    t;
+  for (i = 0, { length: len } = str; i < len; i++) {
+    const letter = str[i];
+    if ("0" <= letter && letter <= "9") {
+      // digit
+      t = "d";
+    } else if ("+-".includes(letter)) {
+      // sign
+      t = "s";
+    } else if (".eE ".includes(letter)) {
+      // dot, e, blank
+      t = letter;
+    } else {
+      // unknown
+      t = "?";
     }
+
+    if (!states[p].hasOwnProperty(t)) {
+      return false;
+    }
+    p = states[p][t];
   }
-  function deleteNode(head: ListNode, val: number) {
-    if (head === null) return null;
-    if (head.val === val) return head.next;
-    let pre: ListNode = head,
-      cur: ListNode = head.next;
+  return [2, 3, 7, 8].includes(p);
+}
+```
 
-    while (cur !== null && cur.val !== val) {
-      pre = cur;
-      cur = cur.next;
+```js
+/**
+ * 正则表达式
+ */
+function isNumber(str) {
+  return /^[+-]?(\d+(\.\d*)?|(\.\d+))(e[+-]?\d+)?$/.test(s.trim());
+}
+```
+
+```js
+/**
+ *
+ */
+function isNumber(str) {
+  str = str.trim();
+  if (!str) return false;
+  return !Number.isNaN(str);
+}
+```
+
+- 调整数组顺序使奇数位于偶数前面
+
+输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数位于数组的前半部分，所有偶数位于数组的后半部分。
+
+```js
+/**
+ * 相对位置会变化
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+function exchange(nums) {
+  let left = 0,
+    right = nums.length - 1;
+  while (left < right) {
+    // 奇数
+    if ((nums[left] & 1) !== 0) {
+      left++;
+      continue;
     }
-    if (cur !== null) {
-      pre.next = cur.next;
+    // 偶数
+    if ((nums[right] & 1) !== 1) {
+      right--;
+      continue;
     }
-    return head;
+    // 交换当前值后各自移动一步
+    swap(nums, left++, right--);
   }
-  ```
+  return nums;
+}
 
-  ```js
-  /**
-   *
-   * 添加哨兵
-   */
-  function deleteNode(head, val) {
-    let pre = new ListNode(-1); // 哨兵节点
-    pre.next = head;
+function swap(arr, i, j) {
+  let temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+}
+```
 
-    let node = pre;
-    while (node.next) {
-      if (node.next.val === val) {
-        node.next = node.next.next;
-        break;
-      }
-      node = node.next;
-    }
-    return pre.next;
+```js
+/**
+ * 相对位置不变
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+function exchange(nums) {
+  let odd = [],
+    even = [];
+  for (let i = 0, { length: len } = nums; i < len; i++) {
+    let val = nums[i];
+    (val & 1) === 0 ? even.push(val) : odd.push(val);
   }
-  ```
-
-- `请实现一个函数用来匹配包含'. '和'*'的正则表达式。模式中的字符'.'表示任意一个字符，而'*'表示它前面的字符可以出现任意次（含 0 次）。在本题中，匹配是指字符串的所有字符匹配整个模式。例如，字符串"aaa"与模式"a.a"和"ab*ac*a"匹配，但与"aa.a"和"ab*a"均不匹配。`
-
-  ```js
-  function isMatch(s, p) {
-    let { length: n } = s,
-      { length: m } = p;
-
-    let dp = new Array(n + 1);
-    for (let i = 0; i <= n; i++) {
-      dp[i] = new Array(m + 1);
-    }
-
-    for (let i = 0; i <= n; i++) {
-      for (let j = 0; j <= m; j++) {
-        // 分成空正则和非空正则两种
-        if (j === 0) {
-          dp[i][j] = i === 0;
-        } else {
-          // 非空正则分为两种情况 * 和 非*
-          if (p[j - 1] !== "*") {
-            if (i > 0 && (s[i - 1] === p[j - 1] || p[j - 1] === ".")) {
-              dp[i][j] = dp[i - 1][j - 1];
-            }
-          } else {
-            //碰到 * 了，分为看和不看两种情况
-            //不看
-            if (j >= 2) {
-              dp[i][j] |= dp[i][j - 2];
-            }
-            //看
-            if (
-              i >= 1 &&
-              j >= 2 &&
-              (s[i - 1] === p[j - 2] || p[j - 2] === ".")
-            ) {
-              dp[i][j] |= dp[i - 1][j];
-            }
-          }
-        }
-      }
-    }
-    return dp[n][m];
-  }
-  ```
+  return odd.concat(even);
+}
+```
