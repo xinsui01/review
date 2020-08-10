@@ -144,6 +144,182 @@
   }
   ```
 
+- 链表中倒数第 k 个节点
+
+  输入一个链表，输出该链表中倒数第 k 个节点。为了符合大多数人的习惯，本题从 1 开始计数，即链表的尾节点是倒数第 1 个节点。例如，一个链表有 6 个节点，从头节点开始，它们的值依次是 1、2、3、4、5、6。这个链表的倒数第 3 个节点是值为 4 的节点。
+
+  ```js
+  /**
+   * 双指针法
+   *
+   */
+  function ListNode(val) {
+    this.val = val;
+    this.next = null;
+  }
+  /**
+   * @param {ListNode} head
+   * @param {number} k
+   * @return {ListNode}
+   */
+  function getKthFromEnd(head, k) {
+    let former = head,
+      latter = head;
+
+    if (head === null || k === 0) {
+      return null;
+    }
+
+    // 前指针先走 k 步
+    for (let i = 0; i < k; i++) {
+      if (former === null) {
+        return null;
+      }
+      former = former.next;
+    }
+
+    while (former !== null) {
+      former = former.next;
+      latter = latter.next;
+    }
+    return latter;
+  }
+  ```
+
+  ```js
+  /**
+   * 入栈出栈法
+   *
+   */
+  function ListNode(val) {
+    this.val = val;
+    this.next = null;
+  }
+  /**
+   * @param {ListNode} head
+   * @param {number} k
+   * @return {ListNode}
+   */
+  function getKthFromEnd(head, k) {
+    let stack = [],
+      ret;
+
+    // 所有节点入栈
+    while (head) {
+      stack.push(head);
+      head = head.next;
+    }
+
+    // 出栈 k 个元素
+    while (k > 0) {
+      ret = stack.pop();
+      k--;
+    }
+
+    return ret;
+  }
+  ```
+
+- 链表反转
+
+  定义一个函数，输入一个链表的头节点，反转该链表并输出反转后链表的头节点。
+
+  ```js
+  function ListNode(val) {
+    this.val = val;
+    this.next = null;
+  }
+  /**
+   * 双指针
+   */
+  function reverseList(head) {
+    let pre = null,
+      cur = head,
+      temp;
+    while (cur !== null) {
+      temp = cur.next; // 修改前先记住下一个节点
+      cur.next = pre; // 第一个节点prev是null
+      pre = cur; // cur通过temp指向下一节点
+      cur = temp; // 记录前一个节点，供下次循环使用
+    }
+    return pre;
+  }
+  /**
+   * 递归
+   */
+  function reverseList(head) {
+    if (head === null || head.next === null) return head;
+    let ret = reverseList(head.next);
+    head.next.next = head;
+    head.next = null;
+    return ret;
+  }
+  /**
+   * 双指针
+   */
+  function reverseList(head) {
+    if (head === null) return null;
+    let cur = head;
+
+    while (head.next !== null) {
+      let t = head.next.next;
+      head.next.next = cur;
+      cur = head.next;
+      head.next = t;
+    }
+    return cur;
+  }
+  ```
+
+- 合并两个排序的链表
+
+  输入两个递增排序的链表，合并这两个链表并使新链表中的节点仍然是递增排序的。
+
+  时间复杂度 O(M + N), 空间复杂度 O(1)
+
+  ```js
+  /**
+   * 迭代
+   *
+   */
+
+  function mergeTwoLists(l1, l2) {
+    let head = new ListNode(-1),
+      cur = head;
+    while (l1 !== null && l2 !== null) {
+      if (l1.val < l2.val) {
+        cur.next = l1;
+        l1 = l1.next;
+      } else {
+        cur.next = l2;
+        l2 = l2.next;
+      }
+      cur = cur.next;
+    }
+    cur.next = l1 !== null ? l1 : l2;
+    return head.next;
+  }
+  ```
+
+  ```js
+  /**
+   * 递归
+   *
+   */
+
+  function mergeTwoLists(l1, l2) {
+    if (l1 === null) return l2;
+    if (l2 === null) return l1;
+    if (l1.val < l2.val) {
+      l1.next = mergeTwoLists(l1.next, l2);
+      return l1;
+    } else {
+      l2.next = mergeTwoLists(l1, l2.next);
+      return l2;
+    }
+  }
+  ```
+
 ## 栈
 
 特定的数据结构是对特定场景的抽象，而且，数组或链表暴露了太多的操作接口，操作上的确灵活自由，但使用时就比较不可控，自然也就更容易出错。
@@ -1825,6 +2001,92 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
     }
     return root;
   };
+  ```
+
+- 输入两棵二叉树 A 和 B，判断 B 是不是 A 的子结构。(约定空树不是任意一个树的子结构。B 是 A 的子结构， 即 A 中有出现和 B 相同的结构和节点值。)
+
+  ```js
+  function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+  }
+  /**
+   * @param {TreeNode} A
+   * @param {TreeNode} B
+   * @return {boolean}
+   */
+  function isSubStructure(A, B) {
+    if (B === null || A === null) return false;
+    return (
+      recur(A, B) || isSubStructure(A.left, B) || isSubStructure(A.right, B)
+    );
+  }
+
+  function recur(A, B) {
+    if (B === null) return true;
+    if (A === null || A.val !== B.val) return false;
+    return recur(A.left, B.left) && recur(A.right, B.right);
+  }
+  ```
+
+- 输入一个二叉树，输出它的镜像(左右子树互换)
+
+  ```js
+  function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+  }
+  /**
+   * 递归
+   *
+   */
+  function mirrorTree(root) {
+    if (root === null) return null;
+    let temp = root.left;
+    root.left = mirrorTree(root.right);
+    root.right = mirrorTree(temp);
+    return root;
+  }
+  /**
+   * 辅助栈(迭代法)
+   *
+   */
+  function mirrorTree(root) {
+    if (root === null) return null;
+    let stack = [root];
+    while (stack.length) {
+      let node = stack.pop();
+      if (node.left !== null) stack.push(node.left);
+      if (node.right !== null) stack.push(node.right);
+      let temp = node.left;
+      node.left = node.right;
+      node.right = temp;
+    }
+    return root;
+  }
+  ```
+
+- 判断一棵二叉树是否对称。（如果一棵二叉树和它的镜像一样，那么他是对称的）
+
+  ```js
+  function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+  }
+
+  /**
+   * 递归
+   *
+   */
+  function isSymmetric(root) {
+    return root === null ? true : recur(root.left, root.right);
+  }
+
+  function recur(left, right) {
+    if (left === null && right === null) return true;
+    if (left === null || right === null || left.val !== right.val) return false;
+    return recur(left.left, right.right) && recur(left.right, right.left);
+  }
   ```
 
 ### 二叉查找树（Binary Search Tree）
