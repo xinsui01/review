@@ -513,6 +513,26 @@
 
 - 内存中的栈和数据结构中的栈是不是一回事呢？
 
+- 栈的压入、弹出序列
+
+  输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如，序列 {1,2,3,4,5} 是某栈的压栈序列，序列 {4,5,3,2,1} 是该压栈序列对应的一个弹出序列，但 {4,3,5,1,2} 就不可能是该压栈序列的弹出序列。
+
+  ```js
+  function validateStackSequences(pushed, popped) {
+    let stack = [],
+      idx = 0;
+    for (let i = 0, { length: len } = pushed; i < len; i++) {
+      stack.push(pushed[i]); // 入栈
+      while (stack.length && stack[stack.length - 1] === popped[idx]) {
+        // 循环判断与出栈
+        stack.pop();
+        idx++;
+      }
+    }
+    return !stack.length;
+  }
+  ```
+
 ## 队列
 
 CPU 资源是有限的，任务的处理速度与线程个数并不是线性正相关。相反，过多的线程反而会导致 CPU 频繁切换，处理性能下降。所以，线程池的大小一般都是综合考虑要处理任务的特点和硬件环境，来事先设置的。
@@ -1862,22 +1882,74 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
     }
     ```
 
-  - 层次遍历
+  - 层次遍历(广度优先搜索 BFS-- 通常借助 队列 的先入先出特性来实现)
 
     ```js
+    /**
+     * 一起输出
+     */
     function levelOrder(root) {
       if (root === null) return;
       let queue = [root];
       while (queue.length) {
-        const curNode = queue.pop();
+        const curNode = queue.shift();
         console.log(curNode.data);
-        if (cruNode.left !== null) {
+        if (curNode.left !== null) {
           queue.push(curNode.left);
         }
-        if (cruNode.right !== null) {
+        if (curNode.right !== null) {
           queue.push(curNode.right);
         }
       }
+    }
+    ```
+
+    ```js
+    /**
+     * 分层输出
+     */
+    function levelOrder(root) {
+      if (root === null) return [];
+      let queue = [root],
+        res = [];
+      while (queue.length) {
+        let tmp = [];
+        for (let i = 0, { length: len } = queue; i < len; i++) {
+          const curNode = queue.shift();
+          tmp.push(curNode.data);
+          if (curNode.left !== null) {
+            queue.push(curNode.left);
+          }
+          if (curNode.right !== null) {
+            queue.push(curNode.right);
+          }
+        }
+        res.push(tmp);
+      }
+      return res;
+    }
+
+    function levelOrder(root) {
+      if (root === null) return [];
+      let queue = [root],
+        res = [];
+      while (queue.length) {
+        let tmp = [];
+        let { length: levelNum } = queue;
+        while (levelNum--) {
+          const curNode = queue.shift();
+          tmp.push(curNode.data);
+          if (curNode.left !== null) {
+            queue.push(curNode.left);
+          }
+          if (curNode.right !== null) {
+            queue.push(curNode.right);
+          }
+        }
+
+        res.push(tmp);
+      }
+      return res;
     }
     ```
 
