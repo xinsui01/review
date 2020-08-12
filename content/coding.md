@@ -1124,3 +1124,40 @@ function spiralOrder(matrix) {
     return this.minStack[this.minStack.length - 1];
   };
   ```
+
+- 二叉搜索树与双向链表
+
+  输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的循环双向链表。要求不能创建任何新的节点，只能调整树中节点指针的指向。
+
+  ```js
+  function Node(val, left, right) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
+
+  function treeToDoublyList(root) {
+    if (!root) return null;
+
+    let pre, head;
+    dfs(root);
+
+    // 头尾节点相连
+    head.left = pre;
+    pre.right = head;
+    return head;
+
+    // 中序遍历
+    function dfs(root) {
+      if (!root) return;
+      dfs(root.left);
+      // 当 pre==null 时，root 左侧没有节点,即此时 root 为双向链表中的头节点
+      if (pre) pre.right = root;
+      else head = root;
+
+      root.left = pre;
+      pre = root;
+      dfs(root.right);
+    }
+  }
+  ```

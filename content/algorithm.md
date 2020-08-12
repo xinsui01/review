@@ -320,6 +320,48 @@
   }
   ```
 
+- 复杂链表的复制
+
+  请实现 copyRandomList 函数，复制(深拷贝)一个复杂链表。在复杂链表中，每个节点除了有一个 next 指针指向下一个节点，还有一个 random 指针指向链表中的任意节点或者 null
+
+  ```js
+  /**
+   *
+   *
+   */
+
+  function Node(val, next, random) {
+    this.val = val;
+    this.next = next;
+    this.random = random;
+  }
+  function copyRandomList(head) {
+    if (!head) return null;
+
+    const map = new Map();
+    let node = head;
+    const newHead = new Node(node.val);
+    let newNode = newHead;
+    map.set(node, newNode);
+
+    while (node.next) {
+      newNode.next = new Node(node.next.val);
+      node = node.next;
+      newNode = newNode.next;
+      map.set(node, newNode);
+    }
+
+    newNode = newHead;
+    node = head;
+    while (newNode) {
+      newNode.random = map.get(node.random);
+      newNode = newNode.next;
+      node = node.next;
+    }
+    return newHead;
+  }
+  ```
+
 ## 栈
 
 特定的数据结构是对特定场景的抽象，而且，数组或链表暴露了太多的操作接口，操作上的确灵活自由，但使用时就比较不可控，自然也就更容易出错。
@@ -2161,6 +2203,97 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
   }
   ```
 
+- 二叉树中和为某一值的路径
+
+  输入一棵二叉树和一个整数，打印出二叉树中节点值的和为输入整数的所有路径。从树的根节点开始往下一直到叶节点所经过的节点形成一条路径。
+
+  ```js
+  function pathSum(root, sum) {
+    let res = [];
+
+    _pathSum(root, sum);
+    return res;
+
+    function _pathSum(root, sum, path = []) {
+      if (root === null) return;
+      path = path.concat(root.val);
+      sum -= root.val;
+      if (sum === 0 && root.left === null && root.right === null) {
+        res.push(path);
+        return;
+      }
+      _pathSum(root.left, sum, path);
+      _pathSum(root.right, sum, path);
+    }
+  }
+  ```
+
+- 序列化二叉树
+
+  请实现两个函数，分别用来序列化和反序列化二叉树。
+
+  ```js
+
+  function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+  }
+  /**
+   * Encodes a tree to a single string.
+   *
+   * @param {TreeNode} root
+   * @return {string}
+   */
+  function serialize(root) {
+    if(!root) return '[]'
+
+    let res = '['
+    let queue = [root];
+    while(queue.length) {
+      let node = queue.shift();
+      if(node) {
+        res += node.val;
+        queue.push(node.left);
+        queue.push(node.right);
+      }else {
+        res += 'null'
+      }
+      res += ','
+    }
+    res = res.substring(0, res.length - 1); // 去掉末尾的,
+    res += ']'
+    return res;
+  }
+  /**
+    * Decodes your encoded data to tree.
+    *
+    * @param {string} data
+    * @return {TreeNode}
+    */
+  deserialize(data) {
+    if(data === '[]') return null;
+    const vals = data.substring(1, data.length -1).split(',')
+    let root = new TreeNode(vals[0] == 'null' ? vals[0] : +vals[0]);
+    let queue = [root];
+    let i = 1;
+    while(queue.length) {
+      const node = queue.shift();
+      if(vals[i] !== 'null') {
+        node.left = new TreeNode(+vals[i]);
+        queue.push(node.left);
+      }
+      i++;
+      if(vals[i] !== 'null') {
+        node.right = new TreeNode(+vals[i])
+        queue.push(node.right)
+      }
+      i++;
+    }
+    return root;
+  }
+
+  ```
+
 ### 二叉查找树（Binary Search Tree）
 
 二叉查找树要求，在树中的任意一个节点，其左子树中的每个节点的值，都要小于这个节点的值，而右子树节点的值都大于这个节点的值。
@@ -2301,6 +2434,53 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
   - 为了避免过多的散列冲突，散列表装载因子不能太大，特别是基于开放寻址法解决冲突的散列表，不然会浪费一定的存储空间。
 
 - 求一棵二叉树的确切高度
+
+- 二叉搜索树的后序遍历序列
+
+  输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回 true，否则返回 false。假设输入的数组的任意两个数字都互不相同。
+
+  ```js
+  /**
+   * 递归分治
+   *
+   */
+  function verifyPostOrder(postOrder, i = 0, j = postOrder.length - 1) {
+    // 当 i≥j ，说明此子树节点数量 ≤1 ，无需判别正确性，因此直接返回 true ；
+    if (i >= j) {
+      return true;
+    }
+    //  遍历后序遍历的 [i,j] 区间元素，寻找第一个大于根节点的节点，索引记为 m 。此时，可划分出左子树区间 [i,m−1] 、右子树区间 [m, j - 1]
+    // 根节点索引 j 。
+    let p = i;
+    while (postOrder[p] < postOrder[j]) p++; // 左子树小于根节点
+    let m = p;
+    while (postOrder[p] > postOrder[j]) p++; // 右子树大于根节点
+    return (
+      p === j &&
+      verifyPostOrder(postOrder, i, m - 1) &&
+      verifyPostOrder(postOrder, m, j - 1)
+    );
+  }
+  ```
+
+  ```js
+  /**
+   * 辅助单调栈
+   *
+   */
+  function verifyPostOrder(postOrder) {
+    let stack = [];
+    let root = Number.MAX_VALUE;
+    for (let i = postOrder.length - 1; i >= 0; i--) {
+      if (postOrder[i] > root) return false;
+      while (stack.length && stack[stack.length - 1] > postOrder[i]) {
+        root = stack.pop();
+      }
+      stack.push(postOrder[i]);
+    }
+    return true;
+  }
+  ```
 
 ### 平衡二叉查找树
 
