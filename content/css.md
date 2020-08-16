@@ -13,7 +13,7 @@
     ```
   - `[attr=value]`: 根据具体的属性值来选择元素
     ```css
-    li[class='second done'] {
+    li[class="second done"] {
       color: red;
       background: yellow;
     }
@@ -25,7 +25,7 @@
     ```
 
     ```css
-    li[class~='done'] {
+    li[class~="done"] {
       color: red;
       background: yellow;
     }
@@ -38,7 +38,7 @@
     ```
 
     ```css
-    li[class^='se'] {
+    li[class^="se"] {
       color: red;
       background: yellow;
     }
@@ -51,7 +51,7 @@
     ```
 
     ```css
-    li[class$='ne'] {
+    li[class$="ne"] {
       color: red;
       background: yellow;
     }
@@ -66,7 +66,7 @@
     ```
 
     ```css
-    li[class*='ir'] {
+    li[class*="ir"] {
       color: red;
       background: yellow;
     }
@@ -100,7 +100,7 @@
   选择 lang 属性等于 `en` 或者以 `en-` 开头的所有元素
 
   ```css
-  *[lang|='en'] {
+  *[lang|="en"] {
     color: red;
     background: yellow;
   }
@@ -234,14 +234,17 @@
 
 ```css
 @font-face {
-  font-family: 'iconfont';
-  src: url('/fonts/OpenSans-Regular-webfont.woff2') format('woff2'), url('/fonts/OpenSans-Regular-webfont.woff') format('woff');
+  font-family: "iconfont";
+  src: url("/fonts/OpenSans-Regular-webfont.woff2") format("woff2"), url("/fonts/OpenSans-Regular-webfont.woff")
+      format("woff");
 }
 ```
 
-## IE 盒模型和 W3C 盒模型
+## CSS 盒模型
 
-- `box-sizing`: `content-box`、`border-box`
+- IE 盒模型：`box-sizing: border-box;`， `width = borde + padding + content`
+
+- w3c 标准盒模型：`box-sizing: content-box;`， `width = content`
 
 ## BFC
 
@@ -281,7 +284,7 @@
 
       ```css
       .container::after {
-        content: ' ';
+        content: " ";
         display: block;
         clear: both;
       }
@@ -292,7 +295,7 @@
       ```css
       .container::before,
       .container::after {
-        content: ' ';
+        content: " ";
         display: table;
       }
 
@@ -309,7 +312,7 @@
 
       ```css
       .clearfix::after {
-        content: '';
+        content: "";
         display: block;
         clear: both;
         visibility: hidden;
@@ -384,7 +387,7 @@
     }
     ```
     ```css
-    /*未知高度*/
+    /*未知宽度*/
     .container {
       position: relative;
     }
@@ -526,11 +529,13 @@ transform: unset;
   ```html
   <div style="border: 1px solid; width: 10vmin; height: 10vmin;"></div>
 
-  <div style="border: 1px solid; width: 30%; height: 0; padding-bottom: 30%;"></div>
+  <div
+    style="border: 1px solid; width: 30%; height: 0; padding-bottom: 30%;"
+  ></div>
 
   <style>
     div::after {
-      content: '';
+      content: "";
       display: block;
       margin-top: 100%;
     }
@@ -544,7 +549,9 @@ transform: unset;
 
     ```html
     <!-- 椭圆 -->
-    <div style="width: 200px; height: 100px; border-radius: 100px/50px; border: 1px solid orange;"></div>
+    <div
+      style="width: 200px; height: 100px; border-radius: 100px/50px; border: 1px solid orange;"
+    ></div>
     ```
 
     <div style="width: 200px; height: 100px; border-radius: 100px/50px; border: 1px solid orange;"></div>
@@ -620,7 +627,7 @@ transform: unset;
     overflow: hidden;
   }
   p::after {
-    content: '...';
+    content: "...";
     font-weight: bold;
     position: absolute;
     bottom: 0;
@@ -695,7 +702,7 @@ transform: unset;
 
   #switch + label .circle {
     position: absolute;
-    left: 2px;
+    left: 0;
     width: var(--radius);
     height: var(--radius);
     border-radius: 50%;
@@ -770,7 +777,7 @@ transform: unset;
 
   #switch + label .circle {
     position: absolute;
-    left: 2px;
+    left: 0;
     width: var(--radius);
     height: var(--radius);
     border-radius: 50%;
@@ -824,8 +831,8 @@ transform: unset;
 
     ```js
     const style = {
-      color: 'red',
-      fontSize: '24px'
+      color: "red",
+      fontSize: "24px",
     };
     ```
 
@@ -838,8 +845,8 @@ transform: unset;
 - [styles-components](https://www.styled-components.com/)
 
   ```jsx
-  import React from 'react';
-  import styled from 'styled-components';
+  import React from "react";
+  import styled from "styled-components";
 
   const Title = styled.h1`
       font-size: 1.5em
@@ -850,136 +857,196 @@ transform: unset;
   <Title>Hello World, this is my first styled component!</Title>;
   ```
 
-  - [How styled-components works: A deep dive under the hood](https://medium.com/styled-components/how-styled-components-works-618a69970421)
+- 原理解析
 
-  1. When you import the library first time in you app it creates an internal `counter` variable to count all the components created via the `styled` factory.
-  2. When styled-components creates a new component it also creates internal identifier `componentId`. Here is how the identifier computed:
+  1. `styled.button` 等同于 `styled('button')` 的，`SC` 在导入 `styled` 时把所有的 dom 节点柯里化后的函数都赋值给了 `styled` 的同名属性，这样就能使用上面的语法方式了，具体实现就是下面这段代码。
 
-     ```js
-     counter++;
-     const componentId = 'sc-' + hash('sc' + counter); // sc-bdVaJa
-     ```
+  ```js
+  domElements.forEach((domElement) => {
+    styled[domElement] = styled(domElement); // 柯里化函数
+  });
+  ```
 
-  3. As soon as the identifier is created, styled-components inserts new HTML `<style>` element into the `<head>` (if it is the first component and the element is not inserted yet) of your page and adds special comment marker with the `componentId` to the element which will be used later. In our case we got:
+  2. [tag\`font-size: 12px\` 是 ES6 字符串模板语法](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/template_strings)：
 
-     ```html
-     <style data-styled-components>
-       /* sc-component-id: sc-bdVaJa */
-     </style>
-     ```
+  ```js
+  function myTag(strings, personExp, ageExp) {
+    var str0 = strings[0]; // "that "
+    var str1 = strings[1]; // " is a "
+    var ageStr;
+    if (ageExp > 99) {
+      ageStr = "centenarian";
+    } else {
+      ageStr = "youngster";
+    }
 
-  4. When the new component is created, the target component passed to the factory target (in our case 'button') and the componentId are saved in the static fields:
+    return str0 + personExp + str1 + ageStr;
+  }
+  var person = "Mike";
+  var age = 28;
+  var output = myTag`that ${person} is a ${age}`;
+  ```
 
-     ```js
-     StyledComponent.componentId = componentId;
-     StyledComponent.target = TargetComponent;
-     ```
+- [How styled-components works: A deep dive under the hood](https://medium.com/styled-components/how-styled-components-works-618a69970421)
 
-  5. Generating CSS class name: Each component instance with uniq props has it’s own CSS class name which generated by means of the same MurmurHash algorithm but from the componentId and the evaluatedStyles string:
+1. When you import the library first time in you app it creates an internal `counter` variable to count all the components created via the `styled` factory.
+2. When styled-components creates a new component it also creates internal identifier `componentId`. Here is how the identifier computed:
 
-     ```js
-     const className = hash(componentId + evaluatedStyles); // jsZVzX
-     ```
+   ```js
+   counter++;
+   const componentId = "sc-" + hash("sc" + counter); // sc-bdVaJa
+   ```
 
-  6. Then this class name is stored in the component state as `generatedClassName`.
+3. As soon as the identifier is created, styled-components inserts new HTML `<style>` element into the `<head>` (if it is the first component and the element is not inserted yet) of your page and adds special comment marker with the `componentId` to the element which will be used later. In our case we got:
 
-  7. CSS Preprocessing: Here is where the super fast stylis CSS preprocessor comes to the rescue and helps to obtain valid CSS string:
+   ```js
+   // evaluatedStyles 是获得到的 style 属性
+   const style = document.createElement("style");
+   // WebKit hack
+   const className = hash(componentId + evaluatedStyles);
+   style.appendChild(
+     document.createTextNode(`.${className} { ${evaluatedStyles} }`)
+   );
+   document.head.appendChild(style);
+   ```
 
-     ```js
-     const selector = '.' + className;
-     const cssStr = stylis(selector, evaluatedStyles);
-     ```
+   ```html
+   <style data-styled-components>
+     /* sc-component-id: sc-bdVaJa */
+   </style>
+   ```
 
-     Result CSS for the Button instance:
+4. When the new component is created, the target component passed to the factory target (in our case 'button') and the componentId are saved in the static fields:
 
-     ```css
-     .jsZVzX {
-       font-size: 24px;
-       color: coral;
-       padding: 0.25rem 1rem;
-       border: solid 2px coral;
-       border-radius: 3px;
-       margin: 0.5rem;
-     }
-     .jsZVzX:hover {
-       background-color: bisque;
-     }
-     ```
+   ```js
+   StyledComponent.componentId = componentId;
+   StyledComponent.target = TargetComponent;
+   ```
 
-  8. Injecting CSS string into the page: Now the CSS should be injected into the `<style>` element in the `head` of the page right after the component’s comment marker:
-  9. `render()`
+5. Generating CSS class name: Each component instance with uniq props has it’s own CSS class name which generated by means of the same MurmurHash algorithm but from the componentId and the evaluatedStyles string:
 
-     ```jsx
-     const TargetComponent = this.constructor.target; // In our case just 'button' string.
-     const componentId = this.constructor.componentId;
-     const generatedClassName = this.state.generatedClassName;
+   ```js
+   const className = hash(componentId + evaluatedStyles); // jsZVzX
+   ```
 
-     return (
-       <TargetComponent
-         {...this.props}
-         className={this.props.className + ' ' + componentId + ' ' + generatedClassName}
-       />
-     );
-     ```
+6. Then this class name is stored in the component state as `generatedClassName`.
 
-  10. change props
+7. CSS Preprocessing: Here is where the super fast stylis CSS preprocessor comes to the rescue and helps to obtain valid CSS string:
 
-      ```html
-      <style data-styled-components>
-        /* sc-component-id: sc-bdVaJa */
-        .sc-bdVaJa {
-        }
-        .jsZVzX {
-          font-size: 24px;
-          color: coral;
-          ...;
-        }
-        .jsZVzX:hover {
-          background-color: bisque;
-        }
-        .kkRXUB {
-          font-size: 25px;
-          color: coral;
-          ...;
-        }
-        .kkRXUB:hover {
-          background-color: bisque;
-        }
-        .jvOYbh {
-          font-size: 26px;
-          color: coral;
-          ...;
-        }
-        .jvOYbh:hover {
-          background-color: bisque;
-        }
-        .ljDvEV {
-          font-size: 27px;
-          color: coral;
-          ...;
-        }
-        .ljDvEV:hover {
-          background-color: bisque;
-        }
-      </style>
-      ```
+   ```js
+   const selector = "." + className;
+   const cssStr = stylis(selector, evaluatedStyles);
+   ```
 
-      the only difference for each CSS class is font-size property and unused CSS classes are not removed. But why? Just because removing them adds performance overhead while keeping does not
+   Result CSS for the Button instance:
 
-  11. There is one small optimization here: components without interpolations in the style string are marked as `isStatic` and this flag is checked in `componentWillReceiveProps()` in order to skip unnecessary calculations of the same styles.
+   ```css
+   .jsZVzX {
+     font-size: 24px;
+     color: coral;
+     padding: 0.25rem 1rem;
+     border: solid 2px coral;
+     border-radius: 3px;
+     margin: 0.5rem;
+   }
+   .jsZVzX:hover {
+     background-color: bisque;
+   }
+   ```
+
+8. Injecting CSS string into the page: Now the CSS should be injected into the `<style>` element in the `head` of the page right after the component’s comment marker:
+9. `render()`
+
+```jsx
+const TargetComponent = this.constructor.target; // In our case just 'button' string.
+const componentId = this.constructor.componentId;
+const generatedClassName = this.state.generatedClassName;
+
+return (
+  <TargetComponent
+    {...this.props}
+    className={
+      this.props.className + " " + componentId + " " + generatedClassName
+    }
+  />
+);
+```
+
+11. change props
+
+    ```html
+    <style data-styled-components>
+      /* sc-component-id: sc-bdVaJa */
+      .sc-bdVaJa {
+      }
+      .jsZVzX {
+        font-size: 24px;
+        color: coral;
+        ...;
+      }
+      .jsZVzX:hover {
+        background-color: bisque;
+      }
+      .kkRXUB {
+        font-size: 25px;
+        color: coral;
+        ...;
+      }
+      .kkRXUB:hover {
+        background-color: bisque;
+      }
+      .jvOYbh {
+        font-size: 26px;
+        color: coral;
+        ...;
+      }
+      .jvOYbh:hover {
+        background-color: bisque;
+      }
+      .ljDvEV {
+        font-size: 27px;
+        color: coral;
+        ...;
+      }
+      .ljDvEV:hover {
+        background-color: bisque;
+      }
+    </style>
+    ```
+
+    the only difference for each CSS class is font-size property and unused CSS classes are not removed. But why? Just because removing them adds performance overhead while keeping does not
+
+12. There is one small optimization here: components without interpolations in the style string are marked as `isStatic` and this flag is checked in `componentWillReceiveProps()` in order to skip unnecessary calculations of the same styles.
 
 - 优势
+
   - 隔离作用域 -- 样式生效通过内嵌，或者生成独一无二的类名，避免出现选择器冲突；
   - 高级编程特性 -- 充分利用 JavaScript 的能力增强对样式的控制；
   - 样式按需挂载 -- 页面需要的样式才会加载，有效避免样式冗余；
   - 依赖管理 -- 寄生于组件，利用现存的 NPM 生态进行包管理；
   - 动态样式 -- 能够更加简单，直接的修改样式
+
 - 劣势
+
   - 很多库都没法定义子元素的样式
   - 无法复用现有生态，特性完全依赖于库的实现；
   - 编辑器代码补全，语法检查，语法高亮等需要插件支持；
   - 伪类选择器（disabled、:before、:nth-child）支持诡异；
   - 样式属性骆驼式命名；
+  - 运行过程中不断动态创建 Element 并且创建 style 消耗了部分性能
+  - 如果每次点击那个 Button 都会改变一次 background，你会发现在点 200 次后，SC 会报一个 warning
+
+    ```js
+      Over 200 classes were generated for component styled.button.
+      Consider using the attrs method, together with a style object for frequently changed styles.
+      Example:
+        const Component = styled.div.attrs({
+          style: ({ background }) => ({
+            background,
+          }),
+        })`width: 100%;`
+      <Component />
+    ```
 
 ## CSS Module
 
