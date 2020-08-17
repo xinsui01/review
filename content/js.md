@@ -404,13 +404,13 @@ B.prototype.__proto__ === A.prototype; // 原型继承
 
   ```js
   function new_instance_of(leftVaule, rightVaule) {
-    let rightProto = rightVaule.prototype; // 取右表达式的 prototype 值
+    let rightProtoType = rightVaule.prototype; // 取右表达式的 prototype 值
     leftVaule = leftVaule.__proto__; // 取左表达式的__proto__值
     while (true) {
       if (leftVaule === null) {
         return false;
       }
-      if (leftVaule === rightProto) {
+      if (leftVaule === rightProtoType) {
         return true;
       }
       leftVaule = leftVaule.__proto__;
@@ -421,7 +421,7 @@ B.prototype.__proto__ === A.prototype; // 原型继承
 - 几个有趣的例子
 
   ```js
-  Function instanceof Function; // true
+  Function instanceof Function; // true  Function.__proto__ === Function.prototype
   Object instanceof Function; // Object 本身是一个函数，由 Function 所创建，所以 `Object.__proto__` 的值是 `Function.prototype`
   Object instanceof Object; // `Function.prototype` 的 `__proto__` 属性是 `Object.prototype`
   Function instanceof Object; // Function.__proto__ === Function.prototype, Function.prototype 是由 Object 所创建，所以 Function.prototype.__proto__ === Object.prototype
@@ -624,7 +624,7 @@ function type(obj) {
 
 ```js
 Function.prototype.call = function (oThis, ...args) {
-  oThis = oThis || typeof window === "undefined" ? global : window;
+  oThis = oThis || (typeof window === "undefined" ? global : window);
   oThis.func = this;
 
   const result = oThis.func(...args);
@@ -725,7 +725,7 @@ if (!Function.prototype.bind) {
 
     functionBound.prototype = new fNOP();
 
-    // functionbound.prototype = Object.create(this.prototype);
+    // functionBound.prototype = Object.create(this.prototype);
 
     return functionBound;
   };
@@ -825,7 +825,7 @@ function _new(constructor, ...args) {
 
   babel-runtime 其实也不是真正的实现代码所在，真正的代码实现是在 core-js 中
 
-- transform-runtime
+- [transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime)
 
   babel-plugin-transform-runtime 插件依赖 babel-runtime，babel-runtime 是真正提供 runtime 环境的包；也就是说 transform-runtime 插件是把 js 代码中使用到的新原生对象和静态方法转换成对 runtime 实现包的引用
 
@@ -833,7 +833,30 @@ function _new(constructor, ...args) {
   2. 当使用 generators 或 async 函数时，用 babel-runtime/regenerator 导出的函数取代（类似 polyfill 分成 regenerator 和 core-js 两个部分）
   3. 把 Babel 生成的辅助函数改为用 babel-runtime/helpers 导出的函数来替代（babel 默认会在每个文件顶部放置所需要的辅助函数，如果文件多的话，这些辅助函数就在每个文件中都重复了，通过引用 babel-runtime/helpers 就可以统一起来，减少代码体积）
 
-  > Note: 由于 runtime 不会污染全局空间，所以实例方法是无法工作的（因为这必须在原型链上添加这个方法，这是和 polyfill 最大的不同）
+  - Why:
+    - avoid duplication across your compiled output.
+    - create a sandboxed environment for your code. If you directly import core-js or @babel/polyfill and the built-ins it provides such as Promise, Set and Map, those will pollute the global scope. it becomes a problem if your code is a library which you intend to publish for others to use or if you can't exactly control the environment in which your code will run.
+
+  > NOTE: Instance methods such as "foobar".includes("foo") will only work with `core-js@3`. If you need to polyfill them, you can directly import "core-js" or use @babel/preset-env's useBuiltIns option.
+
+  ```js
+  var sym = Symbol();
+  var promise = Promise.resolve();
+  var check = arr.includes("yeah!");
+  console.log(arr[Symbol.iterator]());
+
+  // =====>
+
+  import _getIterator from "@babel/runtime-corejs3/core-js/get-iterator";
+  import _includesInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/includes";
+  import _Promise from "@babel/runtime-corejs3/core-js-stable/promise";
+  import _Symbol from "@babel/runtime-corejs3/core-js-stable/symbol";
+
+  var sym = _Symbol();
+  var promise = _Promise.resolve();
+  var check = _includesInstanceProperty(arr).call(arr, "yeah!");
+  console.log(_getIterator(arr));
+  ```
 
 ## [Set 和 Map 数据结构](http://es6.ruanyifeng.com/#docs/set-map)
 

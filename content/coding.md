@@ -317,6 +317,17 @@
   }
   ```
 
+  ```js
+  function unique(arr) {
+    return arr.reduce((accu, curValue) => {
+      if (accu.indexOf(curValue) === -1) {
+        accu.push(curValue);
+      }
+      return accu;
+    }, []);
+  }
+  ```
+
 - 替换空格
 
   ```js
@@ -527,12 +538,11 @@
 - 数组中的 Promise 顺序执行
 
   ```js
-  function sequenceTasks(arr) {
-    return arr.reduce(function (prevPromise, promiseFn, index) {
-      return prevPromise.then(function () {
-        return promiseFn();
-      });
-    }, Promise.resolve());
+  function sequenceTasks(arr, input) {
+    return arr.reduce(
+      (promiseChain, currentFunction) => promiseChain.then(currentFunction),
+      Promise.resolve(input)
+    );
   }
   ```
 
@@ -540,8 +550,8 @@
   function sequenceTasks(arr) {
     let p = Promise.resolve();
     arr.forEach((promiseFn) => {
-      p = p.then(function () {
-        return promiseFn();
+      p = p.then(function (...args) {
+        return promiseFn(...args);
       });
     });
     return p;
