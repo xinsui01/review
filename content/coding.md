@@ -1171,3 +1171,121 @@ function spiralOrder(matrix) {
     }
   }
   ```
+
+- 输入一个字符串，打印出该字符串中字符的所有排列。
+
+  ```js
+  /**
+   * 深度优先遍历， 剪枝
+   */
+  function permutation(s) {
+    s = [...s];
+    const { length: len } = s;
+    let res = [];
+
+    dfs(0);
+
+    return res;
+
+    function dfs(x) {
+      if (x === len - 1) {
+        res.push(s.join(""));
+        return;
+      }
+
+      let set = new Set();
+      for (let i = x; i < len; i++) {
+        // 剪枝
+        if (set.has(s[i])) continue;
+        set.add(s[i]);
+        swap(i, x); // 交换，将 s[i] 固定在 第 x 位
+        dfs(x + 1); // 固定 x+1 位字符
+        swap(i, x); // 恢复交换
+      }
+    }
+
+    function swap(a, b) {
+      let tmp = s[a];
+      s[a] = s[b];
+      s[b] = tmp;
+    }
+  }
+  ```
+
+- 数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。
+
+  ```js
+  /**
+   * 深度优先遍历， 剪枝
+   * 哈希表统计法： 遍历数组 nums ，用 HashMap 统计各数字的数量，最终超过数组长度一半的数字则为众数。此方法时间和空间复杂度均为 O(N)O(N) 。
+   * 数组排序法： 将数组 nums 排序，由于众数的数量超过数组长度一半，因此 数组中点的元素 一定为众数。此方法时间复杂度 O(N log_2 N)O(Nlog2N)。
+   * 摩尔投票法： 核心理念为 “正负抵消” ；时间和空间复杂度分别为 O(N)O(N) 和 O(1)O(1) ；是本题的最佳解法。
+   */
+  function majorityElement(nums) {
+    let x = 0; // 众数
+    let votes = 0; // 投票
+    for (let i = 0, { length: len } = nums; i < len; i++) {
+      let num = nums[i];
+      if (votes === 0) x = num;
+      votes += num === x ? 1 : -1;
+    }
+    return x;
+  }
+  ```
+
+- 输入整数数组 arr ，找出其中最小的 k 个数。例如，输入 4、5、1、6、2、7、3、8 这 8 个数字，则最小的 4 个数字是 1、2、3、4。
+
+  ```js
+  /**
+   * 直接排序
+   */
+  function getLeastNumbers(arr, k) {
+    return arr.sort((a, b) => a - b).slice(0, k);
+  }
+  ```
+
+  ```js
+  /**
+   * 快排
+   */
+  function getLeastNumbers(arr, k) {
+    const { length: len } = arr;
+    if (k >= len) return arr;
+    let left = 0,
+      right = len - 1;
+
+    let index = partition(arr, left, right);
+    while (index !== k) {
+      if (index < k) {
+        left = index + 1;
+        index = partition(arr, left, right);
+      } else if (index > k) {
+        right = index - 1;
+        index = partition(arr, left, right);
+      }
+    }
+
+    return arr.slice(0, k);
+
+    function partition(arr, start, end) {
+      const pivot = arr[start];
+      let left = start + 1,
+        right = end;
+
+      while (true) {
+        while (left < end && arr[left] <= pivot) left++;
+        while (right >= start + 1 && arr[right] >= pivot) right--;
+
+        if (left >= right) {
+          break;
+        }
+
+        [arr[left], arr[right]] = [arr[right], arr[left]];
+        left++;
+        right--;
+      }
+      [arr[right], arr[start]] = [arr[start], arr[right]];
+      return right;
+    }
+  }
+  ```
