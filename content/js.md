@@ -1175,10 +1175,10 @@ function spawn(genF) {
       try {
         next = nextF();
       } catch (err) {
-        return reject(err);
+        return reject(err); // return 不向下执行
       }
       if (next.done) {
-        return resolve(next.value);
+        return resolve(next.value); // return 不向下执行
       }
 
       Promise.resolve(next.value).then(
@@ -1318,11 +1318,82 @@ defer 要等到整个页面在内存中正常渲染结束（DOM 结构完全生�
 > 在浏览器空闲时期依次调用函数，这就可以让开发者在主事件循环中执行后台或低优先级的任务，而且不会对像动画和用户交互这样延迟敏感的事件产生影响。函数一般会按先进先出调用的顺序执行，然而，如果回调函数指定了执行超时时间 timeout，则有可能为了在超时前执行函数而打乱执行顺序。
 
 - 语法：`let handle = window.requestIdleCallBack(callback[,options])`
+
   - 返回值：无符号长整数，可以传入`window.cancelIdleCallback()`结束回调
   - callback
     - 一个在事件循环空闲时即将被调用的函数的引用。函数会接受到一个名为 IdleDeadline 的参数，这个参数可以获取当前空闲时间以及回调是否在超时时间前已经执行的状态。
   - options
     - timeout: timeout 值被指定为正数时，当做浏览器调用 callback 的最后期限。它的单位是毫秒。当指定的时间过去后回调还没有被执行，那么回调会在下一次空闲时期被强制执行，尽管可能会对性能造成负面影响。
+
+- Falling back to setTimeout
+
+  ```js
+  window.requestIdleCallback =
+    window.requestIdleCallback ||
+    function (handler) {
+      let startTime = Date.now();
+
+      return setTimeout(function () {
+        handler({
+          didTimeout: false,
+          timeRemaining: function () {
+            return Math.max(0, 50.0 - (Date.now() - startTime));
+          },
+        });
+      }, 1);
+    };
+  window.cancelIdleCallback =
+    window.cancelIdleCallback ||
+    function (id) {
+      clearTimeout(id);
+    };
+  ```
+
+  > didTimeout 属性用来判断当前的回调函数是否被执行, 因为回调函数存在过期时间(requestIdleCallback 的第二个参数用来指定执行超时时间，即回调函数在规定的时间内是否被执行，如果没有执行 didTimeout 属性将为 true，如果任务是急需完成的此时应该忽略剩余时间逻辑上强制执行回调函数)。
+
+- usage
+
+  ```js
+  function enqueueTask(taskHandler, taskData) {
+    taskList.push({
+      handler: taskHandler,
+      data: taskData,
+    });
+
+    totalTaskCount++;
+
+    if (!taskHandle) {
+      taskHandle = requestIdleCallback(runTaskQueue, { timeout: 1000 });
+    }
+
+    scheduleStatusRefresh();
+  }
+
+  function runTaskQueue(deadline) {
+    while (
+      (deadline.timeRemaining() > 0 || deadline.didTimeout) &&
+      taskList.length
+    ) {
+      let task = taskList.shift();
+      currentTaskNumber++;
+
+      task.handler(task.data);
+      scheduleStatusRefresh();
+    }
+
+    if (taskList.length) {
+      taskHandle = requestIdleCallback(runTaskQueue, { timeout: 1000 });
+    } else {
+      taskHandle = 0;
+    }
+  }
+  ```
+
+- [requestIdleCallback 里面可以执行 DOM 修改操作吗？](https://juejin.im/post/6844903592831238157)
+
+  强烈建议不要，从上面一帧的构成里面可以看到，requestIdleCallback 回调的执行说明前面的工作（包括样式变更以及布局计算）都已完成。如果我们在 callback 里面做 DOM 修改的话，之前所做的布局计算都会失效，而且如果下一帧里有获取布局（如 getBoundingClientRect、clientWidth）等操作的话，浏览器就不得不执行强制重排工作,这会极大的影响性能，另外由于修改 dom 操作的时间是不可预测的，因此很容易超出当前帧空闲时间的阈值，故而不推荐这么做。推荐的做法是在 requestAnimationFrame 里面做 dom 的修改，可以在 requestIdleCallback 里面构建 Document Fragment，然后在下一帧的 requestAnimationFrame 里面应用 Fragment。
+
+- [request-idle-callback](https://github.com/santiagogil/request-idle-callback)
 
 ## window.requestAnimationFrame(callback)
 
