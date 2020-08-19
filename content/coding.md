@@ -1289,3 +1289,42 @@ function spiralOrder(matrix) {
     }
   }
   ```
+
+- [数据流中的中位数](https://leetcode-cn.com/problems/shu-ju-liu-zhong-de-zhong-wei-shu-lcof/solution/mian-shi-ti-41-shu-ju-liu-zhong-de-zhong-wei-shu-y/)
+
+  ```js
+  /**
+   *
+   * 大顶堆、小顶堆
+   */
+  MedianFinder = function () {};
+
+  MedianFinder.prototype.addNum = function (num) {};
+
+  MedianFinder.prototype.findMedian = function () {};
+  ```
+
+- 连续子数组的最大和
+
+  输入一个整型数组，数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。（要求时间复杂度为 O(n)。）
+
+  ```js
+  /**
+   *
+   * 动态规划
+   * 状态定义： 设动态规划列表 dp ，dp[i] 代表以元素 nums[i] 为结尾的连续子数组最大和。
+   * 转移方程： 若 dp[i-1] \leq 0dp[i−1]≤0 ，说明 dp[i - 1]dp[i−1] 对 dp[i]dp[i] 产生负贡献，即 dp[i-1] + nums[i]dp[i−1]+nums[i] 还不如 nums[i]nums[i] 本身大。
+   *   当 dp[i - 1] > 0 时：执行 dp[i] = dp[i-1] + nums[i]；
+   *   当 dp[i − 1] ≤ 0 时：执行 dp[i] = nums[i]；
+   * 初始状态： dp[0] = nums[0]，即以 nums[0]结尾的连续子数组最大和为 nums[0]。
+   * 返回值： 返回 dp 列表中的最大值，代表全局最大值。
+   */
+  function maxSubArray(nums) {
+    let res = nums[0];
+    for (let i = 1, { length: len } = nums; i < len; i++) {
+      nums[i] += Math.max(nums[i - 1], 0);
+      res = Math.max(res, nums[i]);
+    }
+    return res;
+  }
+  ```
