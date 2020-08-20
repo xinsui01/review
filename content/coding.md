@@ -1328,3 +1328,49 @@ function spiralOrder(matrix) {
     return res;
   }
   ```
+
+- [输入一个整数 n ，求 1 ～ n 这 n 个整数的十进制表示中 1 出现的次数。](https://leetcode-cn.com/problems/1nzheng-shu-zhong-1chu-xian-de-ci-shu-lcof/solution/mian-shi-ti-43-1n-zheng-shu-zhong-1-chu-xian-de-2/)
+
+  例如，输入 12，1 ～ 12 这些整数中包含 1 的数字有 1、10、11 和 12，1 一共出现了 5 次。
+
+  ```js
+  function countDigitOne(n) {
+    let digit = 1,
+      res = 0;
+    let high = Math.floor(n / 10),
+      cur = n % 10,
+      low = 0;
+    while (high !== 0 || cur !== 0) {
+      if (cur === 0) res += high * digit;
+      else if (cur === 1) res += high * digit + low + 1;
+      else res += (high + 1) * digit;
+      low += cur * digit;
+      cur = high % 10;
+      high = Math.floor(high / 10);
+      digit *= 10;
+    }
+    return res;
+  }
+  ```
+
+- [数字序列中某一位的数字](https://leetcode-cn.com/problems/shu-zi-xu-lie-zhong-mou-yi-wei-de-shu-zi-lcof/solution/mian-shi-ti-44-shu-zi-xu-lie-zhong-mou-yi-wei-de-6/)
+
+  数字以 0123456789101112131415…的格式序列化到一个字符序列中。在这个序列中，第 5 位（从下标 0 开始计数）是 5，第 13 位是 1，第 19 位是 4，等等。
+
+  请写一个函数，求任意第 n 位对应的数字。
+
+  ```js
+  function findNthDigit(n) {
+    let digit = 1; // 位数
+    let start = 1; // 位数起始数字
+    let count = 9; // 位数数字数量
+    while (n > count) {
+      n -= count; // 减掉当前位数数量
+      digit += 1; // 增加位数
+      start *= 10; // 起始数字
+      count = digit * start * 9; // 当前位数数量
+    }
+    let num = start + Math.floor((n - 1) / digit); // n 所在 数字
+    return ("" + num).charAt((n - 1) % digit); // 从 0 开始
+  }
+  ```
