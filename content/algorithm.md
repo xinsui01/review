@@ -362,6 +362,32 @@
   }
   ```
 
+- 两个链表的第一个公共节点
+
+  ```js
+  /**
+   *
+   * 两个链表长度分别为L1+C、L2+C， C为公共部分的长度，按照楼主的做法： 第一个人走了L1+C步后，回到第二个人起点走L2步；第2个人走了L2+C步后，回到第一个人起点走L1步。 当两个人走的步数都为L1+L2+C时就相遇了。如果两个链表不相交，走完也会相遇 node1,node2 都为 null
+   * @param {ListNode} headA
+   * @param {ListNode} headB
+   * @return {ListNode}
+   */
+
+  function ListNode(val) {
+    this.val = val;
+    this.next = null;
+  }
+  function getIntersectionNode(headA, headB) {
+    let node1 = headA,
+      node2 = headB;
+    while (node1 !== node2) {
+      node1 = node1 !== null ? node1.next : headB;
+      node2 = node2 !== null ? node2.next : headA;
+    }
+    return node1;
+  }
+  ```
+
 ## 栈
 
 特定的数据结构是对特定场景的抽象，而且，数组或链表暴露了太多的操作接口，操作上的确灵活自由，但使用时就比较不可控，自然也就更容易出错。
@@ -3071,7 +3097,7 @@ Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前
 
     function mergeSortCounting(arr, left, right) {
       if (left >= right) return;
-      const mid = Math.floor((left + right) / 2);
+      const mid = Math.floor(left + (right - left) / 2);
       mergeSortCounting(arr, left, mid);
       mergeSortCounting(arr, mid + 1, right);
       merge(arr, left, mid, right);

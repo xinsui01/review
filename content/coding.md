@@ -1374,3 +1374,229 @@ function spiralOrder(matrix) {
     return ("" + num).charAt((n - 1) % digit); // 从 0 开始
   }
   ```
+
+- 把数组排成最小的数
+
+  输入一个非负整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。
+
+  ```js
+  function minNumber(nums) {
+    let strs = [];
+    const { length: len } = nums;
+    for (let i = 0; i < len; i++) {
+      strs[i] = String(nums[i]);
+    }
+    fastSort(strs, 0, len - 1);
+    return strs.join("");
+
+    function fastSort(arr, left, right) {
+      if (left > right) return;
+      let i = left,
+        j = right;
+      let temp = arr[i];
+      while (i < j) {
+        while (arr[j] + arr[left] >= arr[left] + arr[j] && i < j) j--; // arr[j] > arr[left]
+        while (arr[i] + arr[left] <= arr[left] + arr[i] && i < j) i++; // arr[i] < arr[left]
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      arr[i] = arr[left];
+      arr[left] = temp;
+      fastSort(arr, left, i - 1);
+      fastSort(arr, i + 1, right);
+    }
+  }
+  ```
+
+  ```js
+  function minNumber(nums) {
+    // 比较 "" + a + b 和 "" + b + a
+    return nums.sort((a, b) => "" + a + b - ("" + b + a)).join("");
+  }
+  ```
+
+- 把数字翻译成字符串
+
+  给定一个数字，我们按照如下规则把它翻译为字符串：0 翻译成 “a” ，1 翻译成 “b”，……，11 翻译成 “l”，……，25 翻译成 “z”。一个数字可能有多个翻译。请编程实现一个函数，用来计算一个数字有多少种不同的翻译方法。
+
+  ```js
+  /**
+   *  动态规划
+   *  f(i) 表示以第i位结尾的前缀串翻译的方案数，
+   *  第i位单独翻译对f(i)的贡献值为f(i-1)；如果第i-1位存在，并且第i-1位和第i位形成的数字x满足10<=x<=25,那么就可以把第i-1位和第i位连起来一起翻译，对f(i)的贡献值为f(i-2)，否则为0；
+   *  动态转移方程： f(i)= f(i-1) + f(i-2)[i-1>=0, 10 < = x <= 25]
+   *  边界条件是f(-1) = 0; f(0) = 1
+   *  由于dp[i] 只与 dp[i-1] 有关，因此可以使用两个变量a,b 分别记录dp[i], dp[i-1]
+   */
+  function translateNum(num) {
+    const str = "" + num; // 字符串化
+    const len = str.length;
+    let dp = [];
+    dp[0] = 1;
+    dp[1] = 1;
+    for (let i = 2; i <= len; i++) {
+      let tmp = str.substring(i - 2, i);
+      if (tmp >= "10" && tmp <= "25") {
+        dp[i] = dp[i - 1] + dp[i - 2];
+      } else {
+        dp[i] = dp[i - 1];
+      }
+    }
+    return dp[len];
+  }
+  ```
+
+  ```js
+  /**
+   *  递归 + 备忘录
+   *
+   */
+  function translateNum(num) {
+    const str = "" + num; // 字符串化
+    const len = src.length;
+
+    const memo = new Array(len);
+    memo[len - 1] = 1;
+    memo[len] = 1;
+
+    function dfs(str, index) {
+      if (memo[index]) return memo[index];
+      const tmp = str[index] + str[index + 1];
+      if (tmp >= "10" && tmp <= "25") {
+        memo[index] = dfs(str, index + 1) + dfs(str, index + 2);
+      } else {
+        memo[index] = dfs(str, index + 1);
+      }
+      return memo[index];
+    }
+    return dfs(str, 0);
+  }
+  ```
+
+- 礼物的最大价值
+
+  在一个 `m*n` 的棋盘的每一格都放有一个礼物，每个礼物都有一定的价值（价值大于 0）。你可以从棋盘的左上角开始拿格子里的礼物，并每次向右或者向下移动一格、直到到达棋盘的右下角。给定一个棋盘及其上面的礼物的价值，请计算你最多能拿到多少价值的礼物？
+
+  ```js
+  /**
+   * 动态规划
+   * 设f(i, j)为从棋盘左上角走至单元格（i，j)的礼物最大累计价值，可以得到以下递推关系： f(i, j) = max(f(i-1, j), f(i, j-1)) + grid(i, j)
+   *
+   *
+   */
+  function maxValue(grid) {
+    if (!grid.length || !grid[0].length) return 0;
+    const { length: m } = grid,
+      { length: n } = grid[0];
+    for (let i = 1; i < m; i++) {
+      // 初始化第一列
+      grid[i][0] += grid[i - 1][0];
+    }
+    for (let j = 1; j < n; j++) {
+      // 初始化第一行
+      grid[0][j] += grid[0][j - 1];
+    }
+
+    for (let i = 1; i < m; i++) {
+      for (let j = 1; j < n; j++) {
+        grid[i][j] += Math.max(grid[i - 1][j], grid[i][j - 1]);
+      }
+    }
+    return grid[m - 1][n - 1];
+  }
+  ```
+
+- 最长不含重复字符的子字符串
+
+  请从字符串中找出一个最长的不包含重复字符的子字符串，计算该最长子字符串的长度。
+
+  ```js
+  /**
+   * 动态规划
+   * 设动态规划列表 dp，dp[j] 代表以字符 s[j] 为结尾的 “最长不重复子字符串” 的长度。
+   *
+   *
+   */
+  function lengthOfLongestSubstring(s) {}
+  ```
+
+- 丑数
+
+  我们把只包含质因子 2、3 和 5 的数称作丑数（Ugly Number）。求按从小到大的顺序的第 n 个丑数。
+
+  ```js
+  function nthUglyNumber(n) {}
+  ```
+
+- 第一个只出现一次的字符
+
+  ```js
+  function firstUniqChar(s) {
+    for (let char of new Set(s)) {
+      if (s.match(new RegExp(char, "g")).length === 1) {
+        return char;
+      }
+    }
+    return " ";
+  }
+  ```
+
+  ```js
+  function firstUniqChar(s) {
+    for (let i = 0, { length: len } = s; i < len; i++) {
+      if (s.indexOf(s[i]) === s.lastIndexOf(s[i])) return s[i];
+    }
+    return " ";
+  }
+  ```
+
+- 统计一个数字在排序数组中出现的次数。
+
+  ```js
+  /**
+   * 二分查找
+   * 初始化，左边界0， 右边界 nums.length -1
+   * 循环二分：  当闭区间 [i, j] 无元素时跳出；
+   * 计算中点 m = (i + j) / 2 （向下取整）；
+   * 若 nums[m] < target ，则 target 在闭区间 [m + 1, j] 中，因此执行 i = m + 1；
+   * 若 nums[m] > target ，则 target 在闭区间 [i, m -1] 中，因此执行 j = m - 1；
+   * 若 nums[m] = target ，则右边界 right 在闭区间 [m+1, j] 中；左边界 left 在闭区间 [i, m-1] 中。因此分为以下两种情况：
+   *    若查找 右边界 right ，则执行 i = m + 1 ；（跳出时 i 指向右边界）
+   *    若查找 左边界 left ，则执行 j = m - 1 ；（跳出时 j 指向左边界）
+   * 返回值： 应用两次二分，分别查找 right 和 left ，最终返回 right - left - 1 即可。
+   */
+  function search(nums, target) {
+    return find(nums, target) - find(nums, target - 1);
+
+    function find(nums, target) {
+      let left = 0,
+        right = nums.length - 1;
+      while (left <= right) {
+        let mid = left + Math.floor((right - left) / 2);
+        if (nums[mid] <= target) left = mid + 1;
+        else right = mid - 1;
+      }
+      return left;
+    }
+  }
+  ```
+
+- 一个长度为 n-1 的递增排序数组中的所有数字都是唯一的，并且每个数字都在范围 0 ～ n-1 之内。在范围 0 ～ n-1 内的 n 个数字中有且只有一个数字不在该数组中，请找出这个数字。
+
+  ```js
+  /**
+   * 二分查找
+   * 左子数组： nums[i] = i;
+   * 右子数组： nums[i] !== i;
+   * 缺失的数字等于右子数组的首位元素对应的索引
+   */
+  function missingNumber(nums) {
+    let left = 0,
+      right = nums.length - 1;
+    while (left <= right) {
+      let mid = left + Math.floor((right - left) / 2);
+      if (nums[mid] === mid) left = mid + 1;
+      else right = mid - 1;
+    }
+    return left;
+  }
+  ```
