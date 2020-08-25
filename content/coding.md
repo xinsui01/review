@@ -1600,3 +1600,73 @@ function spiralOrder(matrix) {
     return left;
   }
   ```
+
+- 一个整型数组 nums 里除两个数字之外，其他数字都出现了两次。请写程序找出这两个只出现一次的数字。要求时间复杂度是 O(n)，空间复杂度是 O(1)。
+
+  ```js
+  /**
+   * 异或的性质： 两个数字异或的结果a^b是将 a 和 b 的二进制每一位进行运算，得出的数字。 运算的逻辑是 如果同一位的数字相同则为 0，不同则为 1
+   * 任何数和本身异或则为 0
+   * 任何数和 0 异或是 本身
+   * 异或满足交换律。 即 a ^ b ^ c ，等价于 a ^ c ^ b
+   *
+   *
+   * 先对所有数字进行一次异或，得到两个出现一次的数字的异或值。
+   * 在异或结果中找到任意为 1 的位。
+   * 根据这一位对所有的数字进行分组。
+   * 在每个组内进行异或操作，得到两个数字。
+   */
+  function singleNumbers(nums) {
+    let sum = 0;
+    let res = [];
+    for (let i = 0; i < nums.length; i++) {
+      sum ^= nums[i];
+    }
+    let lowBit = 1;
+    while ((lowBit & sum) == 0) lowBit <<= 1;
+    for (let i = 0; i < nums.length; i++) {
+      const num = nums[i];
+      if ((num & lowBit) === 0) {
+        res[0] ^= num;
+      } else {
+        res[1] ^= num;
+      }
+    }
+    return res;
+  }
+  ```
+
+- 在一个数组 nums 中除一个数字只出现一次之外，其他数字都出现了三次。请找出那个只出现一次的数字。
+
+  ```js
+  function singleNumber(nums) {
+    let ones = 0,
+      twos = 0;
+    for (let i = 0, len = nums.length; i < len; i++) {
+      const num = nums[i];
+      ones = ones ^ (num & ~twos);
+      twos = twos ^ (num & ~ones);
+    }
+    return ones;
+  }
+  ```
+
+- 实现一个函数，对一系列的版本号进行从小到大的排序
+
+  ```js
+  /**
+   * ['1.0.0', '2.12.1', '1.2.3.4.5.6.7', '0.18.1']
+   *
+   *
+   */
+  function sortVersion(list) {
+    return list.sort((a, b) => (a >= b ? 1 : -1));
+  }
+
+  function sortVersion(list) {}
+  ```
+
+- 实现一个简单的仓储系统，不断地
+
+  ```js
+  ```

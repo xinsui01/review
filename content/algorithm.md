@@ -2459,7 +2459,44 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
   - 散列表的构造比二叉查找树要复杂，需要考虑的东西很多。比如散列函数的设计、冲突解决办法、扩容、缩容等。平衡二叉查找树只需要考虑平衡性这一个问题，而且这个问题的解决方案比较成熟、固定。
   - 为了避免过多的散列冲突，散列表装载因子不能太大，特别是基于开放寻址法解决冲突的散列表，不然会浪费一定的存储空间。
 
-- 求一棵二叉树的确切高度
+- 求一棵二叉树的确切高度(二叉树的深度)
+
+  ```js
+  function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+  }
+
+  /**
+   *
+   * 后序遍历，递归
+   *
+   */
+  function maxDepth(root) {
+    if (root === null) return 0;
+    return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+  }
+
+  /**
+   *
+   * 层序遍历
+   *
+   */
+  function maxDepth(root) {
+    if (root === null) return 0;
+    let queue = [root];
+    let res = 0;
+    while (queue.length) {
+      for (let i = 0, { length: len } = queue; i < len; i++) {
+        const node = queue.shift();
+        if (node.left !== null) queue.push(node.left);
+        if (node.right !== null) queue.push(node.right);
+      }
+      res++;
+    }
+    return res;
+  }
+  ```
 
 - 二叉搜索树的后序遍历序列
 
@@ -2508,6 +2545,34 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
   }
   ```
 
+- 给定一个二叉搜索树，找出其中第 K 大的节点
+
+  ```js
+  /**
+   * 二叉搜索树的中序遍历为 递增序列, 二叉搜索树的 中序遍历倒序 为 递减序列 。
+   * 求 “二叉搜索树第 k 大的节点” 可转化为求 “此树的中序遍历倒序的第 k 个节点”。
+   *
+   */
+  function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+  }
+  function kthLargest(root, k) {
+    let res;
+
+    dfs(root);
+    return res;
+
+    function dfs(root) {
+      if (root === null) return;
+      dfs(root.right);
+      if (k === 0) return;
+      if (--k === 0) res = root.val;
+      dfs(root.left);
+    }
+  }
+  ```
+
 ### 平衡二叉查找树
 
 二叉树中任何一个节点的左右子树的高度相差不能大于 1。
@@ -2526,6 +2591,58 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
     - 任何相邻的节点都不能同时为红色，也就是说，红色节点是被黑色节点隔开的
     - 每个节点，从该节点到达其科大叶子节点的所有路径，都包含相同数目的黑色节点
   - 左旋，右旋
+
+- 判断一棵树是不是平衡二叉树
+
+  此树的深度 等于 左子树的深度 与 右子树的深度 中的 最大值 +1。
+
+  ```js
+  /**
+   * 后续遍历 + 剪枝
+   *
+   */
+  function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+  }
+  function isBalanced(root) {
+    return dfs(root) !== -1;
+
+    function dfs(root) {
+      if (root === null) return 0;
+      let left = dfs(root.left);
+      if (left === -1) return -1; // 左右组数高度大于1
+      let right = dfs(root.right);
+      if (right === -1) return -1; // 左右组数高度大于1
+      return Math.abs(left - right) < 2 ? Math.max(left, right) + 1 : -1;
+    }
+  }
+  ```
+
+  ```js
+  /**
+   * 先序遍历 + 判断深度
+   *
+   */
+  function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+  }
+  function isBalanced(root) {
+    if (root === null) return true;
+
+    return (
+      Math.abs(depth(root.left) - depth(root.right)) <= 1 &&
+      isBalanced(root.left) &&
+      isBalanced(root.right)
+    );
+
+    function depth(root) {
+      if (root === null) return 0;
+      return Math.max(depth(root.left), depth(root.right)) + 1;
+    }
+  }
+  ```
 
 ### 递归树
 
