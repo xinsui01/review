@@ -1663,7 +1663,36 @@ function spiralOrder(matrix) {
     return list.sort((a, b) => (a >= b ? 1 : -1));
   }
 
-  function sortVersion(list) {}
+  function sortVersion(arr) {
+    let maxCount = 0;
+    for(let i=0, len = arr.length; i< len; i++) {
+        maxCount  = Math.max(maxCount, arr[i].split('.').length)
+    }
+
+    for(let i=maxCount-1; i>=0; i--) {
+        arr.sort(function(version1, version2){
+            let v1 = version1.split('.')
+            let v2 = version2.split('.')
+
+            v1 = v1[i] || ''
+            v2 = v2[i] || ''
+
+            if(v1 === v2) return 0
+            else {
+                const v1Num = +v1.replace(/[a-zA-Z]*$/, '')
+                const v2Num = +v2.replace(/[a-zA-Z]*$/, '')
+                const v1Str = v1.replace(/^\d*/, '')
+                const v2Str = v2.replace(/^\d*/, '')
+
+                if(v1Num > v2Num) return 1;
+                else if(v1Num < v2Num) return -1;
+                else {
+                    return v1Str > v2Str ? 1 : -1
+                }
+            }
+        })    
+    }
+  }
   ```
 
 - 实现一个简单的仓储系统，不断地
