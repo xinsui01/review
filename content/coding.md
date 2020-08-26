@@ -1695,7 +1695,34 @@ function spiralOrder(matrix) {
   }
   ```
 
-- 实现一个简单的仓储系统，不断地
+- 实现一个简单的仓储系统，可以不断的转入和转出货物，货物最多有两层子类目，数字代表子类目转入转出的数量，转出时不能出现爆仓情况
 
   ```js
+  /**
+   * {
+   *   productA: {
+   *      a: 1,
+   *      b: 2,
+   *      c: {
+   *       c1: 1,
+   *       c2: 3,
+   *      }
+   *   },
+   *   productB: {
+   *      e: 6
+   *   }
+   * }
+   * 爆仓情况： 如转入 {productA: {a: 3, c: 1}} 转出 {productA: {a: 4} } 就会发生子类目 a 爆仓，此时要返回报错。
+   * plus: 1. 考虑子类目扩展深度（不止两层） 2. 有单元测试
+   */
+   class Depository {
+    constructor(options){}
+
+    // 转入货物
+    transferIn(cargo) {}
+
+    // 转出货物
+    transferOut(userId) {}
+   }
+   
   ```
