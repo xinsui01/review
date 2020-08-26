@@ -552,7 +552,7 @@ function type(obj) {
   | input         | \$\_                                                             | 最近一次要匹配的字符串                 |
   | lastMatch     | \$&                                                              | 最近一次匹配项                         |
   | lastParen     | \$+                                                              | 最近一次匹配的捕获组                   |
-  | leftContext   | \$` | input 字符串中 lastMatch 之前的文本                        |
+  | leftContext   | \$`                                                              | input 字符串中 lastMatch 之前的文本    |
   | rightContext  | \$'                                                              | input 字符串中 lastMatch 之后的文本    |
   | multiline     | \$\*                                                             | 布尔值，是否所有的表达式都使用多行模式 |
   | $1,$2,...,\$9 | 存储第一到第九个捕获组，调用 exec()或 test()时，这些属性自动填充 |                                        |
@@ -1608,6 +1608,18 @@ function flatten(input) {
   return Array.isArray(input) ? input.toString().split(",") : input;
 }
 ```
+
+- [位运算](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators)
+
+  | 运算符            | 用法    | 描述                                                                              |
+  | :---------------- | :------ | :-------------------------------------------------------------------------------- |
+  | &（按位与）       | a & b   | 对于每一个比特位，只有两个操作数相应的比特位都是 1 时，结果才为 1，否则为 0。     |
+  | \| （按位或）     | a \| b  | 对于每一个比特位，当两个操作数相应的比特位至少有一个 1 时，结果为 1，否则为 0。   |
+  | ~（按位非）       | ~ a     | 反转操作数的比特位，即 0 变成 1，1 变成 0。                                       |
+  | ^（按位异或）     | a ^ b   | 对于每一个比特位，当两个操作数相应的比特位有且只有一个 1 时，结果为 1，否则为 0。 |
+  | <<（左移）        | a << b  | 将 a 的二进制形式向左移 b (< 32) 比特位，右边用 0 填充。                          |
+  | >>（有符号右移）  | a >> b  | 将 a 的二进制表示向右移 b (< 32) 位，丢弃被移出的位。                             |
+  | >>>（无符号右移） | a >>> b | 将 a 的二进制表示向右移 b (< 32) 位，丢弃被移出的位，并使用 0 在左侧填充。        |
 
 ## [高性能 Javascript](https://juejin.im/post/5a48c63451882560b76c8323)
 

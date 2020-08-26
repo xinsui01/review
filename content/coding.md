@@ -1601,53 +1601,138 @@ function spiralOrder(matrix) {
   }
   ```
 
-- 一个整型数组 nums 里除两个数字之外，其他数字都出现了两次。请写程序找出这两个只出现一次的数字。要求时间复杂度是 O(n)，空间复杂度是 O(1)。
+- 位运算
+
+  - 一个整型数组 nums 里除两个数字之外，其他数字都出现了两次。请写程序找出这两个只出现一次的数字。要求时间复杂度是 O(n)，空间复杂度是 O(1)。
+
+    ```js
+    /**
+     * 异或的性质： 两个数字异或的结果a^b是将 a 和 b 的二进制每一位进行运算，得出的数字。 运算的逻辑是 如果同一位的数字相同则为 0，不同则为 1
+     * 任何数和本身异或则为 0
+     * 任何数和 0 异或是 本身
+     * 异或满足交换律。 即 a ^ b ^ c ，等价于 a ^ c ^ b
+     *
+     *
+     * 先对所有数字进行一次异或，得到两个出现一次的数字的异或值。
+     * 在异或结果中找到任意为 1 的位。
+     * 根据这一位对所有的数字进行分组。
+     * 在每个组内进行异或操作，得到两个数字。
+     */
+    function singleNumbers(nums) {
+      let sum = 0;
+      let res = [];
+      for (let i = 0; i < nums.length; i++) {
+        sum ^= nums[i];
+      }
+      let lowBit = 1;
+      while ((lowBit & sum) == 0) lowBit <<= 1;
+      for (let i = 0; i < nums.length; i++) {
+        const num = nums[i];
+        if ((num & lowBit) === 0) {
+          res[0] ^= num;
+        } else {
+          res[1] ^= num;
+        }
+      }
+      return res;
+    }
+    ```
+
+  - 在一个数组 nums 中除一个数字只出现一次之外，其他数字都出现了三次。请找出那个只出现一次的数字。
+
+    ```js
+    /**
+     * 8bit 32位，统计每位1出现的次数，与3求余，如果不等于 0 说明只出现一次的那个数该位为1；
+     *
+     *
+     */
+    function singleNumber(nums) {
+      const len = nums.length;
+      let res = 0;
+      for (let i = 0; i < 32; i++) {
+        let count = 0;
+        const bit = 1 << i;
+        // 计算当前位 1 的数量
+        for (let j = 0; j < len; j++) {
+          if ((bit & nums[j]) === bit) {
+            count++;
+          }
+        }
+
+        if (count % 3 !== 0) {
+          res |= bit;
+        }
+      }
+      return res;
+    }
+    ```
+
+  - 在一个数组 nums 中除一个数字只出现一次之外，其他数字都出现了了两次。请找出那个只出现一次的数字。
+
+    ```js
+    function singleNumber(nums) {
+      let res = 0;
+      for (let i = 0, { length: len } = nums; i < len; i++) {
+        res ^= nums[i];
+      }
+      return res;
+    }
+    ```
+
+- 输入一个递增排序的数组和一个数字 s，在数组中查找两个数，使得它们的和正好是 s。如果有多对数字的和等于 s，则输出任意一对即可。
 
   ```js
   /**
-   * 异或的性质： 两个数字异或的结果a^b是将 a 和 b 的二进制每一位进行运算，得出的数字。 运算的逻辑是 如果同一位的数字相同则为 0，不同则为 1
-   * 任何数和本身异或则为 0
-   * 任何数和 0 异或是 本身
-   * 异或满足交换律。 即 a ^ b ^ c ，等价于 a ^ c ^ b
+   * 对撞双指针
    *
    *
-   * 先对所有数字进行一次异或，得到两个出现一次的数字的异或值。
-   * 在异或结果中找到任意为 1 的位。
-   * 根据这一位对所有的数字进行分组。
-   * 在每个组内进行异或操作，得到两个数字。
    */
-  function singleNumbers(nums) {
-    let sum = 0;
-    let res = [];
-    for (let i = 0; i < nums.length; i++) {
-      sum ^= nums[i];
+  function twoSum(nums, target) {
+    let i = 0,
+      j = nums.length - 1;
+    while (i < j) {
+      const s = nums[i] + nums[j];
+      // 如果 s 小于 target, 那么 nums[i] 和任何一个数的和都小于 target, 所以 i++
+      // 如果 s 大于 target, 那么 nums[j] 和任何一个数的和都大于 target, 所以 j--
+      if (s < target) i++;
+      else if (s > target) j--;
+      else return [nums[i], nums[j]];
     }
-    let lowBit = 1;
-    while ((lowBit & sum) == 0) lowBit <<= 1;
-    for (let i = 0; i < nums.length; i++) {
-      const num = nums[i];
-      if ((num & lowBit) === 0) {
-        res[0] ^= num;
-      } else {
-        res[1] ^= num;
-      }
-    }
-    return res;
+    return [];
   }
   ```
 
-- 在一个数组 nums 中除一个数字只出现一次之外，其他数字都出现了三次。请找出那个只出现一次的数字。
+- 输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。
+
+  序列内的数字由小到大排列，不同序列按照首个数字从小到大排列。
 
   ```js
-  function singleNumber(nums) {
-    let ones = 0,
-      twos = 0;
-    for (let i = 0, len = nums.length; i < len; i++) {
-      const num = nums[i];
-      ones = ones ^ (num & ~twos);
-      twos = twos ^ (num & ~ones);
+  /**
+   * 暴力
+   *
+   */
+  function findContinuousSequence(target) {
+    let res = [];
+    let tmp = [];
+    let sum = 0;
+    for (let i = 1; i <= target; i++) {
+      for (let j = i; j <= target; j++) {
+        if (sum === target) {
+          res.push(tmp);
+          tmp = [];
+          sum = 0;
+          break;
+        }
+        if (j > target || sum + j > target) {
+          tmp = [];
+          sum = 0;
+          break;
+        }
+        sum += j;
+        tmp.push(j);
+      }
     }
-    return ones;
+    return res;
   }
   ```
 
@@ -1665,33 +1750,89 @@ function spiralOrder(matrix) {
 
   function sortVersion(arr) {
     let maxCount = 0;
-    for(let i=0, len = arr.length; i< len; i++) {
-        maxCount  = Math.max(maxCount, arr[i].split('.').length)
+    for (let i = 0, len = arr.length; i < len; i++) {
+      maxCount = Math.max(maxCount, arr[i].split(".").length);
     }
 
-    for(let i=maxCount-1; i>=0; i--) {
-        arr.sort(function(version1, version2){
-            let v1 = version1.split('.')
-            let v2 = version2.split('.')
+    for (let i = maxCount - 1; i >= 0; i--) {
+      arr.sort(function (version1, version2) {
+        let v1 = version1.split(".");
+        let v2 = version2.split(".");
 
-            v1 = v1[i] || ''
-            v2 = v2[i] || ''
+        v1 = v1[i] || "";
+        v2 = v2[i] || "";
 
-            if(v1 === v2) return 0
-            else {
-                const v1Num = +v1.replace(/[a-zA-Z]*$/, '')
-                const v2Num = +v2.replace(/[a-zA-Z]*$/, '')
-                const v1Str = v1.replace(/^\d*/, '')
-                const v2Str = v2.replace(/^\d*/, '')
+        if (v1 === v2) return 0;
+        else {
+          const v1Num = +v1.replace(/[a-zA-Z]*$/, "");
+          const v2Num = +v2.replace(/[a-zA-Z]*$/, "");
+          const v1Str = v1.replace(/^\d*/, "");
+          const v2Str = v2.replace(/^\d*/, "");
 
-                if(v1Num > v2Num) return 1;
-                else if(v1Num < v2Num) return -1;
-                else {
-                    return v1Str > v2Str ? 1 : -1
-                }
-            }
-        })    
+          if (v1Num > v2Num) return 1;
+          else if (v1Num < v2Num) return -1;
+          else {
+            return v1Str > v2Str ? 1 : -1;
+          }
+        }
+      });
     }
+  }
+  ```
+
+- 输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。为简单起见，标点符号和普通字母一样处理。例如输入字符串"I am a student. "，则输出"student. a am I"。
+
+  ```js
+  function reverseWords(s) {
+    return s
+      .split(" ")
+      .reverse()
+      .join(" ")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+  }
+  ```
+
+  ```js
+  /**
+   * 双指针法，记录单词的左（i）右(len)边界
+   *
+   *
+   */
+  function reverseWords(s) {
+    s = s.trim();
+    let { length: len } = s;
+    let i = len;
+    let res = "";
+    while (i >= 0) {
+      while (i >= 0 && s[i] !== " ") i--; //搜索首个空格
+      res += s.substring(i + 1, len + 1) + " ";
+      while (i >= 0 && s[i] === " ") i--; // 跳过单词间空格
+      len = i;
+    }
+    return res.trim();
+  }
+  ```
+
+- 字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字 2，该函数将返回左旋转两位得到的结果"cdefgab"。
+
+  ```js
+  function reverseLeftWords(s, n) {
+    return s.slice(n) + s.slice(0, n);
+  }
+  ```
+
+  ```js
+  /**
+   *
+   */
+  function reverseLeftWords(s, n) {
+    let res = "";
+    const len = s.length;
+    for (let i = n; i < n + len; i++) {
+      res += s[i % len];
+    }
+    return res;
   }
   ```
 
@@ -1715,14 +1856,13 @@ function spiralOrder(matrix) {
    * 爆仓情况： 如转入 {productA: {a: 3, c: 1}} 转出 {productA: {a: 4} } 就会发生子类目 a 爆仓，此时要返回报错。
    * plus: 1. 考虑子类目扩展深度（不止两层） 2. 有单元测试
    */
-   class Depository {
-    constructor(options){}
+  class Depository {
+    constructor(options) {}
 
     // 转入货物
     transferIn(cargo) {}
 
     // 转出货物
     transferOut(userId) {}
-   }
-   
+  }
   ```
