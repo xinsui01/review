@@ -7,11 +7,11 @@
     "build": "webpack"
   },
   "devDependencies": {
-    "jszip": "^3.4.0",
-    "loader-runner": "^3.1.0",
+    "jszip": "^3.5.0",
+    "loader-runner": "^4.0.0",
     "loader-utils": "^2.0.0",
     "spritesmith": "^3.4.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   }
 }
