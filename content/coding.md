@@ -1736,50 +1736,6 @@ function spiralOrder(matrix) {
   }
   ```
 
-- 实现一个函数，对一系列的版本号进行从小到大的排序
-
-  ```js
-  /**
-   * ['1.0.0', '2.12.1', '1.2.3.4.5.6.7', '0.18.1']
-   *
-   *
-   */
-  function sortVersion(list) {
-    return list.sort((a, b) => (a >= b ? 1 : -1));
-  }
-
-  function sortVersion(arr) {
-    let maxCount = 0;
-    for (let i = 0, len = arr.length; i < len; i++) {
-      maxCount = Math.max(maxCount, arr[i].split(".").length);
-    }
-
-    for (let i = maxCount - 1; i >= 0; i--) {
-      arr.sort(function (version1, version2) {
-        let v1 = version1.split(".");
-        let v2 = version2.split(".");
-
-        v1 = v1[i] || "";
-        v2 = v2[i] || "";
-
-        if (v1 === v2) return 0;
-        else {
-          const v1Num = +v1.replace(/[a-zA-Z]*$/, "");
-          const v2Num = +v2.replace(/[a-zA-Z]*$/, "");
-          const v1Str = v1.replace(/^\d*/, "");
-          const v2Str = v2.replace(/^\d*/, "");
-
-          if (v1Num > v2Num) return 1;
-          else if (v1Num < v2Num) return -1;
-          else {
-            return v1Str > v2Str ? 1 : -1;
-          }
-        }
-      });
-    }
-  }
-  ```
-
 - 输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。为简单起见，标点符号和普通字母一样处理。例如输入字符串"I am a student. "，则输出"student. a am I"。
 
   ```js
@@ -1833,6 +1789,194 @@ function spiralOrder(matrix) {
       res += s[i % len];
     }
     return res;
+  }
+  ```
+
+- 给定一个数组 nums 和滑动窗口的大小 k(k>=1 &&k <=nums.length)，请找出所有滑动窗口里的最大值。
+
+  ```js
+  function maxSlidingWindow(nums, k) {
+    if (nums.length === 0 || k === 0) return [];
+    let deque = []; // 双端队列， 单调队列
+    let res = [];
+    // 未形成窗口
+    for (let i = 0; i < k; i++) {
+      let len;
+
+      while ((len = deque.length) && deque[len - 1] < nums[i]) {
+        deque.pop();
+      }
+      deque.push(nums[i]);
+    }
+    res[0] = deque[0];
+    // 形成窗口后
+    for (let i = k; i < nums.length; i++) {
+      // 要删除的为最大值是，最大值出队
+      if (deque[0] === nums[i - k]) {
+        deque.shift();
+      }
+      // 删除右边界移动后小于右边界的值
+      while (deque.length && deque[deque.length - 1] < nums[i]) {
+        deque.pop();
+      }
+      deque.push(nums[i]);
+      res[i - k + 1] = deque[0];
+    }
+    return res;
+  }
+  ```
+
+- 请定义一个队列并实现函数 max_value 得到队列里的最大值，要求函数 max_value、push_back 和 pop_front 的均摊时间复杂度都是 O(1)。若队列为空，pop_front 和 max_value  需要返回 -1
+
+  ```js
+  function MaxQueue() {
+    this.queue = [];
+    this.deque = [];
+  }
+
+  MaxQueue.prototype.max_value = function () {
+    if (!this.deque.length) {
+      return -1;
+    }
+    return this.deque[0];
+  };
+  MaxQueue.prototype.push_back = function (value) {
+    let len;
+    while ((len = this.deque.length) && this.deque[len - 1] < value) {
+      this.deque.pop();
+    }
+    this.deque.push(value);
+    this.queue.push(value);
+  };
+  MaxQueue.prototype.pop_front = function () {
+    if (!this.queue.length) return -1;
+    let ans = this.queue.shift();
+    if (ans === this.deque[0]) {
+      this.deque.shift();
+    }
+    return ans;
+  };
+  ```
+
+- 求 `1+2+...+n` ，要求不能使用`乘除法、for、while、if、else、switch、case`等关键字及条件判断语句`（A?B:C）`。
+
+  ```js
+  function sumNums(n) {
+    n > 1 && (n += sumNums(n - 1));
+    return n;
+  }
+  ```
+
+- 假设把某股票的价格按照时间先后顺序存储在数组中，请问买卖该股票一次可能获得的最大利润是多少？
+
+  ```js
+  /**
+   * 动态规划
+   * dp[i] 表示以 prices[i] 为结尾的子数组的最大利润
+   * 前 i 日的最大利润 = max(前（i-1)日的最大利润，第 i 日价格 - 前 i 日最低价格
+   * dp[i] = max(dp[i-1], prices[i]-min(prices[0:i]))
+   * 初始状态： dp[0] = 0,即首日利润为 0
+   * 返回值： dp[n-1], n 为 dp 列表长度。
+   *
+   */
+  function maxProfit(prices) {
+    let cost = Number.MAX_VALUE,
+      profit = 0; // 收益
+    for (let i = 0; i < prices.length; i++) {
+      const price = prices[i];
+      cost = Math.min(cost, price); // 前 i 日最低价
+      profit = Math.max(profit, price - cost); // 最大收益
+    }
+    return profit;
+  }
+  ```
+
+- 0,1,,n-1 这 n 个数字排成一个圆圈，从数字 0 开始，每次从这个圆圈里删除第 m 个数字。求出这个圆圈里剩下的最后一个数字。例如，0、1、2、3、4 这 5 个数字组成一个圆圈，从数字 0 开始每次删除第 3 个数字，则删除的前 4 个数字依次是 2、0、4、1，因此最后剩下的数字是 3。
+
+  ```js
+  // 反推
+  function lastRemaining(n, m) {
+    let pos = 0;
+    for (let i = 2; i <= n; i++) {
+      pos = (pos + m) % i;
+    }
+    return pos;
+  }
+  ```
+
+- 从扑克牌中随机抽 5 张牌，判断是不是一个顺子，即这 5 张牌是不是连续的。2 ～ 10 为数字本身，A 为 1，J 为 11，Q 为 12，K 为 13，而大、小王为 0 ，可以看成任意数字。A 不能视为 14。
+
+  ```js
+  /**
+   *
+   *
+   *
+   */
+  function isStraight(nums) {
+    let repeat = new Set();
+    let max = 0,
+      min = 14;
+    for (let i = 0, len = nums.length; i < len; i++) {
+      const num = nums[i];
+      if (num === 0) continue; // 跳过大王
+      max = Math.max(max, num); // 最大牌
+      min = Math.min(min, num); // 最小牌
+      if (repeat.has(num)) return false; // 有重复 return false；
+      repeat.add(num);
+    }
+    return max - min < 5; // 最大牌 - 最小牌 < 5, 则可构成顺子
+  }
+  ```
+
+- 把 n 个骰子扔在地上，所有骰子朝上一面的点数之和为 s。输入 n，打印出 s 的所有可能的值出现的概率。
+
+  你需要用一个浮点数数组返回答案，其中第 i 个元素代表这 n 个骰子所能掷出的点数集合中第 i 小的那个的概率。
+
+  ```js
+  function twoSum(n) {}
+  ```
+
+- 实现一个函数，对一系列的版本号进行从小到大的排序
+
+  ```js
+  /**
+   * ['1.0.0', '2.12.1', '1.2.3.4.5.6.7', '0.18.1']
+   *
+   *
+   */
+  function sortVersion(list) {
+    return list.sort((a, b) => (a >= b ? 1 : -1));
+  }
+
+  function sortVersion(arr) {
+    let maxCount = 0;
+    for (let i = 0, len = arr.length; i < len; i++) {
+      maxCount = Math.max(maxCount, arr[i].split(".").length);
+    }
+
+    for (let i = maxCount - 1; i >= 0; i--) {
+      arr.sort(function (version1, version2) {
+        let v1 = version1.split(".");
+        let v2 = version2.split(".");
+
+        v1 = v1[i] || "";
+        v2 = v2[i] || "";
+
+        if (v1 === v2) return 0;
+        else {
+          const v1Num = +v1.replace(/[a-zA-Z]*$/, "");
+          const v2Num = +v2.replace(/[a-zA-Z]*$/, "");
+          const v1Str = v1.replace(/^\d*/, "");
+          const v2Str = v2.replace(/^\d*/, "");
+
+          if (v1Num > v2Num) return 1;
+          else if (v1Num < v2Num) return -1;
+          else {
+            return v1Str > v2Str ? 1 : -1;
+          }
+        }
+      });
+    }
   }
   ```
 
