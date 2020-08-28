@@ -290,6 +290,8 @@
   - UI rendering 的节点是由浏览器自行判断决定的，只要执行 UI rendering，它的节点是在执行完所有的 microtask 之后，下一个 macrotask 之前，紧跟着执行 UI render。
 - [JavaScript 运行机制详解：再谈 Event Loop](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)
 - Node event loop: v11 之后与浏览器保持一致
+  
+  ![Node Event Loop](../imgs/node_event_loop.png)
 
   - 宏队列
     - timers 阶段：这个阶段执行 setTimeout 和 setInterval 预定的 callback
