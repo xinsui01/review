@@ -320,7 +320,7 @@
       }
     }
   };
-  const p = new Proxy(target, {});
+  const p = new Proxy(target, handler);
   p.a = 3;
   console.log(p.c);
   ```
