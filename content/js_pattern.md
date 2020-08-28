@@ -156,7 +156,7 @@
   class Cat {
     @readonly
     say() {
-      console.log('meow ~');
+      console.log('miao ~');
     }
   }
 
