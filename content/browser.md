@@ -253,6 +253,7 @@
 - [requestAnimationFrame Scheduling For Nerds](https://medium.com/@paul_irish/requestanimationframe-scheduling-for-nerds-9c57f7438ef4)
 
 ![Life of a frame](../imgs/life_of_a_frame.png)
+![Event Dispatch With A Frame](../imgs/eventDispatchPerFrame.png)
 
 - 以下操作会导致重排或重绘
 
