@@ -86,6 +86,16 @@
 
 ## 跨域
 
+- 同源策略（SOP）
+  
+  同源策略/SOP（Same origin policy）是一种约定，由Netscape公司1995年引入浏览器，它是浏览器**最核心也最基本的安全功能**，如果缺少了同源策略，浏览器很容易受到**XSS**、**CSFR**等攻击。所谓同源是指"协议+域名+端口"三者相同，即便两个不同的域名指向同一个ip地址，也非同源。
+  
+  同源策略限制以下几种行为：
+  
+  - Cookie、LocalStorage、IndexDB 无法读取
+  - DOM 和 JS 对象无法获得
+  - AJAX 请求无法发送
+
 - [前端常见跨域解决方案（全）](https://segmentfault.com/a/1190000011145364)
 
   - JSONP(JSON with padding)
