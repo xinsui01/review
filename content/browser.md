@@ -225,6 +225,8 @@
   - safari 隐身模式下无法设置 localStorage 值
 
 - BroadcastChannel
+  
+  隐身窗口之间可以触发，非隐身窗口之间可以触发，隐身窗口和非隐身窗口之间无法触发
 
   ```js
   // a.html
