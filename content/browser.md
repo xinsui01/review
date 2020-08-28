@@ -292,11 +292,13 @@
 - [JavaScript 运行机制详解：再谈 Event Loop](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)
 - Node event loop: v11 之后与浏览器保持一致
 
+  ![Node Event Loop](../imgs/node_event_loop.png)
+  
   [libuv 文档](http://docs.libuv.org/en/v1.x/design.html)
   
   ![libuv 架构图](../imgs/libuv_arch.png)
   
-  ![Node Event Loop](../imgs/node_event_loop.png)
+  ![Node Libuv Event Loop](../imgs/node_libuv_event_loop.png)
 
   - 宏队列
     - timers 阶段：这个阶段执行 setTimeout 和 setInterval 预定的 callback
