@@ -99,10 +99,56 @@
 - [前端常见跨域解决方案（全）](https://segmentfault.com/a/1190000011145364)
 
   - JSONP(JSON with padding)
+    
+    通常为了减轻web服务器的负载，我们把js、css，img等静态资源分离到另一台独立域名的服务器上，在html页面中再通过相应的标签从不同域名下加载静态资源，而被浏览器允许，基于此原理，我们可以通过动态创建script，再请求一个带参网址实现跨域通信。
+    
+    ```js
+    // 浏览器端
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'XXX.com?callback=handleCallback';
+    document.head.appendChild(script);
+    function handleCallback(res) {
+      console.log(res)
+    }
+    ```
+    
+    ```js
+    // 服务端返回
+    handleCallback({status: true, user: 'admin'})
+    ```
   - postMessage
   - document.domain + iFrame
+    
+    此方案仅限主域相同，子域不同的情况
+    
+    实现原理： 两个页面都通过js强制设置document.domian为基础主域就实现了同域。
+    
+    父窗口：(http://www.domain.com/a.html)
+
+    ```js
+    <iframe src="http://child.domain.com/b.html"></iframe>
+    <script>
+    document.domain = 'domain.com'
+    </script>
+    ```
+    
+    子窗口：(http://child.domain.com/b.html)
+
+    ```js
+    document.domain = 'domain.com'
+    ```
+    
   - window.name + iFrame
+  
+    window.name属性的独特之处：name值在不同的页面（甚至不同域名）加载后依旧存在，并且可以支持非常长的 name 值（2MB）。
+    
   - location.hash + iFrame
+  
+    实现原理： a欲与b跨域相互通信，通过中间页c来实现。 三个页面，不同域之间利用iframe的location.hash传值，相同域之间直接js访问来通信。
+    
+    具体实现：A域：a.html -> B域：b.html -> A域：c.html，a与b不同域只能通过hash值单向通信，b与c也不同域也只能单向通信，但c与a同域，所以c可通过parent.parent访问a页面所有对象。
+    
   - 同域服务器转发请求
   - [CORS](http://www.ruanyifeng.com/blog/2016/04/cors.html)
 
