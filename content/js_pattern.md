@@ -139,7 +139,7 @@
   ```js
   // ES7 装饰器
   function isAnimal(target) {
-    target.isAnimal = truel;
+    target.isAnimal = true;
     return target;
   }
 
