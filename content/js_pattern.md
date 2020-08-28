@@ -342,7 +342,7 @@
       // 如果车上有乘客
       if (Object.keys(this.passengers).length) {
         // 如果是针对某个乘客发的，就单独给他听
-        if (passenger.id && passenger.listen) {
+        if (passenger.id && (this.passengers[passenger.id] || {}).listen) {
           // 乘客他爱听不听
           if (this.passengers[passenger.id]) {
             this.passengers[passenger.id].listen(message);
@@ -351,7 +351,7 @@
           // 不然就广播给所有乘客
         } else {
           Object.keys(this.passengers).forEach(passenger => {
-            if (this.passengers[passenger].listen) {
+            if ((this.passengers[passenger]||{}).listen) {
               this.passengers[passenger].listen(message);
             }
           });
