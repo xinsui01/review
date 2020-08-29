@@ -87,11 +87,11 @@
 ## 跨域
 
 - 同源策略（SOP）
-  
-  同源策略/SOP（Same origin policy）是一种约定，由Netscape公司1995年引入浏览器，它是浏览器**最核心也最基本的安全功能**，如果缺少了同源策略，浏览器很容易受到**XSS**、**CSFR**等攻击。所谓同源是指"协议+域名+端口"三者相同，即便两个不同的域名指向同一个ip地址，也非同源。
-  
+
+  同源策略/SOP（Same origin policy）是一种约定，由 Netscape 公司 1995 年引入浏览器，它是浏览器**最核心也最基本的安全功能**，如果缺少了同源策略，浏览器很容易受到**XSS**、**CSFR**等攻击。所谓同源是指"协议+域名+端口"三者相同，即便两个不同的域名指向同一个 ip 地址，也非同源。
+
   同源策略限制以下几种行为：
-  
+
   - Cookie、LocalStorage、IndexDB 无法读取
   - DOM 和 JS 对象无法获得
   - AJAX 请求无法发送
@@ -99,31 +99,32 @@
 - [前端常见跨域解决方案（全）](https://segmentfault.com/a/1190000011145364)
 
   - JSONP(JSON with padding)
-    
-    通常为了减轻web服务器的负载，我们把js、css，img等静态资源分离到另一台独立域名的服务器上，在html页面中再通过相应的标签从不同域名下加载静态资源，而被浏览器允许，基于此原理，我们可以通过动态创建script，再请求一个带参网址实现跨域通信。
-    
+
+    通常为了减轻 web 服务器的负载，我们把 js、css，img 等静态资源分离到另一台独立域名的服务器上，在 html 页面中再通过相应的标签从不同域名下加载静态资源，而被浏览器允许，基于此原理，我们可以通过动态创建 script，再请求一个带参网址实现跨域通信。
+
     ```js
     // 浏览器端
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'XXX.com?callback=handleCallback';
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "XXX.com?callback=handleCallback";
     document.head.appendChild(script);
     function handleCallback(res) {
-      console.log(res)
+      console.log(res);
     }
     ```
-    
+
     ```js
     // 服务端返回
-    handleCallback({status: true, user: 'admin'})
+    handleCallback({ status: true, user: "admin" });
     ```
+
   - postMessage
   - document.domain + iFrame
-    
+
     此方案仅限主域相同，子域不同的情况
-    
-    实现原理： 两个页面都通过js强制设置document.domian为基础主域就实现了同域。
-    
+
+    实现原理： 两个页面都通过 js 强制设置 document.domian 为基础主域就实现了同域。
+
     父窗口：(http://www.domain.com/a.html)
 
     ```js
@@ -132,23 +133,23 @@
     document.domain = 'domain.com'
     </script>
     ```
-    
+
     子窗口：(http://child.domain.com/b.html)
 
     ```js
-    document.domain = 'domain.com'
+    document.domain = "domain.com";
     ```
-    
+
   - window.name + iFrame
-  
-    window.name属性的独特之处：name值在不同的页面（甚至不同域名）加载后依旧存在，并且可以支持非常长的 name 值（2MB）。
-    
+
+    window.name 属性的独特之处：name 值在不同的页面（甚至不同域名）加载后依旧存在，并且可以支持非常长的 name 值（2MB）。
+
   - location.hash + iFrame
-  
-    实现原理： a欲与b跨域相互通信，通过中间页c来实现。 三个页面，不同域之间利用iframe的location.hash传值，相同域之间直接js访问来通信。
-    
-    具体实现：A域：a.html -> B域：b.html -> A域：c.html，a与b不同域只能通过hash值单向通信，b与c也不同域也只能单向通信，但c与a同域，所以c可通过parent.parent访问a页面所有对象。
-    
+
+    实现原理： a 欲与 b 跨域相互通信，通过中间页 c 来实现。 三个页面，不同域之间利用 iframe 的 location.hash 传值，相同域之间直接 js 访问来通信。
+
+    具体实现：A 域：a.html -> B 域：b.html -> A 域：c.html，a 与 b 不同域只能通过 hash 值单向通信，b 与 c 也不同域也只能单向通信，但 c 与 a 同域，所以 c 可通过 parent.parent 访问 a 页面所有对象。
+
   - 同域服务器转发请求
   - [CORS](http://www.ruanyifeng.com/blog/2016/04/cors.html)
 
@@ -225,7 +226,7 @@
   - safari 隐身模式下无法设置 localStorage 值
 
 - BroadcastChannel
-  
+
   隐身窗口之间可以触发，非隐身窗口之间可以触发，隐身窗口和非隐身窗口之间无法触发
 
   ```js
@@ -290,19 +291,23 @@
 - [浏览器事件循环机制（event loop）](https://juejin.im/post/5afbc62151882542af04112d)
   - UI rendering 的节点是由浏览器自行判断决定的，只要执行 UI rendering，它的节点是在执行完所有的 microtask 之后，下一个 macrotask 之前，紧跟着执行 UI render。
 - [JavaScript 运行机制详解：再谈 Event Loop](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)
-- Node event loop: v11 之后与浏览器保持一致
+- Node event loop:
+
+  > Note: node v11 之后执行一个 timer task/check task 后执行微队列，再执行下个一个 timer task/check task, 与浏览器保持一致
+
+  - 现在 node11 在 timer 阶段的 setTimeout,setInterval...和在 check 阶段的 immediate 都在 node11 里面都修改为一旦执行一个阶段里的一个任务就立刻执行微任务队列。
 
   ![Node Event Loop](../imgs/node_event_loop.png)
-  
+
   [libuv 文档](http://docs.libuv.org/en/v1.x/design.html)
-  
+
   ![libuv 架构图](../imgs/libuv_arch.png)
-  
+
   ![Node Libuv Event Loop](../imgs/node_libuv_event_loop.png)
 
   - 宏队列
-    - timers 阶段：这个阶段执行 setTimeout 和 setInterval 预定的 callback
-    - I/O callback 阶段：执行除了 close 事件的 callbacks、被 timers 设定的 callbacks、setImmediate()设定的 callbacks 这些之外的 callbacks
+    - timers 阶段：这个阶段执行 setTimeout 和 setInterval 预定的 callback(timers 里存放的事件都是最小堆的数据结构排列的，不断的取出根节点比较当前的 loop->time 就能知道是执行还是退出)
+    - pending callback 阶段：大多数的 I/O callbacks 应该在 polling 阶段完成，有部分会被延迟到下一个 pending callbacks 阶段执行。(Node.js 里的 pending callbacks：这个阶段会执行系统上发生的一些错误而导致的 callbacks，如 TCP 错误。)
     - idle: 仅 node 内部使用
     - prepare: 仅 node 内部使用
     - poll: 获取新的 I/O 事件，适当的条件下 node 将阻塞在这里
