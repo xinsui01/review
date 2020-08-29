@@ -402,29 +402,67 @@
 ## 浏览器缓存
 
 - [彻底搞懂浏览器缓存机制](https://juejin.im/post/5c4528a6f265da611a4822cc)
+
   - 三级缓存原理 (访问缓存优先级)
     - memory cache
     - disk cache
-    - 重新请求
+    - 重新请求，根据缓存策略存储
   - 强缓存
+
+    > 浏览器在加载资源时，会先根据本地缓存资源的 header 中的信息判断是否命中强缓存，如果命中则直接使用缓存中的资源不会再向服务器发送请求。
+
     - expires
+
+      HTTP 1.0 规范，一个绝对时间的 GMT 格式字符串，代表这个资源的失效时间。
+      服务端与客户端时间偏差较大时，会导致缓存失效。
+
     - cache-control
+      HTTP 1.1 规范
+
       - no-store：禁止使用缓存，每一次都要重新请求数据。
+
       - no-catch：告诉浏览器、缓存服务器，不管本地副本是否过期，使用资源副本前，一定要到源服务器进行副本有效性校验。
-      - max-age
+
+      - max-age: 相对时间，代表着资源的有效期
+
       - must-revalidate：告诉浏览器、缓存服务器，本地副本过期前，可以使用本地副本；本地副本一旦过期，必须去源服务器进行有效性校验。
-      - private
-      - public
+
+      - public：可以被所有的用户缓存，包括终端用户和中间代理服务器
+
+      - private：只能被终端用户的浏览器缓存，不允许 CDN 等中继缓存服务器对其缓存
+
   - 协商缓存（304 Not Modified）
+
+    > 当强缓存没有命中的时候，浏览器会发送一个请求到服务器，服务器根据 header 中的部分信息来判断是否命中缓存。如果命中，则返回 304 ，告诉浏览器资源未更新，可使用本地的缓存。
+
     - Last-Modify/If-Modify-Since
+
+      - 缺点：
+        - 短时间内资源发生了变化，Last-Modified 并不会发生变化
+        - 周期性变化：即变回原来的样子，我们认为是可以使用缓存的，但是 Last-Modified 的值改变了
+
     - ETag/If-No-Match
+
+  - 浏览器缓存的优点
+    - 减少冗余的数据传输
+    - 减少服务器的负担，大大提升了网站的性能
+    - 加快了客户端加载网页的速度
+
 - [HTTP 缓存](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching_FAQ)
 - [Cache-Control](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Cache-Control)
 
 ## [DNS 解析过程及 DNS 优化](https://blog.csdn.net/cat_foursi/article/details/71194397)
 
-- 递归查询
-- 迭代查询
+- DNS 查询过程
+
+  - 首先搜索浏览器自身的 DNS 缓存，如果存在，则域名解析到此结束
+  - 如果浏览器自身的缓存里面没有找到对应的条目，则会尝试读取操作系统的 hosts 文件看看是否存在对应关系， 如果存在，则域名解析到此结束
+  - 如果本地 hosts 文件不存在映射关系，则查找本地 DNS 服务器（ISP 服务器，或者自己手动设置的 DNS 服务器），如果存在，域名解析到此结束
+  - 如果本地 DNS 服务器还没找到，就向根服务器发出请求进行查询
+
+- DNS 查询方式
+  - 递归查询
+  - 迭代查询
 
 ## [前端性能优化最佳实践](https://csspod.com/frontend-performance-best-practices/)
 
@@ -450,7 +488,7 @@
     - 使用事件委托，避免大量的事件绑定；
   - css 优化:
     - 层级扁平，避免过于多层级的选择器嵌套（不超过 3 层）；
-    - 特定的选择器好过一层一层查找: .xxx-child-text{} 优于 .xxx .child .text{}
+    - 特定的选择器好过一层一层查找: `.xxx-child-text{}` 优于 `.xxx .child .text{}`
     - 减少使用通配符与属性选择器；
     - 减少不必要的多余属性；
     - 使用 动画属性 实现动画，动画时脱离文档流，开启硬件加速，优先使用 css 动画；
@@ -511,6 +549,10 @@
     - [[译] 资源提示 —— 什么是 Preload，Prefetch 和 Preconnect？](https://juejin.im/post/5b5984b851882561da216311)
     - Preload
 
+      浏览器预加载只预先加载在 HTML 中声明的资源。preload 指令事实上克服了这个限制并且允许预加载在 CSS 和 JavaScript 中定义的资源，并允许决定何时应用每个资源。
+
+      Preload 与 prefetch 不同的地方就是它**专注于当前的页面，并以高优先级加载资源**，Prefetch 专注于下一个页面将要加载的资源并以低优先级加载。同时也要注意 **preload 并不会阻塞 window 的 onload 事件**。
+
       ```html
       <link rel="preload" href="/css/mystyles.css" as="style" />
       <link
@@ -528,15 +570,28 @@
       </script>
       ```
 
+      - 优点：
+
+        - 允许浏览器来设定资源加载的优先级因此可以允许前端开发者来优化指定资源的加载。
+
     - Prefetch
+
+      一个低优先级的资源提示，允许浏览器在后台（空闲时）获取将来可能用得到的资源，并且将他们存储在浏览器的缓存中。
+      一旦一个页面加载完毕就会开始下载其他的资源，然后当用户点击了一个带有 prefetched 的连接，它将可以立刻从缓存中加载内容。
+
+      有三种不同的 prefetch 的类型，link，DNS 和 prerendering，下面来详细分析。
 
       - Link Prefetching
 
-      ```html
-      <link rel="prefetch" href="/uploads/images/pic.png" />
-      ```
+        允许浏览器获取资源并将他们存储在缓存中
+
+        ```html
+        <link rel="prefetch" href="/uploads/images/pic.png" />
+        ```
 
       - DNS Prefetching
+
+        DNS prefetching 允许浏览器在用户浏览页面时在后台运行 DNS 的解析。如此一来，DNS 的解析在用户点击一个链接时已经完成，所以可以减少延迟。
 
         ```html
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
@@ -547,24 +602,24 @@
 
     - Prerendering
 
-      > prerendering 在后台渲染了整个页面，整个页面所有的资源。
+      优化了可能导航到的下一页上的资源的加载，prerendering 在后台渲染了整个页面，整个页面所有的资源。
 
       ```html
       <link rel="prerender" href="https://www.keycdn.com" />
       ```
 
-    - preconnect
+  - preconnect
 
-      > 允许浏览器在一个 HTTP 请求正式发给服务器前预先执行一些操作，这包括 DNS 解析，TLS 协商，TCP 握手
+    允许浏览器在一个 HTTP 请求正式发给服务器前预先执行一些操作，这包括 DNS 解析，TLS 协商，TCP 握手
 
-      ```html
-      <link href="https://cdn.domain.com" rel="preconnect" crossorigin />
-      ```
+    ```html
+    <link href="https://cdn.domain.com" rel="preconnect" crossorigin />
+    ```
 
 - 谨慎控制好 Web 字体，一个大字体包足够让你功亏一篑；
   - 控制字体包的加载时机；
   - 如果使用的字体有限，那尽可能只将使用的文字单独打包，能有效减少体积；
-- 合理利用 Localstorage / server-worker 等存储方式进行 数据与资源缓存；
+- 合理利用 Localstorage / service-worker 等存储方式进行 数据与资源缓存；
 - 重要的元素优先渲染；视窗内的元素优先渲染；
 - 优化用户感知:
   - 利用一些动画过渡效果，能有效减少用户对卡顿的感知；
@@ -646,8 +701,8 @@
 
   `rel=prefetch` 和 `rel=preload` 都是在浏览器之前获取指定资源的资源提示，可以通过屏蔽延迟来提高加载性能。尽管乍一看它们非常相似，但它们的表现却截然不同：
 
-      - rel=prefetch 是对以后要使用的非关键资源的低优先级提取。当浏览器空闲时，rel=prefetch 会启动请求。
-      - rel=preload 是当前路由使用的关键资源的高优先级提取。 rel=preload 启动的资源请求可能比浏览器发现它们时更早发生。但是，预加载是非常敏感的，因此您可能需要查看本指南 （以及可能的规范 ）以获得指导。
+  - rel=preload 是当前路由使用的关键资源的高优先级提取。 rel=preload 启动的资源请求可能比浏览器发现它们时更早发生。但是，预加载是非常敏感的，因此您可能需要查看本指南 （以及可能的规范 ）以获得指导。
+  - rel=prefetch 是对以后要使用的非关键资源的低优先级提取。当浏览器空闲时，rel=prefetch 会启动请求。
 
   - Prefetch
 
