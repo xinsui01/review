@@ -454,12 +454,66 @@
 // }
 
 // console.log(movingCount(2, 3, 1));
-var hammingWeight = function (n) {
-  let res = 0;
-  while (n) {
-    n = n & (n - 1);
-    res++;
-  }
-  return res;
-};
-console.log(hammingWeight(11111111111111111111111111111101));
+// var hammingWeight = function (n) {
+//   let res = 0;
+//   while (n) {
+//     n = n & (n - 1);
+//     res++;
+//   }
+//   return res;
+// };
+// console.log(hammingWeight(11111111111111111111111111111101));
+
+process.nextTick(() => {
+  console.log("nextTick 1");
+});
+
+setTimeout(() => {
+  console.log("timeout 1");
+  process.nextTick(() => {
+    console.log("nextTick 2");
+  });
+});
+setTimeout(() => {
+  console.log("timeout 2");
+  process.nextTick(() => {
+    console.log("nextTick 3");
+  });
+  process.nextTick(() => {
+    console.log("nextTick 4");
+  });
+  process.nextTick(() => {
+    console.log("nextTick 5");
+  });
+});
+
+setImmediate(() => {
+  console.log("setImmediate1");
+  new Promise((res) => {
+    console.log("promise1");
+    res();
+  }).then(() => {
+    console.log("then1");
+  });
+  process.nextTick(() => {
+    console.log("nextTick 6");
+  });
+  new Promise((res) => {
+    console.log("promise2");
+    res();
+  }).then(() => {
+    console.log("then2");
+  });
+  process.nextTick(() => {
+    console.log("nextTick 7");
+  });
+});
+setImmediate(() => {
+  console.log("setImmediate2");
+  new Promise((res) => {
+    console.log("promise3");
+    res();
+  });
+});
+
+console.log`7,8,9,'123'`;

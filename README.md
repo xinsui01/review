@@ -1,38 +1,36 @@
 # Review
 
-## [CSS](./content/css.md)
+## [CSS](./docs/content/css.md)
 
-## [JavaScript](./content/js.md)
+## [JavaScript](./docs/content/js.md)
 
-## [JS 常用设计模式](./content/js_pattern.md)
+## [JS 常用设计模式](./docs/content/js_pattern.md)
 
-## [浏览器](./content/browser.md)
+## [浏览器](./docs/content/browser.md)
 
-## [React](./conent/react.md)
+## [React](./docs/conent/react.md)
 
-## [国际化](./content/intl.md)
+## [国际化](./docs/content/intl.md)
 
-## [NodeJS](./content/node/node.md)
+## [NodeJS](./docs/content/node/node.md)
 
-## [编程](./content/coding.md)
+## [编程](./docs/content/coding.md)
 
-## [网络层](./content/net.md)
+## [网络层](./docs/content/net.md)
 
-## [前端模块化](./content/modular.md)
+## [前端模块化](./docs/content/modular.md)
 
 ## 工程化
 
-### [前端监控](./content/monit.md)
+### [前端监控](./docs/content/monit.md)
 
-## [架构](./content/architecture.md)
+## [架构](./docs/content/architecture.md)
 
-## [cli](./cli.md)
+## [cli](./docs/content/cli.md)
 
-## [Nginx](./content/nginx.md)
+## [Nginx](./docs/content/nginx.md)
 
-## 算法
-
-## [数据结构与算法之美](./content/algorithm.md)
+## [数据结构与算法之美](./docs/content/algorithm.md)
 
 - [前端笔试&面试爬坑系列---算法](https://juejin.im/post/5b72f0caf265da282809f3b5)
 
