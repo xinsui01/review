@@ -8,7 +8,7 @@
 
 ## [浏览器](./docs/content/browser.md)
 
-## [React](./docs/conent/react.md)
+## [React](./docs/content/react.md)
 
 ## [国际化](./docs/content/intl.md)
 

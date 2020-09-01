@@ -57,6 +57,21 @@
 - [解析 TCP 之滑动窗口(动画演示)](https://blog.csdn.net/yao5hed/article/details/81046945)
 - [TCP-IP 详解：滑动窗口（Sliding Window）](https://blog.csdn.net/wdscq1234/article/details/52444277)
 - [TCP 拥塞控制-慢启动、拥塞避免、快重传、快启动](https://blog.csdn.net/jtracydy/article/details/52366461)
+
+  - 拥塞窗口
+
+    发送方为了流控动态变化的发送窗口叫做拥塞窗口，拥塞窗口的大小取决于网络的拥塞程度
+
+  - 慢启动
+
+    网络出现超时，发送方收不到确认 ACK，设置 ssthresh 为 cwnd / 2, 设置 cwnd = 1，然后开始慢启动算法。慢启动算法每经过一个传输轮次（认为发送方都成功接收接收方的确认），拥塞窗口 cwnd 就加倍。当 cwnd = ssthresh 后，慢启动算法发变为拥塞避免算法，cwnd 按照线性的速度进行增长。
+
+  - 快重传
+
+    接收方收到一个失序的报文段后就立刻发出重复确认，而不要等待自己发送数据时才进行捎带确认。如果发送方一连收到三个重复的 ACK,那么发送方不必等待重传计时器到期，由发送方尽早重传未被确认的报文段。
+
+    当发送发连续接收到三个确认时，就执行乘法减小算法，把慢启动开始门限（ssthresh）减半，执行拥塞避免算法，使拥塞窗口缓慢增大。
+
 - [TCP-IP 详解: 慢启动和拥塞控制](https://blog.csdn.net/wdscq1234/article/details/52517420)
 - [TCP 协议详解(慢启动,流量控制,阻塞控制之类)](https://blog.csdn.net/rock_joker/article/details/76769404)
 - [TCP 协议与 UDP 协议的区别](https://zhuanlan.zhihu.com/p/47064829)
@@ -78,6 +93,8 @@
     A 发送确认后，该确认报文段可能因为路由器异常在网络中发生“迷途”，并没有到达 B，该确认报文段可以称为旧的报文段。A 在超时后进行重传，  发送新的报文段，B 在收到新的报文段后进入 CLOSED 状态。在这之后，发生迷途的旧报文段可能到达了 B，通常情况下，该报文段会被丢弃，不会造成任何的影响。但是如果两个相同主机 A 和 B 之间又建立了一个具有相同端口号的新连接，那么旧的报文段可能会被看成是新连接的报文段，如果旧的报文段中数据的任何序列号恰恰在新连接的当前接收窗口中，数据就会被重新接收，对连接造成破坏。为了避免这种情况，TCP 不允许处于 TIME_WAIT 状态的连接启动一个新的连接，因为 TIME_WAIT 状态持续 2MSL，就可以保证当再次成功建立一个 TCP 连接的时，来自之前连接的旧的报文段已经在网络中消逝，不会再出现在新的连接中。
 
 ## http
+
+[短连接](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Connection_management_in_HTTP_1.x) -> 长连接 [keep-alive](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Keep-Alive)(HTTP/1.1) -> HTTP 管线化 -> 域名分片 -> HTTP/2]
 
 - 从输入 url 到页面呈现浏览器都做了啥？
 

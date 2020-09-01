@@ -6,7 +6,7 @@
   - 什么时候会生成到 virtual DOM
     - render 执行的结果得到的并不是真正的 DOM 节点，结果仅仅是轻量级的 JavaScript 对象，即在 render 函数调用时将会创建出虚拟 DOM；
       ![react render 流程](../imgs/react_render.png)
-    - 通过 React.createElemen 创建出虚拟 DOM（React Element），而该函数只在 Render 函数中调用，所以在 React 装载和更新的过程中才会有虚拟 DOM 的生成；至于挂载到真实 DOM 自然而然是 ReactDom.render 函数啦。
+    - 通过 React.createElement 创建出虚拟 DOM（React Element），而该函数只在 Render 函数中调用，所以在 React 装载和更新的过程中才会有虚拟 DOM 的生成；至于挂载到真实 DOM 自然而然是 ReactDom.render 函数啦。
   - 为什么需要使用 virtual DOM
     - DOM 管理历史阶段：
       - JS 或者 jQuery 操作 DOM： 当应用程序越来越复杂，需要在 JS 里面维护的字段也越来越多，需要监听事件和在事件回调用更新页面的 DOM 操作也越来越多，应用程序会变得非常难维护。
@@ -58,11 +58,11 @@
   }
 
   Component.prototype.isReactComponent = {};
-  Component.prototype.setState = function(partialState, callback) {
-    this.updater.enqueueSetState(this, partialState, callback, 'setState');
+  Component.prototype.setState = function (partialState, callback) {
+    this.updater.enqueueSetState(this, partialState, callback, "setState");
   };
-  Component.prototype.forceUpdate = function(callback) {
-    this.updater.enqueueForceUpdate(this, callback, 'forceUpdate');
+  Component.prototype.forceUpdate = function (callback) {
+    this.updater.enqueueForceUpdate(this, callback, "forceUpdate");
   };
   ```
 
@@ -160,7 +160,7 @@
      * partialState：需要执行更新的箭头函数，
      * callback：undefined
      */
-    enqueueSetState: function(instance, partialState, callback) {
+    enqueueSetState: function (instance, partialState, callback) {
       //获取到当前实例上的fiber
       var fiber = get(instance);
       //计算当前fiber的到期时间（优先级）
@@ -173,7 +173,7 @@
         isReplace: false, //
         isForced: false, //是否强制更新
         capturedValue: null, //捕获的值
-        next: null //
+        next: null, //
       };
       //将update上需要更新的信息添加到fiber中
       insertUpdateIntoFiber(fiber, update);
@@ -181,9 +181,9 @@
       scheduleWork(fiber, expirationTime);
     },
     //替换更新state，不关注
-    enqueueReplaceState: function(instance, state, callback) {},
+    enqueueReplaceState: function (instance, state, callback) {},
     //执行强制更新state，不关注
-    enqueueForceUpdate: function(instance, callback) {}
+    enqueueForceUpdate: function (instance, callback) {},
   };
   ```
 
@@ -195,16 +195,16 @@
 
     ```js
     var element = {
-      type: 'ul',
+      type: "ul",
       props: {
-        id: 'list',
+        id: "list",
         children: [
-          { type: 'li', props: { className: 'item', children: ['Item 1'] } },
-          { type: 'li', props: { className: 'item', children: ['Item 2'] } },
-          { type: 'li', props: { className: 'item', children: ['Item 3'] } },
-          { type: 'li', props: { className: 'item', children: ['Item 4'] } }
-        ]
-      }
+          { type: "li", props: { className: "item", children: ["Item 1"] } },
+          { type: "li", props: { className: "item", children: ["Item 2"] } },
+          { type: "li", props: { className: "item", children: ["Item 3"] } },
+          { type: "li", props: { className: "item", children: ["Item 4"] } },
+        ],
+      },
     };
     ```
 
@@ -268,7 +268,7 @@
     - 这类方案需要重新组织你的组件结构，这可能会很麻烦，使你的代码难以理解。如果你在 React DevTools 中观察过 React 应用，你会发现由 providers，consumers，高阶组件，render props 等其他抽象层组成的组件会形成“嵌套地狱”。
 
     ```jsx
-    import React, { useState, useEffect } from 'react';
+    import React, { useState, useEffect } from "react";
 
     function useFriendStatus(friendID) {
       const [isOnline, setIsOnline] = useState(null);
@@ -294,10 +294,10 @@
       const isOnline = useFriendStatus(props.friend.id);
 
       if (isOnline === null) {
-        return 'Loading...';
+        return "Loading...";
       }
 
-      return isOnline ? 'Online' : 'Offline';
+      return isOnline ? "Online" : "Offline";
     }
     ```
 
@@ -306,7 +306,11 @@
     function FriendListItem(props) {
       const isOnline = useFriendStatus(props.friend.id);
 
-      return <li style={{ color: isOnline ? 'green' : 'block' }}>{props.friend.name}</li>;
+      return (
+        <li style={{ color: isOnline ? "green" : "block" }}>
+          {props.friend.name}
+        </li>
+      );
     }
     ```
 
@@ -369,20 +373,32 @@
             <>
               Count: {count}
               <button onClick={() => setCount(initialCount)}>Reset</button>
-              <button onClick={() => setCount(prevCount => prevCount + 1)}>+</button>
-              <button onClick={() => setCount(prevCount => prevCount - 1)}>-</button>
+              <button onClick={() => setCount((prevCount) => prevCount + 1)}>
+                +
+              </button>
+              <button onClick={() => setCount((prevCount) => prevCount - 1)}>-</button>
             </>
           );
         }
         ```
 
       - 与 class 组件中的 setState 方法不同，useState 不会自动合并更新对象。
+      - 惰性初始 state
+
+        initialState 参数只会在组件的初始渲染中起作用，后续渲染时会被忽略。如果初始 state 需要通过复杂计算获得，则可以传入一个函数，在函数中计算并返回初始的 state，此函数只在初始渲染时被调用：
+
+        ```js
+        const [state, setState] = useState(() => {
+          const initialState = someExpensiveComputation(props);
+          return initialState;
+        });
+        ```
 
     - useEffect
 
       > 传递给 useEffect 的函数在每次渲染中都会有所不同，这是刻意为之的。事实上这正是我们可以在 effect 中获取最新的 count 的值，而不用担心其过期的原因。每次我们重新渲染，都会生成新的 effect，替换掉之前的。  
       > 默认会在调用一个新的 effect 之前对前一个 effect 进行清理。  
-      > React 会等待浏览器完成画面渲染之后才会延迟调用 useEffect  
+      > **React 会等待浏览器完成画面渲染之后才会延迟调用 useEffect**  
       > 在浏览器完成布局与绘制之后，传给 useEffect 的函数会延迟调用。虽然 useEffect 会在浏览器绘制后延迟执行，但会保证在任何新的渲染前执行。  
       > 为防止内存泄漏，清除函数会在组件卸载前执行。  
       > 如果组件多次渲染（通常如此），则在执行下一个 effect 之前，上一个 effect 就已被清除。
@@ -393,7 +409,7 @@
         > 在执行 DOM 更新之后调用它。默认情况下，它在第一次渲染之后和每次更新之后都会执行。
 
         ```jsx
-        import React, { useState, useEffect } from 'react';
+        import React, { useState, useEffect } from "react";
 
         function Example() {
           const [count, setCount] = useState(0);
@@ -416,7 +432,7 @@
         > 如果你的 effect 返回一个函数，React 将会在执行清除操作时调用它
 
         ```js
-        import React, { useState, useEffect } from 'react';
+        import React, { useState, useEffect } from "react";
 
         function FriendStatus(props) {
           const [isOnline, setIsOnline] = useState(null);
@@ -426,18 +442,24 @@
               setIsOnline(status.isOnline);
             }
 
-            ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+            ChatAPI.subscribeToFriendStatus(
+              props.friend.id,
+              handleStatusChange
+            );
 
             return function cleanUp() {
-              ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+              ChatAPI.unsubscribeFromFriendStatus(
+                props.friend.id,
+                handleStatusChange
+              );
             };
           });
 
           if (isOnline === null) {
-            return 'Loading ...';
+            return "Loading ...";
           }
 
-          return isOnline ? 'Online' : 'Offline';
+          return isOnline ? "Online" : "Offline";
         }
         ```
 
@@ -450,7 +472,6 @@
         ```
 
       > 如果想执行只运行一次的 effect（仅在组件挂载和卸载时执行），可以传递一个空数组（[]）作为第二个参数。
-
 
     - useContext
 
@@ -475,13 +496,133 @@
     }
     ```
 
+    - 惰性初始化
+
+      你可以选择惰性地创建初始 state。为此，需要将 init 函数作为 useReducer 的第三个参数传入，这样初始 state 将被设置为 init(initialArg)。
+
+      ```js
+      function init(initialCount) {
+        return { count: initialCount };
+      }
+
+      function reducer(state, action) {
+        switch (action.type) {
+          case "increment":
+            return { count: state.count + 1 };
+          case "decrement":
+            return { count: state.count - 1 };
+          case "reset":
+            return init(action.payload);
+          default:
+            throw new Error();
+        }
+      }
+
+      function Count({ initialCount }) {
+        const [state, dispatch] = useReducer(reducer, initialCount, init);
+        return (
+          <>
+            Count: {state.count}
+            <button
+              onClick={() => dispatch({ type: "reset", payload: initialCount })}
+            >
+              Reset
+            </button>
+            <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+            <button onClick={() => dispatch({ type: "increment" })}>+</button>
+          </>
+        );
+      }
+      ```
+
   - useCallback
+
+    ```js
+    const memoCallback = useCallback(() => {
+      doSomething(a, b);
+    }, [a, b]);
+    ```
+
+    `useCallback(fn, deps)` 相当于 `useMemo(()=>fn, deps)`
+
+    > 依赖项数组不会作为参数传给回调函数。所有回调函数中引用的值都应该出现在依赖项数组中。
+
   - useMemo
+
+    把“创建”函数和依赖项数组作为参数传入 useMemo，它仅会在某个依赖项改变时才重新计算 memoized 值。这种优化有助于避免在每次渲染时都进行高开销的计算。
+
+    如果没有提供依赖项数组，useMemo 在每次渲染时都会计算新的值。
+
+    ```js
+    const memoizedValue = useMemo(() => {
+      return computeExpensiveValue(a, b);
+    }, [a, b]);
+    ```
+
   - useRef
+
+    useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变。
+
+    ```js
+    function TextInputWithFocusButton() {
+      const inputEl = useRef(null);
+      const onButtonClick = () => {
+        inputEl.current.focus();
+      };
+      return (<>
+        <input ref={inputEl} type='text' />
+        <button onClick={onButtonClick}>Focus the input</button>
+      <>)
+    }
+    ```
+
+    useRef() 比 ref 属性更有用。它可以很方便地保存任何可变值，其类似于在 class 中使用实例字段的方式。
+
+    这是因为它创建的是一个普通 Javascript 对象。而 `useRef()` 和自建一个 `{current: ...}` 对象的唯一区别是，useRef 会在每次渲染时返回同一个 ref 对象。
+
   - useImperativeHandle
+
+    useImperativeHandle 可以让你在使用 ref 时自定义暴露给父组件的实例值。在大多数情况下，应当避免使用 ref 这样的命令式代码。useImperativeHandle 应当与 forwardRef 一起使用：
+
+    ```js
+    useImperativeHandle(ref, createHandle, [deps]);
+    ```
+
+    ```js
+    function FancyInput(props, ref) {
+      const inputRef = useRef();
+      useInperativeHandle(ref, () => ({
+        focus: () => {
+          inputRef.current.focus()
+        }
+      }))
+      return <input ref={inputRef} ... />
+    }
+
+    FancyInput = forwardRef(FancyInput)
+
+    // parent component
+
+    <FancyInput ref={inputRef} />
+
+    inputRef.current.focus()
+    ```
+
   - useLayoutEffect
-    - 和 useEffect 的结构相同，区别只是调用时机不同。
+    - 其函数签名与 useEffect 相同，但它会在所有的 DOM 变更之后同步调用 effect。可以使用它来读取 DOM 布局并同步触发重渲染。在浏览器执行绘制之前，useLayoutEffect 内部的更新计划将被同步刷新。
   - useDebugValue
+
+    useDebugValue 可用于在 React 开发者工具中显示自定义 hook 的标签。
+
+    ```js
+    useDebugValue(isOnline ? "Online" : "offline");
+    ```
+
+    useDebugValue 接受一个格式化函数作为可选的第二个参数。该函数只有在 Hook 被检查时才会被调用。它接受 debug 值作为参数，并且会返回一个格式化的显示值。
+
+    ```js
+    useDebugValue(date, (date) => date.toDateString());
+    ```
 
 ## React 性能优化
 
@@ -497,37 +638,37 @@
  */
 function Router() {
   this.routes = {};
-  this.currentUrl = '';
+  this.currentUrl = "";
 }
-Router.prototype.route = function(path, callback) {
-  this.routes[path] = callback || function() {};
+Router.prototype.route = function (path, callback) {
+  this.routes[path] = callback || function () {};
 };
-Router.prototype.refresh = function() {
-  this.currentUrl = location.hash.slice(1) || '/';
-  console.log('refresh', 'currentUrl: ', this.currentUrl);
+Router.prototype.refresh = function () {
+  this.currentUrl = location.hash.slice(1) || "/";
+  console.log("refresh", "currentUrl: ", this.currentUrl);
   this.routes[this.currentUrl]();
 };
-Router.prototype.init = function() {
-  window.addEventListener('load', this.refresh.bind(this), false);
-  window.addEventListener('hashchange', this.refresh.bind(this), false);
+Router.prototype.init = function () {
+  window.addEventListener("load", this.refresh.bind(this), false);
+  window.addEventListener("hashchange", this.refresh.bind(this), false);
 };
 
 window.Router = new Router();
 window.Router.init();
 
-let content = document.querySelector('body');
+let content = document.querySelector("body");
 function changeBackgroundColor(color) {
   content.style.backgroundColor = color;
 }
 
-Router.route('/', function() {
-  changeBackgroundColor('white');
+Router.route("/", function () {
+  changeBackgroundColor("white");
 });
-Router.route('/blue', function() {
-  changeBackgroundColor('blue');
+Router.route("/blue", function () {
+  changeBackgroundColor("blue");
 });
-Router.route('/green', function() {
-  changeBackgroundColor('green');
+Router.route("/green", function () {
+  changeBackgroundColor("green");
 });
 ```
 
@@ -782,11 +923,11 @@ class BrowserRouter extends React.Component {
 }
 
 if (__DEV__) {
-  BrowserRouter.prototype.componentDidMount = function() {
+  BrowserRouter.prototype.componentDidMount = function () {
     warning(
       !this.props.history,
-      '<BrowserRouter> ignores the history prop. To use a custom history, ' +
-        'use `import { Router }` instead of `import { BrowserRouter as Router }`.'
+      "<BrowserRouter> ignores the history prop. To use a custom history, " +
+        "use `import { Router }` instead of `import { BrowserRouter as Router }`."
     );
   };
 }
@@ -794,7 +935,7 @@ if (__DEV__) {
 function Link({ component = LinkAnchor, replace, to, ...rest }) {
   return (
     <RouterContext.Consumer>
-      {context => {
+      {(context) => {
         return React.createElement(component, {
           ...rest,
           href,
@@ -803,7 +944,7 @@ function Link({ component = LinkAnchor, replace, to, ...rest }) {
             const method = replace ? history.replace : history.push;
 
             method(location);
-          }
+          },
         });
       }}
     </RouterContext.Consumer>
@@ -815,14 +956,14 @@ class Router extends React.Component {
     super(props);
 
     this.state = {
-      location: props.history.location
+      location: props.history.location,
     };
 
     this._isMounted = false;
     this._pendingLocation = null;
 
     if (!props.staticContext) {
-      this.unlisten = props.history.listen(location => {
+      this.unlisten = props.history.listen((location) => {
         if (this._isMounted) {
           this.setState({ location });
         } else {
@@ -852,7 +993,7 @@ class Router extends React.Component {
           history: this.props.history,
           location: this.state.location,
           match: Router.computeRootMatch(this.state.location.pathname),
-          staticContext: this.props.staticContext
+          staticContext: this.props.staticContext,
         }}
       />
     );
@@ -863,7 +1004,7 @@ class Route extends React.Component {
   render() {
     return (
       <RouterContext.Consumer>
-        {context => {
+        {(context) => {
           const location = this.props.location || context.location;
           const match = this.props.computedMatch
             ? this.props.computedMatch
@@ -871,23 +1012,21 @@ class Route extends React.Component {
             ? matchPath(location.pathname, this.props)
             : context.match;
 
-          const props  = {..context, location, match};
+          const props = { ...context, location, match };
 
           return (
             <RouterContext.Provider value={props}>
-              {
-                children && !isEmptyChildren(children)
-                  ? children
-                  : props.match
-                    ? component
-                      ? React.createElement(component, props)
-                      : render
-                        ? render(props)
-                        : null
-                    : null
-              }
+              {children && !isEmptyChildren(children)
+                ? children
+                : props.match
+                ? component
+                  ? React.createElement(component, props)
+                  : render
+                  ? render(props)
+                  : null
+                : null}
             </RouterContext.Provider>
-          )
+          );
         }}
       </RouterContext.Consumer>
     );
@@ -980,7 +1119,11 @@ export default function connectAdvanced() {
         let wrapperProps = this.props;
 
         // 导出props
-        let derivedProps = this.selectDerivedProps(storeState, wrapperProps, store);
+        let derivedProps = this.selectDerivedProps(
+          storeState,
+          wrapperProps,
+          store
+        );
 
         // 返回最终的组件,传入最终的props和ref -> 看selectChildElement发放
         return this.selectChildElement(derivedProps, forwardedRef);
@@ -992,7 +1135,9 @@ export default function connectAdvanced() {
 
         return (
           // <Privoder />的消费者
-          <ContextToUse.Consumer>{this.renderWrappedComponent}</ContextToUse.Consumer>
+          <ContextToUse.Consumer>
+            {this.renderWrappedComponent}
+          </ContextToUse.Consumer>
         );
       }
     }
@@ -1071,29 +1216,29 @@ function $Scope() {
   this.$$watchList = [];
 }
 
-$Scope.prototype.$watch = function(name, getNewValue, listener) {
+$Scope.prototype.$watch = function (name, getNewValue, listener) {
   const watch = {
     name: name,
     getNewValue: getNewValue,
-    listener: listener || function() {}
+    listener: listener || function () {},
   };
 
   this.$$watchList.push(watch);
 };
 
-$Scope.prototype.$digest = function() {
+$Scope.prototype.$digest = function () {
   let dirty = true;
   let checkTimes = 0;
   while (dirty) {
     dirty = this.$digestOnce();
     checkTimes++;
     if (checkTimes > 10 && dirty) {
-      throw new Error('检测次数超过10次');
+      throw new Error("检测次数超过10次");
     }
   }
 };
 
-$Scope.prototype.$digestOnce = function() {
+$Scope.prototype.$digestOnce = function () {
   let dirty = false;
   const list = this.$$watchList;
 
@@ -1120,24 +1265,28 @@ scope.first = 1;
 scope.secode = 10;
 
 scope.$watch(
-  'first',
-  function(_scope) {
+  "first",
+  function (_scope) {
     return _scope[this.name]; //  getNewValue 通过 watch.getNewValue 方式调用，this 指向 watch
   },
-  function(newValue, oldValue) {
+  function (newValue, oldValue) {
     scope.second++;
-    console.log('first:      newValue:' + newValue + '-----' + 'oldValue:' + oldValue);
+    console.log(
+      "first:      newValue:" + newValue + "-----" + "oldValue:" + oldValue
+    );
   }
 );
 
 scope.$watch(
-  'second',
-  function(_scope) {
+  "second",
+  function (_scope) {
     return _scope[this.name];
   },
-  function(newValue, oldValue) {
+  function (newValue, oldValue) {
     scope.first++;
-    console.log('second:     newValue:' + newValue + '-----' + 'oldValue:' + oldValue);
+    console.log(
+      "second:     newValue:" + newValue + "-----" + "oldValue:" + oldValue
+    );
   }
 );
 
