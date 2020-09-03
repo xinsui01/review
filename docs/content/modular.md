@@ -33,16 +33,16 @@
 
       ```js
       let myModule = {
-        data: 'www.baidu.com',
+        data: "www.baidu.com",
         foo() {
           console.log(`foo() ${this.data}`);
         },
         bar() {
           console.log(`bar() ${this.data}`);
-        }
+        },
       };
 
-      myModule.data = 'other data'; // 能直接修改模块内部的数据
+      myModule.data = "other data"; // 能直接修改模块内部的数据
       myModule.foo(); // foo() other data
       ```
 
@@ -54,8 +54,8 @@
     - 问题: 模块依赖?
 
     ```js
-    (function(window) {
-      let data = 'www.baidu.com';
+    (function (window) {
+      let data = "www.baidu.com";
 
       function foo() {
         // 操作数据的函数
@@ -69,7 +69,7 @@
 
       function otherFn() {
         // 内部私有函数
-        console.log('otherFun()');
+        console.log("otherFun()");
       }
 
       window.myModule = { foo, bar };
@@ -82,7 +82,7 @@
       myModule.foo(); // foo() www.baidu.com
       myModule.bar(); // bar() www.baidu.com
       console.log(myModule.data); // undefined 不能访问模块内部数据
-      myModule.data = 'xxxx'; // 不是修改的模块内部的data
+      myModule.data = "xxxx"; // 不是修改的模块内部的data
       myModule.foo(); // foo() www.baidu.com
     </script>
     ```
@@ -93,12 +93,12 @@
     > 除了保证模块的独立性，还使得模块之间的依赖关系变得明显。
 
     ```js
-    (function(window, $) {
-      let data = 'www.baidu.com';
+    (function (window, $) {
+      let data = "www.baidu.com";
 
       function foo() {
         console.log(`foo() ${data}`);
-        $('body').css('background', 'red');
+        $("body").css("background", "red");
       }
 
       function bar() {
@@ -109,7 +109,7 @@
 
       function otherFun() {
         //内部私有的函数
-        console.log('otherFun()');
+        console.log("otherFun()");
       }
 
       //暴露行为
@@ -128,9 +128,13 @@
 - 模块化的好处
 
   - 避免命名冲突(减少命名空间污染)
+  - 只暴露需要的方法、变量
   - 更好的分离, 按需加载
   - 更高复用性
   - 高可维护性
+  - 高内聚低耦合
+
+    从模块粒度来看，高内聚：尽可能类的每个成员方法只完成一件事（最大限度的聚合）； 低耦合：减少类内部，一个成员方法调用另一个成员方法。从类角度来看， 高内聚低耦合：减少类内部，对其他类的调用；从功能块来看 高内聚低耦合：减少模块之间的交互复杂度（接口数量，参数数据）即横向：类与类之间、模块与模块之间；纵向：层次之间；尽可能，内容内聚，数据耦合
 
 - 引入多个 `<script>` 后出现出现问题
   - 请求过多
@@ -172,10 +176,10 @@
 
       ```js
       // CommonJS模块
-      let { stat, exists, readFile } = require('fs');
+      let { stat, exists, readFile } = require("fs");
 
       // 等同于
-      let _fs = require('fs');
+      let _fs = require("fs");
       let stat = _fs.stat;
       let exists = _fs.exists;
       let readfile = _fs.readfile;
@@ -195,14 +199,14 @@
   }
   module.exports = {
     counter: counter,
-    incCounter: incCounter
+    incCounter: incCounter,
   };
   ```
 
   ```js
   // main.js
-  var counter = require('./lib').counter;
-  var incCounter = require('./lib').incCounter;
+  var counter = require("./lib").counter;
+  var incCounter = require("./lib").incCounter;
 
   console.log(counter); // 3
   incCounter();
@@ -220,14 +224,14 @@
     ```js
     /** 定义模块 math.js **/
     export const basicNum = 0;
-    const add = function(a, b) {
+    const add = function (a, b) {
       return a + b;
     };
 
     export default add;
 
     /** 引用模块 **/
-    import add, { basicNum } from './math';
+    import add, { basicNum } from "./math";
     function test(ele) {
       ele.textContent = add(99 + basicNum);
     }
@@ -246,7 +250,7 @@
 
   ```js
   // ES6模块
-  import { stat, exists, readFile } from 'fs';
+  import { stat, exists, readFile } from "fs";
   ```
 
   > 上面代码的实质是从 fs 模块加载 3 个方法，其他方法不加载。这种加载称为“编译时加载”或者静态加载，即 ES6 可以在编译时就完成模块加载，效率要比 CommonJS 模块的加载方式高。当然，这也导致了没法引用 ES Module 本身，因为它不是对象。

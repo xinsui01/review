@@ -26,7 +26,7 @@
 
     > node 会在各个 node_modules 下先查找以标识符为主的分别是 .js, .json, .node 后缀的文件，如果没有找到，那么就当作是一个目录来进行来查找目录下的 package.json, 并解析出其中的 main 字段指定的文件路径，如果没有文件路径或者文件路径错误，目录下的 index.js, index.json, index.node, 如果没有查找到上述的文件，那么就会抛出一个错误。
 
-  <img style="background-color: white;" src="../imgs/node模块查找流程.png">
+  <img style="background-color: white;" src="../../imgs/node模块查找流程.png">
 
 ## NodeJS 的事件循环(Event Loop)
 
