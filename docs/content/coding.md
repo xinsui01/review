@@ -2001,12 +2001,105 @@ function spiralOrder(matrix) {
    * plus: 1. 考虑子类目扩展深度（不止两层） 2. 有单元测试
    */
   class Depository {
-    constructor(options) {}
+    constructor(options) {
+      this.cargos = {};
+    }
 
     // 转入货物
-    transferIn(cargo) {}
+    transferIn(cargo, originCargos = this.cargos) {
+      if (typeof cargo !== "object") return false;
+      Object.entries(cargo).forEach(([product, value]) => {
+        if (typeof value === "object") {
+          if (!originCargos[product]) {
+            originCargos[product] = {};
+          }
+          this.transferIn(value, originCargos[product]);
+        } else {
+          if (!originCargos[product]) {
+            originCargos[product] = 0;
+          }
+          originCargos[product] += value;
+        }
+      });
+      return true;
+    }
 
     // 转出货物
-    transferOut(userId) {}
+    transferOut(cargo, originCargos = this.cargos) {
+      if (typeof cargo !== "object") return false;
+
+      if (!this.canTransferOut(cargo, originCargos)) return false;
+
+      this._transferOut(cargo, originCargos);
+      return true;
+    }
+
+    canTransferOut(cargo, originCargos) {
+      return Object.entries(cargo).every(([product, value]) => {
+        if (!originCargos.hasOwnProperty(product)) return false;
+        if (typeof value === "object") {
+          return this.canTransferOut(value, originCargos[product]);
+        } else {
+          return originCargos[product] >= value;
+        }
+      });
+    }
+
+    _transferOut(cargo, originCargos) {
+      Object.entries(cargo).forEach(([product, value]) => {
+        if (typeof value === "object") {
+          this._transferOut(value, originCargos[product]);
+        } else {
+          originCargos[product] -= value;
+        }
+      });
+    }
+  }
+  ```
+
+- 地址处理
+
+  ```js
+  const addressList = [
+    {
+      province: "四川省",
+      city: "成都市",
+      county: "金牛区",
+    },
+    {
+      province: "四川省",
+      city: "绵阳市",
+      county: "平武县",
+    },
+    {
+      province: "上海市",
+      city: "上海市",
+      county: "长宁区",
+    },
+  ];
+
+  const keys = ["province", "city", "county"];
+
+  function fn(addressList, level = 0) {
+    if (level >= keys.length) return [];
+    if (!addressList.length) return [];
+    // 字典
+    const obj = {};
+    const field = keys[level];
+    addressList.forEach((address) => {
+      const key = address[field];
+      if (obj[key]) {
+        obj[key].push(address);
+      } else {
+        obj[key] = [address];
+      }
+    });
+    return Object.entries(obj).map(([key, value]) => {
+      return {
+        type: field,
+        name: key,
+        children: fn(value, level + 1),
+      };
+    });
   }
   ```
