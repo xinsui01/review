@@ -1942,10 +1942,10 @@ CPU 资源是有限的，任务的处理速度与线程个数并不是线性正�
     `postOrder(r) = postOrder(r -> left) -> postOrder(r -> right) -> print r`
 
     ```js
-    function preOrder(root) {
+    function postOrder(root) {
       if (root === null) return;
-      preOrder(root.left);
-      preOrder(root.right);
+      postOrder(root.left);
+      postOrder(root.right);
       console.log(root.data);
     }
     ```
