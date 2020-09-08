@@ -1,5 +1,719 @@
 # Webpack
 
+## tapable
+
+- [Webpack4.0 source code analysis of Tapable](https://www.programmersought.com/article/1459649892/)
+
+- SyncHook
+
+  顺序执行
+
+  - compile
+
+    ```js
+    var _fn0 = _x[0];
+    _fn0();
+    var _fn1 = _x[1];
+    _fn1();
+    var _fn2 = _x[2];
+    _fn2();
+    var _fn3 = _x[3];
+    _fn3();
+    var _fn4 = _x[4];
+    _fn4();
+    ```
+
+- SyncBailHook
+
+  顺序执行， 如果返回值不是 undefined, return 返回值，否则向下执行
+
+  - compile
+
+    ```js
+    var _fn0 = _x[0];
+    var _result0 = _fn0();
+    if (_result0 !== undefined) {
+      return _result0;
+    } else {
+      var _fn1 = _x[1];
+      var _result1 = _fn1();
+      if (_result1 !== undefined) {
+        return _result1;
+      } else {
+        var _fn2 = _x[2];
+        var _result2 = _fn2();
+        if (_result2 !== undefined) {
+          return _result2;
+        } else {
+          var _fn3 = _x[3];
+          var _result3 = _fn3();
+          if (_result3 !== undefined) {
+            return _result3;
+          } else {
+            var _fn4 = _x[4];
+            var _result4 = _fn4();
+            if (_result4 !== undefined) {
+              return _result4;
+            } else {
+            }
+          }
+        }
+      }
+    }
+    ```
+
+- SyncWaterfallHook
+
+  顺序执行，如果返回值不是 undefined, 把返回值赋值给 arg1,如果返回值是 undefined,arg1 不变，arg1 继续传给下一个函数执行
+
+  可以接受多个参数，返回值会赋值给第一个参数，第二个参数保持不变，传给后面的函数
+
+  至少需要一个参数
+
+  - compile
+
+    ```js
+    SyncWaterfallHook(["arg111", "arg2"]);
+
+    var _fn0 = _x[0];
+    var _result0 = _fn0(arg111, arg2);
+    if (_result0 !== undefined) {
+      arg111 = _result0;
+    }
+    var _fn1 = _x[1];
+    var _result1 = _fn1(arg111, arg2);
+    if (_result1 !== undefined) {
+      arg111 = _result1;
+    }
+    var _fn2 = _x[2];
+    var _result2 = _fn2(arg111, arg2);
+    if (_result2 !== undefined) {
+      arg111 = _result2;
+    }
+    var _fn3 = _x[3];
+    var _result3 = _fn3(arg111, arg2);
+    if (_result3 !== undefined) {
+      arg111 = _result3;
+    }
+    var _fn4 = _x[4];
+    var _result4 = _fn4(arg111, arg2);
+    if (_result4 !== undefined) {
+      arg111 = _result4;
+    }
+    return arg111;
+    ```
+
+- SyncLoopHook
+
+  上一个函数返回 undefined 才会执行下一个函数，如果返回值不是 undefined 会从第一个函数开始顺序执行
+
+  - compile
+
+    ```js
+    SyncLoopHook(["arg111", "arg2"]);
+
+    var _loop;
+    do {
+      _loop = false;
+      var _fn0 = _x[0];
+      var _result0 = _fn0(arg111, arg2);
+      if (_result0 !== undefined) {
+        _loop = true;
+      } else {
+        var _fn1 = _x[1];
+        var _result1 = _fn1(arg111, arg2);
+        if (_result1 !== undefined) {
+          _loop = true;
+        } else {
+          var _fn2 = _x[2];
+          var _result2 = _fn2(arg111, arg2);
+          if (_result2 !== undefined) {
+            _loop = true;
+          } else {
+            var _fn3 = _x[3];
+            var _result3 = _fn3(arg111, arg2);
+            if (_result3 !== undefined) {
+              _loop = true;
+            } else {
+              var _fn4 = _x[4];
+              var _result4 = _fn4(arg111, arg2);
+              if (_result4 !== undefined) {
+                _loop = true;
+              } else {
+                if (!_loop) {
+                }
+              }
+            }
+          }
+        }
+      }
+    } while (_loop);
+    ```
+
+- AsyncParallelHook
+
+  异步钩子，handler 并行触发
+
+  顺序执行异步函数，如果某个函数有同步代码错误，调用回调函数，停止执行下一个函数
+
+  如果都没有报错，所有函数等待异步完成之后调用回调函数
+
+  tap 函数最后一个参数是一个回调函数，执行该函数，如果传入第一个参数（err）为真，就会忽略后面的监听函数执行，立即调用注册的回调函数
+
+  - compile
+
+    ```js
+    const hook = AsyncParallelHook(["arg111", "arg2"]);
+    hook.tap("test1", (arg1, arg2) => {
+      console.log("test1");
+      console.log(arg1, arg2);
+      // return arg1 + 1;
+      return;
+    });
+    hook.tapAsync("test3", (arg1, arg2, cb) => {
+      setTimeout(() => {
+        console.log("test3");
+        console.log(arg1, arg2);
+        cb(new Error("test3 error"));
+      }, 2000);
+    });
+    hook.tapPromise("test5", (arg1, arg2) => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log("test5");
+          console.log(arg1, arg2);
+          console.log(`hello ${arg1}, again`);
+          resolve();
+        }, 1000);
+      });
+    });
+    hook.callAsync(0, 10, () => {
+      console.log("test test");
+    });
+    // hook
+    //   .promise("arg1", "arg2")
+    //   .then(() => {
+    //     console.log("done");
+    //   })
+    //   .catch((err) => {
+    //     console.log("catch err: ", err.message);
+    //   });
+
+    do {
+      var _counter = 3;
+      var _done = () => {
+        _callback();
+      };
+      if (_counter <= 0) break;
+      var _fn0 = _x[0];
+      var _hasError0 = false;
+      try {
+        _fn0(arg111, arg2);
+      } catch (_err) {
+        _hasError0 = true;
+        if (_counter > 0) {
+          _callback(_err);
+          _counter = 0;
+        }
+      }
+      if (!_hasError0) {
+        if (--_counter === 0) _done();
+      }
+      if (_counter <= 0) break;
+      var _fn1 = _x[1];
+      _fn1(arg111, arg2, (_err1) => {
+        if (_err1) {
+          if (_counter > 0) {
+            _callback(_err1);
+            _counter = 0;
+          }
+        } else {
+          if (--_counter === 0) _done();
+        }
+      });
+      if (_counter <= 0) break;
+      var _fn2 = _x[2];
+      var _hasResult2 = false;
+      var _promise2 = _fn2(arg111, arg2);
+      if (!_promise2 || !_promise2.then)
+        throw new Error(
+          "Tap function (tapPromise) did not return promise (returned " +
+            _promise2 +
+            ")"
+        );
+      _promise2.then(
+        (_result2) => {
+          _hasResult2 = true;
+          if (--_counter === 0) _done();
+        },
+        (_err2) => {
+          if (_hasResult2) throw _err2;
+          if (_counter > 0) {
+            _callback(_err2);
+            _counter = 0;
+          }
+        }
+      );
+    } while (false);
+    ```
+
+- AsyncParallelBailHook
+
+  只要监听的函数返回值不为 undefined ,就会忽略后面的监听函数执行， 直接执行 callAsync\promise 绑定的回调函数
+
+  - compile
+
+    ```js
+    const hook = AsyncParallelBailHook(["arg111", "arg2"]);
+    hook.tap("test1", (arg1, arg2) => {
+      console.log("test1");
+      console.log(arg1, arg2);
+      // return arg1 + 1;
+      return;
+    });
+    hook.tapAsync("test3", (arg1, arg2, cb) => {
+      setTimeout(() => {
+        console.log("test3");
+        console.log(arg1, arg2);
+        cb(new Error("test3 error"));
+      }, 2000);
+    });
+    hook.tapPromise("test5", (arg1, arg2) => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log("test5");
+          console.log(arg1, arg2);
+          console.log(`hello ${arg1}, again`);
+          resolve();
+        }, 1000);
+      });
+    });
+    hook.callAsync(0, 10, () => {
+      console.log("test test");
+    });
+    // hook
+    //   .promise("arg1", "arg2")
+    //   .then(() => {
+    //     console.log("done");
+    //   })
+    //   .catch((err) => {
+    //     console.log("catch err: ", err.message);
+    //   });
+
+    var _results = new Array(3);
+    var _checkDone = () => {
+      for (var i = 0; i < _results.length; i++) {
+        var item = _results[i];
+        if (item === undefined) return false;
+        if (item.result !== undefined) {
+          _resolve(item.result);
+          return true;
+        }
+        if (item.error) {
+          _error(item.error);
+          return true;
+        }
+      }
+      return false;
+    };
+    do {
+      var _counter = 3;
+      var _done = () => {
+        _resolve();
+      };
+      if (_counter <= 0) break;
+      var _fn0 = _x[0];
+      var _hasError0 = false;
+      try {
+        var _result0 = _fn0(arg111, arg2);
+      } catch (_err) {
+        _hasError0 = true;
+        if (_counter > 0) {
+          if (
+            0 < _results.length &&
+            ((_results.length = 1),
+            (_results[0] = { error: _err }),
+            _checkDone())
+          ) {
+            _counter = 0;
+          } else {
+            if (--_counter === 0) _done();
+          }
+        }
+      }
+      if (!_hasError0) {
+        if (_counter > 0) {
+          if (
+            0 < _results.length &&
+            (_result0 !== undefined && (_results.length = 1),
+            (_results[0] = { result: _result0 }),
+            _checkDone())
+          ) {
+            _counter = 0;
+          } else {
+            if (--_counter === 0) _done();
+          }
+        }
+      }
+      if (_counter <= 0) break;
+      if (1 >= _results.length) {
+        if (--_counter === 0) _done();
+      } else {
+        var _fn1 = _x[1];
+        _fn1(arg111, arg2, (_err1, _result1) => {
+          if (_err1) {
+            if (_counter > 0) {
+              if (
+                1 < _results.length &&
+                ((_results.length = 2),
+                (_results[1] = { error: _err1 }),
+                _checkDone())
+              ) {
+                _counter = 0;
+              } else {
+                if (--_counter === 0) _done();
+              }
+            }
+          } else {
+            if (_counter > 0) {
+              if (
+                1 < _results.length &&
+                (_result1 !== undefined && (_results.length = 2),
+                (_results[1] = { result: _result1 }),
+                _checkDone())
+              ) {
+                _counter = 0;
+              } else {
+                if (--_counter === 0) _done();
+              }
+            }
+          }
+        });
+      }
+      if (_counter <= 0) break;
+      if (2 >= _results.length) {
+        if (--_counter === 0) _done();
+      } else {
+        var _fn2 = _x[2];
+        var _hasResult2 = false;
+        var _promise2 = _fn2(arg111, arg2);
+        if (!_promise2 || !_promise2.then)
+          throw new Error(
+            "Tap function (tapPromise) did not return promise (returned " +
+              _promise2 +
+              ")"
+          );
+        _promise2.then(
+          (_result2) => {
+            _hasResult2 = true;
+            if (_counter > 0) {
+              if (
+                2 < _results.length &&
+                (_result2 !== undefined && (_results.length = 3),
+                (_results[2] = { result: _result2 }),
+                _checkDone())
+              ) {
+                _counter = 0;
+              } else {
+                if (--_counter === 0) _done();
+              }
+            }
+          },
+          (_err2) => {
+            if (_hasResult2) throw _err2;
+            if (_counter > 0) {
+              if (
+                2 < _results.length &&
+                ((_results.length = 3),
+                (_results[2] = { error: _err2 }),
+                _checkDone())
+              ) {
+                _counter = 0;
+              } else {
+                if (--_counter === 0) _done();
+              }
+            }
+          }
+        );
+      }
+    } while (false);
+    ```
+
+- AsyncSeriesHook
+
+  顺序执行，等待异步返回后执行下一个函数，如果 reject ，直接调用回调，不执行后面函数吗
+
+  - compile
+
+    ```js
+    const hook = AsyncParallelBailHook(["arg111", "arg2"]);
+    hook.tap("test1", (arg1, arg2) => {
+      console.log("test1");
+      console.log(arg1, arg2);
+      // return arg1 + 1;
+      return;
+    });
+    hook.tapAsync("test3", (arg1, arg2, cb) => {
+      setTimeout(() => {
+        console.log("test3");
+        console.log(arg1, arg2);
+        cb(new Error("test3 error"));
+      }, 2000);
+    });
+    hook.tapPromise("test5", (arg1, arg2) => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log("test5");
+          console.log(arg1, arg2);
+          console.log(`hello ${arg1}, again`);
+          resolve();
+        }, 1000);
+      });
+    });
+    hook.callAsync(0, 10, () => {
+      console.log("test test");
+    });
+    // hook
+    //   .promise("arg1", "arg2")
+    //   .then(() => {
+    //     console.log("done");
+    //   })
+    //   .catch((err) => {
+    //     console.log("catch err: ", err.message);
+    //   });
+
+    function _next1() {
+      var _fn2 = _x[2];
+      var _hasResult2 = false;
+      var _promise2 = _fn2(arg111, arg2);
+      if (!_promise2 || !_promise2.then)
+        throw new Error(
+          "Tap function (tapPromise) did not return promise (returned " +
+            _promise2 +
+            ")"
+        );
+      _promise2.then(
+        (_result2) => {
+          _hasResult2 = true;
+          _resolve();
+        },
+        (_err2) => {
+          if (_hasResult2) throw _err2;
+          _error(_err2);
+        }
+      );
+    }
+    var _fn0 = _x[0];
+    var _hasError0 = false;
+    try {
+      _fn0(arg111, arg2);
+    } catch (_err) {
+      _hasError0 = true;
+      _error(_err);
+    }
+    if (!_hasError0) {
+      var _fn1 = _x[1];
+      _fn1(arg111, arg2, (_err1) => {
+        if (_err1) {
+          _error(_err1);
+        } else {
+          _next1();
+        }
+      });
+    }
+    ```
+
+- AsyncSeriesBailHook
+
+  顺序执行，等待异步返回，如果返回值不是 undefined, 传入返回值执行注册的回调函数
+
+  - compile
+
+    ```js
+    function _next1() {
+      var _fn2 = _x[2];
+      _fn2(arg111, arg2, (_err2, _result2) => {
+        if (_err2) {
+          _error(_err2);
+        } else {
+          if (_result2 !== undefined) {
+            _resolve(_result2);
+          } else {
+            _resolve();
+          }
+        }
+      });
+    }
+    var _fn0 = _x[0];
+    var _hasError0 = false;
+    try {
+      var _result0 = _fn0(arg111, arg2);
+    } catch (_err) {
+      _hasError0 = true;
+      _error(_err);
+    }
+    if (!_hasError0) {
+      if (_result0 !== undefined) {
+        _resolve(_result0);
+      } else {
+        var _fn1 = _x[1];
+        var _hasResult1 = false;
+        var _promise1 = _fn1(arg111, arg2);
+        if (!_promise1 || !_promise1.then)
+          throw new Error(
+            "Tap function (tapPromise) did not return promise (returned " +
+              _promise1 +
+              ")"
+          );
+        _promise1.then(
+          (_result1) => {
+            _hasResult1 = true;
+            if (_result1 !== undefined) {
+              _resolve(_result1);
+            } else {
+              _next1();
+            }
+          },
+          (_err1) => {
+            if (_hasResult1) throw _err1;
+            _error(_err1);
+          }
+        );
+      }
+    }
+    ```
+
+- AsyncSeriesWaterfallHook
+
+  顺序执行，等待异步返回，如果返回值不是 undefined, 作为下一个函数的第一个参数，继续执行，如果是 undefined,上一个函数的第一个参数继续使用
+
+  - compile
+
+    ```js
+    function _next1() {
+      var _fn2 = _x[2];
+      _fn2(arg111, arg2, (_err2, _result2) => {
+        if (_err2) {
+          _error(_err2);
+        } else {
+          if (_result2 !== undefined) {
+            arg111 = _result2;
+          }
+          _resolve(arg111);
+        }
+      });
+    }
+    var _fn0 = _x[0];
+    var _hasError0 = false;
+    try {
+      var _result0 = _fn0(arg111, arg2);
+    } catch (_err) {
+      _hasError0 = true;
+      _error(_err);
+    }
+    if (!_hasError0) {
+      if (_result0 !== undefined) {
+        arg111 = _result0;
+      }
+      var _fn1 = _x[1];
+      var _hasResult1 = false;
+      var _promise1 = _fn1(arg111, arg2);
+      if (!_promise1 || !_promise1.then)
+        throw new Error(
+          "Tap function (tapPromise) did not return promise (returned " +
+            _promise1 +
+            ")"
+        );
+      _promise1.then(
+        (_result1) => {
+          _hasResult1 = true;
+          if (_result1 !== undefined) {
+            arg111 = _result1;
+          }
+          _next1();
+        },
+        (_err1) => {
+          if (_hasResult1) throw _err1;
+          _error(_err1);
+        }
+      );
+    }
+    ```
+
+- AsyncSeriesLoopHook
+
+  顺序执行，等待异步返回，如果返回值不是 undefined, 从头执行函数，如果返回值是 undefined，执行下一个函数
+
+  - compile
+
+    ```js
+    var _looper = () => {
+      var _loopAsync = false;
+      var _loop;
+      do {
+        _loop = false;
+        function _next1() {
+          var _fn2 = _x[2];
+          _fn2(arg111, arg2, (_err2, _result2) => {
+            if (_err2) {
+              _error(_err2);
+            } else {
+              if (_result2 !== undefined) {
+                _loop = true;
+                if (_loopAsync) _looper();
+              } else {
+                if (!_loop) {
+                  _resolve();
+                }
+              }
+            }
+          });
+        }
+        var _fn0 = _x[0];
+        var _hasError0 = false;
+        try {
+          var _result0 = _fn0(arg111, arg2);
+        } catch (_err) {
+          _hasError0 = true;
+          _error(_err);
+        }
+        if (!_hasError0) {
+          if (_result0 !== undefined) {
+            _loop = true;
+            if (_loopAsync) _looper();
+          } else {
+            var _fn1 = _x[1];
+            var _hasResult1 = false;
+            var _promise1 = _fn1(arg111, arg2);
+            if (!_promise1 || !_promise1.then)
+              throw new Error(
+                "Tap function (tapPromise) did not return promise (returned " +
+                  _promise1 +
+                  ")"
+              );
+            _promise1.then(
+              (_result1) => {
+                _hasResult1 = true;
+                if (_result1 !== undefined) {
+                  _loop = true;
+                  if (_loopAsync) _looper();
+                } else {
+                  _next1();
+                }
+              },
+              (_err1) => {
+                if (_hasResult1) throw _err1;
+                _error(_err1);
+              }
+            );
+          }
+        }
+      } while (_loop);
+      _loopAsync = true;
+    };
+    _looper();
+    ```
+
 - [Webpack 核心模块 tapable 解析](https://blog.csdn.net/github_38140984/article/details/83013823)
 
   > Webpack 本质上是一种事件流的机制，它的工作流程就是将各个插件串联起来，而实现这一切的核心就是 tapable，Webpack 中最核心的，负责编译的 Compiler 和负责创建 bundles 的 Compilation 都是 tapable 构造函数的实例。
