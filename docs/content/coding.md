@@ -584,7 +584,7 @@
   function fn(num = 0, arr = []) {
     for (let i = 0, len = arr.length; i < len; i++) {
       let diff = num - arr[i];
-      let diffIndex = arr.indexOf(diff);
+      let diffIndex = arr.indexOf(diff, i + 1);
       if (diffIndex !== -1) {
         return [i, diffIndex];
       }
