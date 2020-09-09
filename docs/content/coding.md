@@ -361,6 +361,18 @@
   };
   ```
 
+  ```js
+  /**
+   * 请实现一个函数，把字符串 s 中的每个空格替换成"%20"。
+   * 输入：s = "We are happy."
+   * 输出："We%20are%20happy."
+   */
+  var replaceSpace = function (str) {
+    if (!str) return str;
+    return (str || "").replace(/\s/g, '%20');
+  };
+  ```
+
 - 字符串去重
 
   ```js
