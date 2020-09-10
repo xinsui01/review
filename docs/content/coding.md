@@ -938,170 +938,170 @@
 
 - 表示数值的字符串
 
-请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。例如，字符串"+100"、"5e2"、"-123"、"3.1416"、"0123"都表示数值，但"12e"、"1a3.14"、"1.2.3"、"+-5"、"-1E-16"及"12e+5.4"都不是。
+  请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。例如，字符串"+100"、"5e2"、"-123"、"3.1416"、"0123"都表示数值，但"12e"、"1a3.14"、"1.2.3"、"+-5"、"-1E-16"及"12e+5.4"都不是。
 
-[有限状态自动机](https://leetcode-cn.com/problems/biao-shi-shu-zhi-de-zi-fu-chuan-lcof/solution/mian-shi-ti-20-biao-shi-shu-zhi-de-zi-fu-chuan-y-2/)
+  [有限状态自动机](https://leetcode-cn.com/problems/biao-shi-shu-zhi-de-zi-fu-chuan-lcof/solution/mian-shi-ti-20-biao-shi-shu-zhi-de-zi-fu-chuan-y-2/)
 
-```js
-/**
- *
- * @param {string} s
- * @return {boolean}
- */
-function isNumber(str) {
-  const states = [
-    { " ": 0, s: 1, d: 2, ".": 4 }, // 0. start with 'blank'
-    { d: 2, ".": 4 }, // 1. 'sign' before 'e'
-    { d: 2, ".": 3, e: 5, " ": 8 }, // 2. 'digit' before 'dot'
-    { d: 3, e: 5, " ": 8 }, // 3. 'digit' after 'dot'
-    { d: 3 }, // 4. 'digit' after 'dot' (‘blank’ before 'dot')
-    { s: 6, d: 7 }, // 5. 'e'
-    { d: 7 }, // 6. 'sign' after 'e'
-    { d: 7, " ": 8 }, // 7. 'digit' after 'e'
-    { " ": 8 }, // 8. end with 'blank'
-  ];
+  ```js
+  /**
+   *
+   * @param {string} s
+   * @return {boolean}
+   */
+  function isNumber(str) {
+    const states = [
+      { " ": 0, s: 1, d: 2, ".": 4 }, // 0. start with 'blank'
+      { d: 2, ".": 4 }, // 1. 'sign' before 'e'
+      { d: 2, ".": 3, e: 5, " ": 8 }, // 2. 'digit' before 'dot'
+      { d: 3, e: 5, " ": 8 }, // 3. 'digit' after 'dot'
+      { d: 3 }, // 4. 'digit' after 'dot' (‘blank’ before 'dot')
+      { s: 6, d: 7 }, // 5. 'e'
+      { d: 7 }, // 6. 'sign' after 'e'
+      { d: 7, " ": 8 }, // 7. 'digit' after 'e'
+      { " ": 8 }, // 8. end with 'blank'
+    ];
 
-  let p = 0,
-    t;
-  for (i = 0, { length: len } = str; i < len; i++) {
-    const letter = str[i];
-    if ("0" <= letter && letter <= "9") {
-      // digit
-      t = "d";
-    } else if ("+-".includes(letter)) {
-      // sign
-      t = "s";
-    } else if (".eE ".includes(letter)) {
-      // dot, e, blank
-      t = letter;
-    } else {
-      // unknown
-      t = "?";
+    let p = 0,
+      t;
+    for (i = 0, { length: len } = str; i < len; i++) {
+      const letter = str[i];
+      if ("0" <= letter && letter <= "9") {
+        // digit
+        t = "d";
+      } else if ("+-".includes(letter)) {
+        // sign
+        t = "s";
+      } else if (".eE ".includes(letter)) {
+        // dot, e, blank
+        t = letter;
+      } else {
+        // unknown
+        t = "?";
+      }
+
+      if (!states[p].hasOwnProperty(t)) {
+        return false;
+      }
+      p = states[p][t];
     }
-
-    if (!states[p].hasOwnProperty(t)) {
-      return false;
-    }
-    p = states[p][t];
+    return [2, 3, 7, 8].includes(p);
   }
-  return [2, 3, 7, 8].includes(p);
-}
-```
+  ```
 
-```js
-/**
- * 正则表达式
- */
-function isNumber(str) {
-  return /^[+-]?(\d+(\.\d*)?|(\.\d+))(e[+-]?\d+)?$/.test(s.trim());
-}
-```
+  ```js
+  /**
+   * 正则表达式
+   */
+  function isNumber(str) {
+    return /^[+-]?(\d+(\.\d*)?|(\.\d+))(e[+-]?\d+)?$/.test(s.trim());
+  }
+  ```
 
-```js
-/**
- *
- */
-function isNumber(str) {
-  str = str.trim();
-  if (!str) return false;
-  return !Number.isNaN(str);
-}
-```
+  ```js
+  /**
+   *
+   */
+  function isNumber(str) {
+    str = str.trim();
+    if (!str) return false;
+    return !Number.isNaN(str);
+  }
+  ```
 
 - 调整数组顺序使奇数位于偶数前面
 
-输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数位于数组的前半部分，所有偶数位于数组的后半部分。
+  输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数位于数组的前半部分，所有偶数位于数组的后半部分。
 
-```js
-/**
- * 相对位置会变化
- * @param {number[]} nums
- * @return {number[]}
- */
-function exchange(nums) {
-  let left = 0,
-    right = nums.length - 1;
-  while (left < right) {
-    // 奇数
-    if ((nums[left] & 1) !== 0) {
-      left++;
-      continue;
+  ```js
+  /**
+   * 相对位置会变化
+   * @param {number[]} nums
+   * @return {number[]}
+   */
+  function exchange(nums) {
+    let left = 0,
+      right = nums.length - 1;
+    while (left < right) {
+      // 奇数
+      if ((nums[left] & 1) !== 0) {
+        left++;
+        continue;
+      }
+      // 偶数
+      if ((nums[right] & 1) !== 1) {
+        right--;
+        continue;
+      }
+      // 交换当前值后各自移动一步
+      swap(nums, left++, right--);
     }
-    // 偶数
-    if ((nums[right] & 1) !== 1) {
-      right--;
-      continue;
+    return nums;
+  }
+
+  function swap(arr, i, j) {
+    let temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+  }
+  ```
+
+  ```js
+  /**
+   * 相对位置不变
+   * @param {number[]} nums
+   * @return {number[]}
+   */
+  function exchange(nums) {
+    let odd = [],
+      even = [];
+    for (let i = 0, { length: len } = nums; i < len; i++) {
+      let val = nums[i];
+      (val & 1) === 0 ? even.push(val) : odd.push(val);
     }
-    // 交换当前值后各自移动一步
-    swap(nums, left++, right--);
+    return odd.concat(even);
   }
-  return nums;
-}
-
-function swap(arr, i, j) {
-  let temp = arr[i];
-  arr[i] = arr[j];
-  arr[j] = temp;
-}
-```
-
-```js
-/**
- * 相对位置不变
- * @param {number[]} nums
- * @return {number[]}
- */
-function exchange(nums) {
-  let odd = [],
-    even = [];
-  for (let i = 0, { length: len } = nums; i < len; i++) {
-    let val = nums[i];
-    (val & 1) === 0 ? even.push(val) : odd.push(val);
-  }
-  return odd.concat(even);
-}
-```
+  ```
 
 - 顺时针打印矩阵
 
-输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。
+  输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。
 
-```js
-function spiralOrder(matrix) {
-  if (!matrix.length) return [];
-  let left = 0,
-    right = matrix[0].length - 1,
-    top = 0,
-    bottom = matrix.length - 1;
-  let res = [];
-  while (true) {
-    // left to right
-    for (let i = left; i <= right; i++) {
-      res.push(matrix[top][i]);
-    }
-    if (++top > bottom) break;
+  ```js
+  function spiralOrder(matrix) {
+    if (!matrix.length) return [];
+    let left = 0,
+      right = matrix[0].length - 1,
+      top = 0,
+      bottom = matrix.length - 1;
+    let res = [];
+    while (true) {
+      // left to right
+      for (let i = left; i <= right; i++) {
+        res.push(matrix[top][i]);
+      }
+      if (++top > bottom) break;
 
-    // top to bottom
-    for (let i = top; i <= bottom; i++) {
-      res.push(matrix[i][right]);
-    }
-    if (--right < left) break;
+      // top to bottom
+      for (let i = top; i <= bottom; i++) {
+        res.push(matrix[i][right]);
+      }
+      if (--right < left) break;
 
-    // right to left
-    for (let i = right; i >= left; i--) {
-      res.push(matrix[bottom][i]);
-    }
-    if (--bottom < top) break;
+      // right to left
+      for (let i = right; i >= left; i--) {
+        res.push(matrix[bottom][i]);
+      }
+      if (--bottom < top) break;
 
-    // bottom to top
-    for (let i = bottom; i >= top; i--) {
-      res.push(matrix[i][left]);
+      // bottom to top
+      for (let i = bottom; i >= top; i--) {
+        res.push(matrix[i][left]);
+      }
+      if (++left > right) break;
     }
-    if (++left > right) break;
+    return res;
   }
-  return res;
-}
-```
+  ```
 
 - 包含 min 函数的栈
 
