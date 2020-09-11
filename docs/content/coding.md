@@ -1170,16 +1170,16 @@
     return head;
 
     // 中序遍历
-    function dfs(root) {
-      if (!root) return;
-      dfs(root.left);
+    function dfs(cur) {
+      if (!cur) return;
+      dfs(cur.left);
       // 当 pre==null 时，root 左侧没有节点,即此时 root 为双向链表中的头节点
-      if (pre) pre.right = root;
-      else head = root;
+      if (pre) pre.right = cur;
+      else head = cur;
 
-      root.left = pre;
-      pre = root;
-      dfs(root.right);
+      cur.left = pre;
+      pre = cur;
+      dfs(cur.right);
     }
   }
   ```
