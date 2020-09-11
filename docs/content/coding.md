@@ -1161,7 +1161,7 @@
   function treeToDoublyList(root) {
     if (!root) return null;
 
-    let pre, head;
+    let pre=null, head=null;
     dfs(root);
 
     // 头尾节点相连
