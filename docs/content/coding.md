@@ -369,7 +369,7 @@
    */
   var replaceSpace = function (str) {
     if (!str) return str;
-    return (str || "").replace(/\s/g, '%20');
+    return (str || "").replace(/\s/g, "%20");
   };
   ```
 
@@ -513,38 +513,31 @@
 - 使用 promise 4 秒后打印’A’，然后经过 3 秒打印’B’，再经过 2 秒打印’C’，再经过一秒打印’D’。
 
   ```js
-  let promise = new Promise((resolve) => {
-    setTimeout(() => {
-      console.log("A");
-      resolve();
-    }, 4000);
-  });
+  function fnFactory(text, interval) {
+    return function () {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log(text);
+          resolve();
+        }, interval);
+      });
+    };
+  }
 
-  promise
-    .then(() => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          console.log("B");
-          resolve();
-        }, 3000);
-      });
-    })
-    .then(() => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          console.log("C");
-          resolve();
-        }, 2000);
-      });
-    })
-    .then(() => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          console.log("D");
-          resolve();
-        }, 1000);
-      });
-    });
+  function sequenceTasks(arr, input) {
+    return arr.reduce(
+      (promiseChain, curFn) => promiseChain.then(curFn),
+      Promise.resolve(input)
+    );
+  }
+
+  const arr = [
+    fnFactory("A", 4000),
+    fnFactory("B", 3000),
+    fnFactory("C", 2000),
+    fnFactory("D", 1000),
+  ];
+  sequenceTasks(arr, undefined);
   ```
 
 - 数组中的 Promise 顺序执行
@@ -766,7 +759,7 @@
 
   console.log(isBalance("[()()()]"));
   ```
-  
+
 - 括号是否匹配
 
   ```js
@@ -924,12 +917,8 @@
   /**
    * 递归生成全排列
    * 无论是 short / int / long ... 任意变量类型，数字的取值范围都是有限的。因此，大数的表示应用字符串 String 类型。
-   *
+   * 大数越界
    */
-  ```
-
-  ```js
-  // 大数越界
   function printNumbers(n) {
     let len = Math.pow(10, n) - 1;
     return Array.from({ length: len }, (item, index) => index + 1);
@@ -1161,7 +1150,8 @@
   function treeToDoublyList(root) {
     if (!root) return null;
 
-    let pre=null, head=null;
+    let pre = null,
+      head = null;
     dfs(root);
 
     // 头尾节点相连
