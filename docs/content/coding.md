@@ -805,7 +805,7 @@
 
   ```js
   function getDepth(obj, max = 0) {
-    if (obj === null) return max;
+    if (!obj) return max;
     if (
       ["[object Array]", "[object Object]"].includes(
         Object.prototype.toString.call(obj)
