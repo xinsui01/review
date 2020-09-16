@@ -246,7 +246,112 @@
 
   事件处理程序由冒泡阶段的事件触发。要为捕获阶段注册事件处理程序，请将 Capture 附加到事件名称；例如，您可以使用 onClickCapture 来处理捕获阶段中的 click 事件，而不是使用 onClick。
 
+  react 捕获事件在 v16 版本绑定在冒泡阶段
+
 - [React 合成事件和 DOM 原生事件混用须知](https://juejin.im/post/59db6e7af265da431f4a02ef)
+
+  - stopImmediatePropagation
+    stopImmediatePropagation 常常在多个第三方库混用时，用来阻止多个事件监听器中的非必要执行。
+    但 **React 体系中，一个组件只能绑定一个同类型的事件监听器（重复定义时，后面的监听器会覆盖之前的）**，所以合成事件甚至都不去封装 stopImmediatePropagation。
+    事实上 nativeEvent 的 stopImmediatePropagation 只能阻止绑定在 document 上的事件监听器。此外，由于事件绑定的顺序问题，需要注意，如果是在 react-dom.js 加载前绑定的 document 事件，stopImmediatePropagation 也是无法阻止的。
+
+  - React 支持将监听器注册在捕获阶段
+
+    或许有人（比如我）会困惑为何合成事件的捕获阶段响应也晚于原生事件的冒泡阶段响应呢？
+
+    其实是因为，合成事件的代理并不是在 document 上同时注册捕获/冒泡阶段的事件监听器的，事实上**只有冒泡阶段的事件监听器**，每一次 DOM 事件的触发，React 会在 `event._dispatchListeners` 上注入所有需要执行的函数，然后依次循环执行（如上文 React 源码）。
+
+    而`_dispatchListeners` 的生成逻辑如下：
+
+    ```js
+    // https://github.com/facebook/react/blob/v15.6.1/src/renderers/dom/client/ReactDOMTreeTraversal.js
+    /* 
+          path为react的组件树，由下向上遍历，本例中就是[child, parent]；
+          然后先将标记为captured的监听器置入_dispatchListeners，此时顺序是path从后往前；
+          再是标记为bubbled的监听器，顺序是从前往后。
+      */
+    function traverseTwoPhase(inst, fn, arg) {
+      var path = [];
+      while (inst) {
+        path.push(inst);
+        inst = inst._hostParent;
+      }
+      var i;
+      for (i = path.length; i-- > 0; ) {
+        fn(path[i], "captured", arg);
+      }
+      for (i = 0; i < path.length; i++) {
+        fn(path[i], "bubbled", arg);
+      }
+    }
+    ```
+
+  - 总结
+
+    合成事件的监听器是统一注册在 document 上的，且仅有冒泡阶段。所以原生事件的监听器响应总是比合成事件的监听器早
+
+  ```js
+  // 混合事件demo
+  export default class Demo extends React.PureComponent {
+    componentDidMount() {
+      const $parent = ReactDOM.findDOMNode(this);
+      const $child = $parent.querySelector(".child");
+
+      $parent.addEventListener("click", this.onParentDOMClick, true);
+      $child.addEventListener("click", this.onChildDOMClick, false);
+    }
+
+    onParentDOMClick = (evt) => {
+      console.log("captrue: parent dom event");
+    };
+
+    onChildDOMClick = (evt) => {
+      console.log("bubble: child dom event");
+    };
+
+    onParentClick = (evt) => {
+      console.log("bubble: parent react event");
+    };
+
+    onParentCaptureClick = (evt) => {
+      console.log("capture: parent react event");
+    };
+
+    onChildClick = (evt) => {
+      console.log("bubble: child react event");
+    };
+    onChildCaptureClick = (evt) => {
+      console.log("capture: child react event");
+    };
+
+    render() {
+      return (
+        <div
+          onClickCapture={this.onParentCaptureClick}
+          onClick={this.onParentClick}
+        >
+          <div
+            className="child"
+            onClickCapture={this.onChildCaptureClick}
+            onClick={this.onChildClick}
+          >
+            react 合成事件和原生事件混合 Demo
+          </div>
+        </div>
+      );
+    }
+  }
+
+  // captrue: parent dom event
+  // bubble: child dom event
+  // capture: parent react event
+  // capture: child react event
+  // bubble: child react event
+  // bubble: parent react event
+
+  // 先原生，再react 合成事件，
+  // 执行合成事件，先捕获从最不具体到具体，再冒泡从具体到最不具体
+  ```
 
 ## 受控组件和非受控组件
 
