@@ -213,6 +213,104 @@
     - 把差异应用到真正的 DOM 树上，视图就更新了
 
 - [react diff](https://zhuanlan.zhihu.com/p/20346379)
+
+  同一级相同类型的兄弟节点，没有添加 Key 会更新相同位置有变化的节点
+  
+  ```js
+  // A B C 都会更新
+  <div>
+    <ChildA index="A"></ChildA>
+    <ChildB index="B"></ChildB>
+    <ChildC index="C"></ChildC>
+  <div>
+  
+  =>>>>>
+  
+  <div>
+    <ChildB index="B"></ChildB>
+    <ChildC index="C"></ChildC>
+    <ChildA index="A"></ChildA>
+  <div>
+  ```
+  
+  ```js
+  // A B 会更新
+  <div>
+    <ChildA index="A"></ChildA>
+    <ChildB index="B"></ChildB>
+    <ChildC index="C"></ChildC>
+  <div>
+  
+  =>>>>>
+  
+  <div>
+    <ChildB index="B"></ChildB>
+    <ChildA index="A"></ChildA>
+    <ChildC index="C"></ChildC>
+  <div>
+  ```
+  
+  同一级相同类型的兄弟节点，添加 Key ,按照索引增大的规则更新（移动位置）
+  
+  即： ABC 变 BCA 更新A的位置；如果ABC变CBA，更新AB的位置，C保持不变；ABC 变成BAC 只移动 A到B后面；ABC变成CAB，移动AB
+  
+  ```js
+  // A B 会更新
+  <div>
+    <ChildA index="A" key="A"></ChildA>
+    <ChildB index="B" key="B"></ChildB>
+    <ChildC index="C" key="C"></ChildC>
+  <div>
+  
+  =>>>>>
+  
+  <div>
+    <ChildB index="B" key="B"></ChildB>
+    <ChildC index="C" key="C"></ChildC>
+    <ChildA index="A" key="A"></ChildA>
+  <div>
+  ```
+  
+  同一级不同类型的兄弟节点,没有添加 key 的话只要相同位置不是同一类型元素，会卸载当前组件，重新挂载新的组件
+  即： 如果ABC变CBA，卸载A，C,挂载 C，A
+  
+  ```js
+  <div>
+    <ChildA></ChildA>
+    <ChildB></ChildB>
+    <ChildC></ChildC>
+  <div>
+  
+  =>>>>>
+  
+  <div>
+    <ChildB></ChildB>
+    <ChildC></ChildC>
+    <ChildA></ChildA>
+  <div>
+  ```
+  
+  同一级不同类型的兄弟节点, 如果添加了key 并且只是位置移动，会更新元素不会卸载（可能更新ABC 位置， 可能更新组件）
+  
+  **按照索引增大的规则移动**， 即 如果是 ABC 变BCA，只移动 A； 如果是 ABC 变成 CAB ，C 保持不变，移动 AB， 如果是 ABC变成 CBA，移动 AB 保持 C 不变
+  
+  ```js
+  <div>
+    <ChildA key="A"></ChildA>
+    <ChildB key="B"></ChildB>
+    <ChildC key="C"></ChildC>
+  <div>
+  
+  =>>>>>
+  
+  <div>
+    <ChildB key="B"></ChildB>
+    <ChildC key="C"></ChildC>
+    <ChildA key="A"></ChildA>
+  <div>
+  ```
+  
+  > 总结： 兄弟节点，如果没有添加Key,相同位置比较，如果类型不一致，卸载重新挂载，如果类型一致，更新组件；如果添加key，则在新的DOM 树中找，按照index增大的规则更新（没有则删除，有则移动，新增则创建）
 - [vDOM 比真实 DOM 快吗？](https://www.zhihu.com/question/31809713/answer/53544875)
 
 ## [合成事件（SyntheticEvent）](https://reactjs.org/docs/events.html)
