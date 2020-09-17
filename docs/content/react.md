@@ -94,6 +94,8 @@
     > 通过递归的形式遍历 Virtual DOM，存在难以中断和恢复的问题，如果 react 更新任务运行时间过长，就会阻塞布局、动画等的运行，可能导致掉帧。
 
   - Fiber Reconciler
+  
+## [深入 react 细节之 - batchUpdate](https://zhuanlan.zhihu.com/p/78516581)
 
 ## Fiber
 
