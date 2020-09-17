@@ -431,5 +431,7 @@
   setTimeout(bus.start.bind(bus), 6666);
   ```
 
-- [策略模式](https://www.cnblogs.com/TomXu/archive/2012/03/05/2358552.html)
+- 策略模式
+  [深入理解JavaScript系列（33）：设计模式之策略模式](https://www.cnblogs.com/TomXu/archive/2012/03/05/2358552.html)
+  [js设计模式--策略模式](https://juejin.im/post/6844903751225081864)
 - [适配器模式](https://www.cnblogs.com/TomXu/archive/2012/04/11/2435452.html)
