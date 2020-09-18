@@ -309,21 +309,61 @@
 
   代理是一个对象，它可以用来控制对本体对象的访问，它与本体对象实现了同样的接口，代理对象会把所有的调用方法传递给本体对象的；代理模式最基本的形式是对访问进行控制，而本体对象则负责执行所分派的那个对象的函数或者类，简单的来讲本地对象注重的去执行页面上的代码，代理则控制本地对象何时被实例化，何时被使用
 
-  ```js
-  const target = {};
-  const handler = {
-    get(target, property) {
-      if (property in target) {
-        return target[property];
-      } else {
-        throw new ReferenceError(`Property ${property} does not exist.`);
+  - 虚拟代理
+  
+    ```js
+    const myImage = (function () {
+      const img = document.createElement('img');
+      document.body.appendChild(img);
+      
+      return {
+        setSrc: function(src){
+          img.src = src;
+        }
       }
+    })()
+    
+    const previewImg = (function(){
+      const img = new Image();
+      img.onload = function(){
+        myImage.setSrc(img.src)
+      }
+      
+      const loadingSrc = 'loading.gif';
+      
+      return {
+        setSrc: function(src){
+          myImage.setSrc(loadingSrc);
+          img.src = src;
+        }
+      }
+    })
+    
+    previewImg.setSrc('https://cn.bing.com/sa/simg/hpb/LaDigue_EN-CA1115245085_1920x1080.jpg');
+    ```
+    
+  - 缓存代理
+  
+    > 我们不用代理当然也能实现缓存就和，但是为了达到单一职责，我们可以让multAdd实现求和，而缓存则放在代理中来实现
+    
+    ```js
+    function sum() {
+      return [...arguments].reduce((accu, cur, index) => {
+        return accu + cur
+      }, 0)
     }
-  };
-  const p = new Proxy(target, handler);
-  p.a = 3;
-  console.log(p.c);
-  ```
+    
+    const proxySum = （function () {
+        let cache = {};
+        return function() {
+          const key = [...arguments].join(',')
+          if(cache[key]) {
+            return cache[key]
+          }
+          return cache[key] = sum.apply(this, arguments)
+        }
+    })()
+    ```
 
 - 中介者模式
 
