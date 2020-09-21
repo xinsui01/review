@@ -1698,3 +1698,312 @@ function flatten(input) {
 ## [CDN 是什么？使用 CDN 有什么优势？](https://www.zhihu.com/question/36514327)
 
 ## [对函数式编程的理解](http://taobaofed.org/blog/2017/03/16/javascript-functional-programing/)
+
+## ES+ 新特性
+
+- ES7
+
+  - Array.prototype.includes()
+
+    > indexOf 与 includes 的区别: `indexOf` 严格 `===` ， `includes` 稍有区别
+
+    ```js
+    let arr = [NaN, ""];
+
+    arr.indexOf(NaN) > -1; // false
+    arr.includes(NaN); // true
+
+    arr = new Array(3);
+    arr.indexOf(undefined) > -1; // false
+    arr.includes(undefined); // true
+    ```
+
+  - 指数操作符`**`: 相当于 `Math.pow()`
+
+    ```js
+    Math.pow(2, 10);
+    // 等价
+    2 ** 10;
+    ```
+
+- ES8
+
+  - async function
+
+    ```js
+    async function asyncFunc() {
+      const result1 = await otherAsyncFunc1();
+      console.log(result1);
+      const result2 = await otherAsyncFunc2();
+      console.log(result2);
+    }
+
+    function asyncFunc() {
+      return otherAsyncFunc1()
+        .then((result1) => {
+          console.log(result1);
+          return otherAsyncFunc2();
+        })
+        .then((result2) => {
+          console.log(result2);
+        });
+    }
+    ```
+
+  - SharedArrayBuffer 和 Atomics
+
+  - Object.values / Object.entries
+  - String padStart / padEnd
+  - Object.getOwnPropertyDescriptors()
+  - 函数参数列表和调用中的尾逗号
+
+    减少多人协作过程中不必要的代码改动
+
+    ```js
+    // 函数参数尾逗号
+    function foo(param1, param2) {}
+    // 函数调用尾逗号
+    foo(1, 2);
+    ```
+
+- ES9
+
+  - 异步迭代
+
+    ```js
+    const promises = [
+      new Promise((resolve) => resolve(1)),
+      new Promise((resolve) => resolve(2)),
+      new Promise((resolve) => resolve(3)),
+    ];
+
+    async function test() {
+      for await (const p of promises) {
+        console.log(p);
+      }
+    }
+    test(); //1, 2, 3
+    ```
+
+  - Promise.prototype.finally()
+
+  - Rest/Spread 属性
+
+    ES6 中的作用对象仅限于数组
+
+    ```js
+    restParam(1, 2, 3, 4, 5);
+
+    function restParam(p1, p2, ...p3) {
+      // p1 = 1
+      // p2 = 2
+      // p3 = [3, 4, 5]
+    }
+
+    const values = [99, 100, -1, 48, 16];
+    console.log(Math.max(...values)); // 100
+    ```
+
+    ES9 为对象提供了像数组一样的 rest 参数和扩展运算符
+
+    ```js
+    const obj = {
+      a: 1,
+      b: 2,
+      c: 3,
+    };
+    const { a, ...param } = obj;
+    console.log(a); //1
+    console.log(param); //{b: 2, c: 3}
+
+    function foo({ a, ...param }) {
+      console.log(a); //1
+      console.log(param); //{b: 2, c: 3}
+    }
+    ```
+
+  - 正则表达式命名捕获组
+
+    - 编号的捕获组
+
+      ```js
+      //正则表达式命名捕获组
+      const matchObj = /([0-9]{4})-([0-9]{2})-([0-9]{2})/.exec("1999-12-31");
+      const year = matchObj[1]; // 1999
+      const month = matchObj[2]; // 12
+      const day = matchObj[3]; // 31
+      ```
+
+      - 缺点
+
+        - 上述捕获组是通过数组索引来访问
+        - 可读性不强
+        - 更改捕获组的顺序，则还必须更改匹配代码
+
+    - 命名的捕获组
+
+      使用命名捕获组可以解决这些问题
+
+      ```js
+      const matchObj = /(?<year>[0-9]{4})-(?<month>[0-9]{2})-(?<day>[0-9]{2})/.exec(
+        "1999-12-31"
+      );
+      const year = matchObj.groups.year; // 1999
+      const month = matchObj.groups.month; // 12
+      const day = matchObj.groups.day; // 31
+
+      // 使用解构语法更为简便
+      const {
+        groups: { day, year },
+      } = RE_DATE.exec("1999-12-31");
+      console.log(year); // 1999
+      console.log(day); // 31
+      ```
+
+  - 正则表达式反向断言
+
+    ```js
+    const reLookBehind = /(?<=\D)[\d\.]+/,
+      match = reLookBehind.exec("$123.89");
+    console.log(match[0]); //123.89
+    ```
+
+  - 正则表达式 dotAll 模式
+
+    正则表达式中点.匹配除回车外的任何单字符，标记 s 改变这种行为，允许行终止符的出现
+
+    ```js
+    /hello.world/.test("hello\nworld"); // false
+    /hello.world/s.test("hello\nworld"); // true
+    ```
+
+  - 正则表达式 Unicode 转义
+
+    该特性允许您使用`\p{}`通过提及大括号内的 Unicode 字符属性来匹配字符,在正则表达式中使用标记 `u (unicode)` 设置
+
+    ```js
+    /^\p{White_Space}+$/u.test('\t \n\r')
+    // true
+    /^\p{Script=Greek}+$/u.test('μετάπ')
+    // true
+
+
+    // 新方法匹配中文字符
+    oldReg=/[\u4e00-\u9fa5]/
+    newReg=/\p{Script=Han}/u
+
+    oldReg.test('abc')
+    // false
+    newReg.test('abc')
+    // false
+
+    oldReg.test('地平线')
+    // true
+    newReg.test('地平线')
+    // true
+
+    oldReg.test('𬬭')
+    // false
+    newReg.test('𬬭')
+    // true
+    ```
+
+  - 非转义序列的模板字符串
+
+    ES2018 移除对 ECMAScript 在带标签的模版字符串中转义序列的语法限制。之前，\u 开始一个 unicode 转义，\x 开始一个十六进制转义，\后跟一个数字开始一个八进制转义。这使得创建特定的字符串变得不可能，例如 Windows 文件路径 C:\uuu\xxx\111。
+
+    ```js
+    `\u{54}`;
+    // "T"
+    String.raw`\u{54}`;
+    // "\u{54}"
+    ```
+
+- ES10
+
+  - 行分隔符（U + 2028）和段分隔符（U + 2029）符号现在允许在字符串文字中，与 JSON 匹配
+  - 更加友好的 JSON.stringify
+  - 新增了 Array.prototype.flat() 方法和 Array.prototype.flatMap() 方法
+
+    - Array.prototype.flat()
+
+      - flat()方法最基本的作用就是数组降维
+
+        ```js
+        var arr1 = [1, 2, [3, 4]];
+        arr1.flat();
+        // [1, 2, 3, 4]
+
+        var arr2 = [1, 2, [3, 4, [5, 6]]];
+        arr2.flat();
+        // [1, 2, 3, 4, [5, 6]]
+
+        var arr3 = [1, 2, [3, 4, [5, 6]]];
+        arr3.flat(2);
+        // [1, 2, 3, 4, 5, 6]
+
+        //使用 Infinity 作为深度，展开任意深度的嵌套数组
+        arr3.flat(Infinity);
+        // [1, 2, 3, 4, 5, 6]
+        ```
+
+      - 利用 flat()方法的特性来去除数组的空项
+
+        ```js
+        var arr4 = [1, 2, , 4, 5];
+        arr4.flat(); // [1, 2, 4, 5]
+        ```
+
+    - Array.prototype.flatMap()
+
+      flatMap() 方法首先使用映射函数映射每个元素，然后将结果压缩成一个新数组。它与 map 和 深度值 1 的 flat 几乎相同，但 flatMap 通常在合并成一种方法的效率稍微高一些。
+
+      ```js
+      var arr1 = [1, 2, 3, 4];
+
+      arr1.map((x) => [x * 2]);
+      // [[2], [4], [6], [8]]
+
+      arr1.flatMap((x) => [x * 2]);
+      // [2, 4, 6, 8]
+
+      // 只会将 flatMap 中的函数返回的数组 “压平” 一层
+      arr1.flatMap((x) => [[x * 2]]);
+      // [[2], [4], [6], [8]]
+      ```
+
+  - 新增了 String 的 trimStart()方法和 trimEnd()方法
+  - Object.fromEntries(): 是 Object.entries() 的反转
+  - Symbol.prototype.description: 直接访问描述
+  - String.prototype.matchAll
+  - Function.prototype.toString()现在返回精确字符，包括空格和注释
+
+    ```js
+    function /* comment */ foo /* another comment */() {}
+
+    // 之前不会打印注释部分
+    console.log(foo.toString()); // function foo(){}
+
+    // ES2019 会把注释一同打印
+    console.log(foo.toString()); // function /* comment */ foo /* another comment */ (){}
+
+    // 箭头函数
+    const bar /* comment */ = /* another comment */ () => {};
+
+    console.log(bar.toString()); // () => {}
+    ```
+
+  - 简化 try {} catch {},修改 catch 绑定
+
+    ```js
+    // 之前
+    try {
+    } catch (e) {}
+    // 现在
+    try {
+    } catch {}
+    ```
+
+  - 新的基本数据类型 BigInt
+  - globalThis
+  - import()
