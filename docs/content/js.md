@@ -790,7 +790,8 @@ function _new(constructor, ...args) {
 
   const result = constructor.apply(obj, args);
   // const isObject = result !== null && typeof result === 'object';
-  // return isObject ? result : obj; // 忽略 null
+  // const isFunction = typeof result === 'function'
+  // return isObject || isFunction ? result : obj; // 忽略 null
   return result instanceof Object ? result : obj;
 }
 ```

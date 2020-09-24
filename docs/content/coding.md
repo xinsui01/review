@@ -1,5 +1,25 @@
 # 编程
 
+## compose
+
+```js
+function compose(...funcs) {
+  if (funcs.length === 0) return (arg) => arg;
+  if (funcs.length === 1) return funcs[0];
+  return funcs.reduce((a, b) => (...args) => a(b(...args)));
+}
+```
+
+## Array.prototype.flatDeep
+
+```js
+function flatDeep(arr) {
+  return arr.reduce((ret, cur) => {
+    return ret.concat(Array.isArray(cur) ? flatDeep(cur) : cur);
+  }, []);
+}
+```
+
 - 数字千分位处理，正则和非正则都要实现(千位加逗号)
 
   - `numObj.toLocaleString([locales [, options]])`
