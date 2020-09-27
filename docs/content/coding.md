@@ -2106,16 +2106,12 @@ function flatDeep(arr) {
     if (level >= keys.length) return [];
     if (!addressList.length) return [];
     // 字典
-    const obj = {};
     const field = keys[level];
-    addressList.forEach((address) => {
+    const obj = addressList.reduce((dic, address) => {
       const key = address[field];
-      if (obj[key]) {
-        obj[key].push(address);
-      } else {
-        obj[key] = [address];
-      }
-    });
+      dic[key] ? dic[key].push(address) : (dic[key] = [address]);
+      return dic;
+    }, {});
     return Object.entries(obj).map(([key, value]) => {
       return {
         type: field,
@@ -2123,5 +2119,27 @@ function flatDeep(arr) {
         children: fn(value, level + 1),
       };
     });
+  }
+  ```
+
+- 树
+
+  ```js
+  // input = [{id: 4, pid: 3}, {id: 1}, {id: 3, pid: 1}, {id: 2}]
+  // output = [{id: 1, children: [{id: 3, children: [{id: 4}]}]}, {id: 2}]
+  function mergeDeepNodeList(_nodeList) {
+    let ret = [];
+    let obj = {};
+    const nodeList = [..._nodeList];
+    while (nodeList.length) {
+      const cur = nodeList.shift();
+      cur.children = obj[cur.id] = obj[cur.id] || [];
+      if (cur.pid) {
+        obj[cur.pid] ? obj[cur.pid].push(cur) : (obj[cur.pid] = [cur]);
+      } else {
+        ret.push(cur);
+      }
+    }
+    return ret;
   }
   ```
