@@ -1334,8 +1334,8 @@ function flatDeep(arr) {
   /**
    *
    * 动态规划
-   * 状态定义： 设动态规划列表 dp ，dp[i] 代表以元素 nums[i] 为结尾的连续子数组最大和。
-   * 转移方程： 若 dp[i-1] \leq 0dp[i−1]≤0 ，说明 dp[i - 1]dp[i−1] 对 dp[i]dp[i] 产生负贡献，即 dp[i-1] + nums[i]dp[i−1]+nums[i] 还不如 nums[i]nums[i] 本身大。
+   * 状态定义： 设动态规划列表 dp，dp[i] 代表以元素 nums[i] 为结尾的连续子数组最大和。
+   * 转移方程： 若 dp[i−1]≤0 ，说明 dp[i−1] 对 dp[i] 产生负贡献，即 dp[i-1] + nums[i] 还不如 nums[i] 本身大。
    *   当 dp[i - 1] > 0 时：执行 dp[i] = dp[i-1] + nums[i]；
    *   当 dp[i − 1] ≤ 0 时：执行 dp[i] = nums[i]；
    * 初始状态： dp[0] = nums[0]，即以 nums[0]结尾的连续子数组最大和为 nums[0]。
