@@ -511,7 +511,7 @@ function flatDeep(arr) {
       }
     }
 
-    return `${routeArr.join("/")}/${fileArr.join("/")}`;
+    return routeArr.concat(fileArr).join('/');
   }
 
   let path = caculateRoute("/a/b/c/d/e.js", "/a/b/f/g.js");
@@ -642,11 +642,11 @@ function flatDeep(arr) {
 
   ```js
   String.prototype.repeat = function (count) {
-    return Array(count).fill(this).join("");
+    return new Array(count).fill(this).join("");
   };
 
   String.prototype.repeat = function (count) {
-    return Array(count + 1).join(this);
+    return new Array(count + 1).join(this);
   };
 
   String.prototype.repeat = function (count) {
