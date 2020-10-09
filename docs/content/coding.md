@@ -511,7 +511,7 @@ function flatDeep(arr) {
       }
     }
 
-    return routeArr.concat(fileArr).join('/');
+    return routeArr.concat(fileArr).join("/");
   }
 
   let path = caculateRoute("/a/b/c/d/e.js", "/a/b/f/g.js");
@@ -1390,16 +1390,16 @@ function flatDeep(arr) {
       n -= count; // 减掉当前位数数量
       digit += 1; // 增加位数
       start *= 10; // 起始数字
-      count = digit * start * 9; // 当前位数数量
+      count = digit * (start * 9); // 当前位数数量
     }
     let num = start + Math.floor((n - 1) / digit); // n 所在 数字
-    return ("" + num).charAt((n - 1) % digit); // 从 0 开始
+    return num.toString().charAt((n - 1) % digit); // 从 0 开始
   }
   ```
 
 - 把数组排成最小的数
 
-  输入一个非负整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。
+  输入一个非负整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。(数组快排)
 
   ```js
   function minNumber(nums) {
@@ -1408,10 +1408,10 @@ function flatDeep(arr) {
     for (let i = 0; i < len; i++) {
       strs[i] = String(nums[i]);
     }
-    fastSort(strs, 0, len - 1);
+    quickSort(strs, 0, len - 1);
     return strs.join("");
 
-    function fastSort(arr, left, right) {
+    function quickSort(arr, left, right) {
       if (left > right) return;
       let i = left,
         j = right;
@@ -1423,8 +1423,8 @@ function flatDeep(arr) {
       }
       arr[i] = arr[left];
       arr[left] = temp;
-      fastSort(arr, left, i - 1);
-      fastSort(arr, i + 1, right);
+      quickSort(arr, left, i - 1);
+      quickSort(arr, i + 1, right);
     }
   }
   ```
