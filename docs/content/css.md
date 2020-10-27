@@ -370,6 +370,10 @@
 
 ## [居中方法](https://juejin.im/post/5b94d8965188255c5a0cdc02)
 
+> left: 10%; // 最近的块容器宽度的百分比   
+> margin-left: 10%; //最近的块容器的宽度 width 百分比值.   
+> transform: translate(-50%, -50%)； // 相对自身宽高的百分比   
+
 - 水平居中
   - text-align: center;(针对 inline, 内联块 inline-block, 内联表 inline-table, inline-flex 元素及 img,span,button 等元素)
   - margin: 0 auto;(不定宽块状元素居中)
